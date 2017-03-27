@@ -1,0 +1,18 @@
+{{ include_block_open }}
+
+#include <gr/decl.hpp> // gr/decl.hpp.in
+
+{{ namespace_open }}
+
+#if 0
+class pair_comp
+{
+public:
+	bool		operator()(gr::pair const &, gr::pair const &);
+};
+#endif
+
+{{ namespace_close }}
+
+{{ include_block_close }}
+

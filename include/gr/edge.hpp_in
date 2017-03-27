@@ -1,0 +1,33 @@
+{{ include_block_open }}
+
+#include <memory>
+#include <set>
+#include <vector>
+
+#include <gr/decl.hpp> // gr/decl.hpp.in
+//#include <gr/edge_data.hpp> // gr/edge_data.hpp.in
+
+{{ namespace_open }}
+
+
+class edge
+{
+public:
+	//edge();
+	edge(gr::VERT_S const & v0, gr::VERT_S const & v1, EDGE_DATA_S const & data);
+
+	bool			enabled() const;
+
+	bool			operator<(edge const &) const;
+	bool			operator==(edge const &) const;
+
+	gr::VERT_W		_M_v0;
+	gr::VERT_W		_M_v1;
+	EDGE_DATA_S		_M_data;
+};
+
+
+{{ namespace_close }}
+
+{{ include_block_close }}
+

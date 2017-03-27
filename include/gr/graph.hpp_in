@@ -1,0 +1,85 @@
+{{ include_block_open }}
+
+#include <memory>
+#include <set>
+#include <vector>
+
+#include <gr/decl.hpp> // gr/decl.hpp.in
+#include <gr/iterator/vert_comp.hpp> // gr/iterator/iterator.hpp.in
+#include <gr/iterator/vert_graph.hpp> // gr/iterator/vert_graph.hpp.in
+#include <gr/iterator/vert_graph_all.hpp> // gr/iterator/vert_graph_all.hpp.in
+#include <gr/container/vert.hpp> // gr/iterator/iterator.hpp.in
+
+{{ namespace_open }}
+
+class graph:
+	public std::enable_shared_from_this<graph>
+{
+public:
+	//Graph(Graph const & g);
+	
+	void				add_edge_util(VERT_S v0, VERT_S v1, std::shared_ptr<gr::edge_data> const &);
+	void				add_edge(VERT_S v0, VERT_S v1);
+
+	void				edge_enable();
+	void				vert_enable();
+
+	/** vert functions */
+
+	gr::iterator::vert_graph	iter(gr::VERT_S v);
+
+	gr::iterator::vert_graph	vert_find(gr::VERT_S v);
+	gr::iterator::vert_graph	vert_erase(gr::iterator::vert_graph &);
+	void				vert_erase_layer(unsigned int l);
+	
+
+	gr::iterator::vert_graph_all	vert_begin_all(VERT_FUNC);
+	gr::iterator::vert_graph_all	vert_end_all(VERT_FUNC);
+	gr::iterator::vert_graph_all	vert_begin_all();
+	gr::iterator::vert_graph_all	vert_end_all();
+	gr::iterator::vert_graph	vert_begin();
+	gr::iterator::vert_graph	vert_end();
+	
+	unsigned int			vert_size();
+
+	gr::iterator::vert_comp		comp_vert_begin(int);
+	gr::iterator::vert_comp		comp_vert_end(int);
+
+
+	/** edge functions */
+
+	gr::iterator::edge_graph	edge_begin();
+	gr::iterator::edge_graph	edge_end();
+
+	void				edge_erase();
+
+	void				edge_erase_util(VERT_S &, VERT_S &);
+	void				edge_erase(VERT_S &, VERT_S &);
+
+	gr::iterator::edge_graph	edge_erase(gr::iterator::edge_graph);
+
+	/** algorithms */
+
+	void				distance_util(gr::VERT_S);
+	void				distance(gr::VERT_S const &);
+
+	void				bridges_sub(VERT_S const & n, int & t, std::vector<gr::edge> & ret);
+	std::vector<gr::edge>		bridges();
+
+	void				components_util(VERT_S const & n, int c);
+	int				components();
+	void				component(int c);
+
+	void				dot();
+	
+	void				layer_move(unsigned int, unsigned int);
+
+	std::vector<gr::LAYER_S>	_M_layers;
+	
+	gr::container::vert		_M_verts;
+};
+
+{{ namespace_close }}
+
+{{ include_block_close }}
+

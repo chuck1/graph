@@ -1,0 +1,20 @@
+{{ include_block_open }}
+
+#include <memory>
+
+{{ namespace_open }}
+
+class layer: public std::enable_shared_from_this<layer>
+{
+public:
+	layer();
+	
+	bool	enabled() const;
+	
+	bool	_M_enabled;
+};
+
+{{ namespace_close }}
+
+{{ include_block_close }}
+

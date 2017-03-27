@@ -1,0 +1,34 @@
+{{ include_block_open }}
+
+#include <memory>
+#include <set>
+#include <vector>
+
+#include <gr/decl.hpp> // gr/decl.hpp.in
+
+{{ namespace_open }}
+
+
+class edge
+{
+public:
+	
+	typename gr::CONT_EDGE::iterator	begin() const;
+	typename gr::CONT_EDGE::iterator	end() const;
+
+	typename gr::CONT_EDGE::iterator	erase(gr::CONT_EDGE::iterator const &);
+
+	typename gr::CONT_EDGE::iterator	find(gr::VERT_S const &) const;
+
+	std::pair<typename gr::CONT_EDGE::iterator, bool>	insert(gr::edge const &);
+
+	typename gr::CONT_EDGE::size_type	size() const;
+	
+	gr::CONT_EDGE				_M_container;
+};
+
+
+{{ namespace_close }}
+
+{{ include_block_close }}
+

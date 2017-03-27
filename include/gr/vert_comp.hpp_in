@@ -1,0 +1,24 @@
+{{ include_block_open }}
+
+#include <memory>
+#include <set>
+#include <vector>
+
+#include <gr/decl.hpp> // gr/decl.hpp.in
+
+{{ namespace_open }}
+
+
+class vert_comp
+{
+public:
+	bool	operator()(VERT_S const & np0, VERT_S const & np1);
+};
+
+
+{{ namespace_close }}
+
+{{ include_block_close }}
+
+
+

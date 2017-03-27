@@ -1,0 +1,36 @@
+{{ include_block_open }}
+
+#include <memory>
+#include <set>
+#include <vector>
+
+#include <gr/decl.hpp> // gr/decl.hpp.in
+#include <gr/vert_comp.hpp>
+
+{{ namespace_open }}
+
+
+class vert
+{
+public:
+	typedef typename CONT_VERT::iterator	iterator;
+	
+	iterator	begin();
+	iterator	end();
+
+	unsigned int	size() const;
+
+	iterator	find(gr::VERT_S const &);
+
+	iterator	insert(iterator const &, CONT_VERT::value_type &);
+
+	iterator	erase(iterator &);
+private:
+	CONT_VERT	_M_container;
+};
+
+
+{{ namespace_close }}
+
+{{ include_block_close }}
+

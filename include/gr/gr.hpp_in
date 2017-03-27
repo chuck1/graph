@@ -1,0 +1,19 @@
+{{ include_block_open }}
+
+
+#include <gr/decl.hpp> // gr/decl.hpp.in
+#include <gr/iterator/edge_graph.hpp> // gr/iterator/iterator.hpp.in
+#include <gr/iterator/vert_comp.hpp> // gr/iterator/vert_comp.hpp.in
+#include <gr/container/edge.hpp> // gr/container/edge.hpp.in
+#include <gr/container/vert.hpp> // gr/container/vert.hpp.in
+#include <gr/edge.hpp> // gr/edge.hpp.in
+#include <gr/edge_data.hpp> // gr/edge_data.hpp.in
+#include <gr/vert.hpp> // gr/vert.hpp.in
+#include <gr/pair.hpp> // gr/pair.hpp.in
+#include <gr/pair_comp.hpp> // gr/pair_comp.hpp.in
+#include <gr/graph.hpp> // gr/graph.hpp.in
+#include <gr/layer.hpp> // gr/graph.hpp.in
+
+
+{{ include_block_close }}
+
