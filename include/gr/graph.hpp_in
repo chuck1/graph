@@ -66,8 +66,12 @@ public:
 	void				bridges_sub(VERT_S const & n, int & t, std::vector<gr::edge> & ret);
 	std::vector<gr::edge>		bridges();
 
-	void				components_util(VERT_S const & n, int c);
+	/*
+	 * mark each vertex with an index representing the component to which it belongs
+	 * a component is a subgraph that is disconnected from the rest of the graph
+	 */
 	int				components();
+	void				components_util(VERT_S const & n, int c);
 	void				component(int c);
 
 	void				dot();

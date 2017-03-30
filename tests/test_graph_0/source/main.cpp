@@ -68,9 +68,9 @@ int main()
 
 	assert(i != g->vert_end());
 
-
-
-	g->bridges();
+	auto bridges = g->bridges();
+	std::cout << "bridges" << std::endl;
+	
 
 	g->add_edge(n5, n6);
 

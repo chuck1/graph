@@ -1,8 +1,8 @@
-import pbs.classes.Executable
+import pbs2
 
-e = pbs.classes.Executable.Executable("test_graph_0", self)
+e = pbs2.Executable(self, "test_graph_0", __file__)
 
-e.require("graph")
+e.add_dep("graph")
 
-e.make()
+self.parts.append(e)
 

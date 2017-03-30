@@ -11,10 +11,10 @@
 #include <gr/pair.hpp> // gr/pair.hpp.in
 #include <gr/pair_comp.hpp> // gr/pair_comp.hpp.in
 #include <gr/vert.hpp> // gr/vert.hpp.in
-#include <gr/edge.hpp> // gr/edge.hpp.in
+#include <gr/edge.hpp> // gr/edge.hpp_in
 #include <gr/edge_data.hpp>
 
-#include <gr/graph.hpp> // gr/graph.hpp.in
+#include <gr/graph.hpp> // gr/graph.hpp_in
 
 typedef gr::graph THIS;
 
@@ -331,22 +331,27 @@ void				THIS::bridges_sub(gr::VERT_S const & n, int & t, std::vector<gr::edge> &
 
 	n->bridge._M_disc = n->bridge._M_low = ++t;
 
-	for(auto i = n->edge_begin(); i != n->edge_end(); ++i) {
+	for(auto i = n->edge_begin(); i != n->edge_end(); ++i)
+	{
 		gr::VERT_S const & v = i->_M_v1.lock();
 
 		assert(v);
 
-		if(!v->bridge._M_visited) {
+		if(!v->bridge._M_visited)
+		{
 			v->bridge._M_parent = n;
 
 			bridges_sub(v, t, ret);
 
 			n->bridge._M_low = std::min(n->bridge._M_low, v->bridge._M_low);
 
-			if(v->bridge._M_low > n->bridge._M_disc) {
+			if(v->bridge._M_low > n->bridge._M_disc)
+			{
 				ret.push_back(*i);
 			}
-		} else if(v != n->bridge._M_parent.lock()) {
+		}
+		else if(v != n->bridge._M_parent.lock())
+		{
 			n->bridge._M_low = std::min(n->bridge._M_low, v->bridge._M_disc);
 		}
 	}
@@ -358,11 +363,13 @@ std::vector<gr::edge>		THIS::bridges()
 	int t = 0;
 
 	// initialize
-	for(auto i = _M_verts.begin(); i != _M_verts.end(); ++i) {
+	for(auto i = _M_verts.begin(); i != _M_verts.end(); ++i)
+	{
 		(*i)->bridge._M_visited = false;
 	}
 
-	for(auto i = _M_verts.begin(); i != _M_verts.end(); ++i) {
+	for(auto i = _M_verts.begin(); i != _M_verts.end(); ++i)
+	{
 		if((*i)->bridge._M_visited == false) {
 			bridges_sub(*i, t, ret);
 		}
