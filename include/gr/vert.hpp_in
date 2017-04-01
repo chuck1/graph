@@ -45,6 +45,8 @@ public:
 	virtual bool		operator==(vert const &) = 0;
 	virtual bool		operator<(vert const &) = 0;
 
+	virtual std::string	dot();
+
 	// data
 	bool			_M_enabled;
 

@@ -74,9 +74,12 @@ public:
 	void				components_util(VERT_S const & n, int c);
 	void				component(int c);
 
-	void				dot();
+	void				dot(std::string filename, gr::VERT_S const & v);
+	void				dot(std::string filename);
 	
 	void				layer_move(unsigned int, unsigned int);
+	
+	void				for_each_leaf(std::function<void(gr::VERT_S const &, gr::edge const &)> func);
 
 	std::vector<gr::LAYER_S>	_M_layers;
 	

@@ -377,19 +377,26 @@ std::vector<gr::edge>		THIS::bridges()
 
 	return ret;
 }
-void				THIS::dot()
+void				THIS::dot(std::string filename, gr::VERT_S const & v)
+{
+	distance(v);
+	dot(filename);
+}
+void				THIS::dot(std::string filename)
 {
 	std::ofstream of;
-	of.open("graph.dot");
+	of.open(filename);
 
 	of << "graph {" << std::endl;
+	of << "overlap=false" << std::endl;
+	of << "splines=true" << std::endl;
 
 	for(auto i = edge_begin(); i != edge_end(); ++i) {
 		of << "node" << i->_M_v0.lock().get() << " -- node" << i->_M_v1.lock().get() << std::endl;
 	}
-
+	
 	for(auto i = vert_begin(); i != vert_end(); ++i) {
-		//of << "node" << n.get() << " [" << "]"
+		of << (*i)->dot() << std::endl;
 	}
 
 	of << "}" << std::endl;
@@ -511,13 +518,36 @@ void				THIS::layer_move(unsigned int i0, unsigned int i1)
 		}
 	}
 }
-unsigned int	THIS::vert_size()
+unsigned int			THIS::vert_size()
 {
 	//auto s1 = _M_verts.size();
 	auto s2 = std::distance(vert_begin(), vert_end());
 	//assert(s1 == s2);
 	return s2;
 }
+void				THIS::for_each_leaf(std::function<void(gr::VERT_S const &, gr::edge const &)> func)
+{
+	for(auto i = vert_begin(); i != vert_end(); ++i)
+	{
+		gr::VERT_S const & v = *i;
+		if(v->edge_size() == 1)
+		{
+			func(v, *v->edge_begin());
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

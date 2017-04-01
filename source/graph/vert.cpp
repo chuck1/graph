@@ -9,7 +9,7 @@
 #include <gr/graph.hpp> // gr/vert.hpp.in
 #include <gr/layer.hpp>
 
-#include <gr/vert.hpp> // gr/vert.hpp.in
+#include <gr/vert.hpp> // gr/vert.hpp_in
 
 typedef gr::vert THIS;
 
@@ -97,6 +97,10 @@ void				THIS::edge_erase_util(gr::VERT_S & v0, gr::VERT_S & v1)
 	//for(auto j = edges.begin(); j != edges.end(); ++j) {
 	//	gr::VERT_S w = j->first.lock();
 	//}
+}
+std::string			THIS::dot()
+{
+	return std::string();
 }
 
 
