@@ -1,6 +1,5 @@
 {{ include_block_open }}
 
-
 #include <gr/decl.hpp> // gr/decl.hpp.in
 #include <gr/iterator/edge_graph.hpp> // gr/iterator/iterator.hpp.in
 #include <gr/iterator/vert_comp.hpp> // gr/iterator/vert_comp.hpp.in
