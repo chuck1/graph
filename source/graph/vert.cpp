@@ -23,6 +23,10 @@ THIS::~vert()
 {
 //	std::cout << "vert destroyed" << std::endl;
 }
+bool				THIS::operator!=(gr::vert const & v)
+{
+	return !operator==(v);
+}
 bool				THIS::enabled() const
 {
 	if(!_M_enabled) return false;
