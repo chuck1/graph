@@ -3,6 +3,7 @@
 #include <memory>
 #include <set>
 #include <vector>
+#include <deque>
 
 #include <gr/decl.hpp> // gr/decl.hpp.in
 #include <gr/iterator/vert_comp.hpp> // gr/iterator/iterator.hpp.in
@@ -66,6 +67,12 @@ public:
 	void				bridges_sub(VERT_S const & n, int & t, std::vector<gr::edge> & ret);
 	std::vector<gr::edge>		bridges();
 
+	void				depth_first_search(
+			gr::VERT_S const & v);
+	void				depth_first_search_util(
+			gr::VERT_S const & v,
+			std::deque<gr::EDGE_S> & stack);
+
 	/*
 	 * mark each vertex with an index representing the component to which it belongs
 	 * a component is a subgraph that is disconnected from the rest of the graph
@@ -79,7 +86,7 @@ public:
 	
 	void				layer_move(unsigned int, unsigned int);
 	
-	void				for_each_leaf(std::function<void(gr::VERT_S const &, gr::edge const &)> func);
+	void				for_each_leaf(std::function<void(gr::VERT_S const &, gr::EDGE_S const &)> func);
 
 	std::vector<gr::LAYER_S>	_M_layers;
 	

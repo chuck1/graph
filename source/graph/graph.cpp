@@ -2,15 +2,16 @@
 #include <iostream>
 #include <algorithm>
 #include <cassert>
+#include <deque>
 
 // gr/decl.hpp.in
 #include <gr/container/edge.hpp> // gr/container/edge.hpp.in
 #include <gr/container/vert.hpp> // gr/container/vert.hpp.in
-#include <gr/iterator/edge_graph.hpp> // gr/iterator/iterator.hpp.in
-#include <gr/iterator/edge_vert.hpp> // gr/iterator/edge_vert.hpp.in
+#include <gr/iterator/edge_graph.hpp> // gr/iterator/edge_graph.hpp_in
+#include <gr/iterator/edge_vert.hpp> // gr/iterator/edge_vert.hpp_in
 #include <gr/pair.hpp> // gr/pair.hpp.in
 #include <gr/pair_comp.hpp> // gr/pair_comp.hpp.in
-#include <gr/vert.hpp> // gr/vert.hpp.in
+#include <gr/vert.hpp> // gr/vert.hpp_in
 #include <gr/edge.hpp> // gr/edge.hpp_in
 #include <gr/edge_data.hpp>
 
@@ -178,135 +179,95 @@ gr::iterator::edge_graph	THIS::edge_erase(gr::iterator::edge_graph i)
 
 	return ret;
 }
-
-
-/*
-   graph::VEC_Edge		THIS::get_edges(int c)
-   {
-   graph::VEC_Edge ret;
-   auto l = [=](graph::EDGE_S e) {
-   return e->n0()->comp._M_c == c;
-   };
-   std::copy_if(_M_edges.begin(), _M_edges.end(), std::back_inserter(ret), l);
-   return ret;
-   }
-   graph::VEC_Edge		THIS::get_edges()
-   {
-   return _M_edges;
-   }
-   graph::SET_Node		THIS::get_nodes()
-   {
-   SET_Node ret;
-
-   for(auto e : _M_edges) {
-   e->n0()->_M_graph = shared_from_this();
-   e->n1()->_M_graph = shared_from_this();
-   ret.insert(e->n0());
-   ret.insert(e->n1());
-   }
-
-   return ret;
-   }
-   graph::SET_Node		THIS::get_nodes(int c)
-   {
-   SET_Node ret;
-
-   for(auto e : _M_edges) {
-   if(e->n0()->comp._M_c != c) continue;
-
-   e->n0()->_M_graph = shared_from_this();
-   e->n1()->_M_graph = shared_from_this();
-   ret.insert(e->n0());
-   ret.insert(e->n1());
-   }
-
-   return ret;
-   }
-   */
 void				THIS::distance_util(gr::VERT_S u)
 {
-	//v->dist._M_visited = true;
-
 	int d = u->dist._M_distance + 1.0f;
 
-	for(auto it = u->edge_begin(); it != u->edge_end();) {
-		gr::VERT_S const & v = it->_M_v1.lock();
+	for(auto it = u->edge_begin(); it != u->edge_end();)
+	{	
+		auto e = *it;
+		gr::VERT_S const & v = e->other(u);
 
-		if(!v) {
-			//throw std::exception();
+		if(!v)
+		{
+			// clean up
 			it = u->edge_erase(it);
-		} else {
-
-			if((v->dist._M_distance < 0) || (v->dist._M_distance > d)) {
+		}
+		else
+		{
+			if((v->dist._M_distance < 0) || (v->dist._M_distance > d))
+			{
 				v->dist._M_distance = d;
 
-				// ???
 				distance_util(v);
 			}
-
 			++it;
 		}
 	}
 }
 void				THIS::distance(gr::VERT_S const & v0)
 {
-	//auto unvisited = get_nodes();
 	for(auto it = vert_begin(); it != vert_end(); ++it)
 	{
-		//it->first->dist._M_visited = false;
 		(*it)->dist._M_distance = -1.0;
 	}
 
-	//SET_Node s;
-
-	//auto it = unvisited.find(n0);
 	auto it = vert_find(v0);
 
 	if(it == vert_end()) {
 		std::cout << "graph::distance v0 not found" << std::endl;
-		//throw std::exception();
 		return;
 	}
-
-	//s.insert(*it);
-	//unvisited.erase(it);
-	//it = s.begin();
 
 	gr::VERT_S const & v = *it;
 
 	v->dist._M_distance = 0.0;
 
 	distance_util(v);
+}
+void				THIS::depth_first_search_util(
+		gr::VERT_S const & v,
+		std::deque<gr::EDGE_S> & stack)
+{
+	v->dfs._M_visited = true;
 
-	/*
-	   while(true) {
-	   auto nodes = (*it)->get_adjacent_nodes();
+	for(auto it = v->edge_begin(); it != v->edge_end(); ++it)
+	{
+		auto e = *it;
+		if(!e->dfs._M_visited)
+		{
+			e->dfs._M_visited = true;
+			stack.push_back(e);
 
-	// visit each
-	for(auto n : nodes) {
-	auto it1 = unvisited.find(n);
-	if(it1 != unvisited.end()) {
+			auto v1 = e->other(v);
+			if(v->dfs._M_visited)
+			{
+				// cycle
+			}
+			else
+			{
 
-	double d = (*it)->_M_distance + 1.0;
-
-	if(((*it1)->_M_distance == -1.0) || ((*it1)->_M_distance > d)) {
-	(*it1)->_M_distance = d;
+			}
+		}
 	}
-
-	s.insert(*it1);
-	unvisited.erase(it1);
-
+}
+void				THIS::depth_first_search(gr::VERT_S const & v)
+{
+	std::vector<std::vector<gr::EDGE_S>> cycles;
+	std::deque<gr::EDGE_S> stack;
+	
+	for(auto it = vert_begin(); it != vert_end(); ++it)
+	{
+		(*it)->dfs._M_visited = false;
 	}
+	
+	for(auto it = edge_begin(); it != edge_end(); ++it)
+	{
+		auto e = *it;
+		e->dfs._M_visited = false;
 	}
-
-	// remove current node from set s
-	s.erase(it);
-	// choose new focus node
-	it = s.begin();
-
-	if(it == s.end()) break;
-	}
-	*/
+	
+	depth_first_search_util(v, stack);
 }
 void				THIS::vert_erase_layer(unsigned int l)
 {
@@ -334,7 +295,8 @@ void				THIS::bridges_sub(gr::VERT_S const & n, int & t, std::vector<gr::edge> &
 
 	for(auto i = n->edge_begin(); i != n->edge_end(); ++i)
 	{
-		gr::VERT_S const & v = i->_M_v1.lock();
+		auto e = *i;
+		gr::VERT_S const & v = e->other(n);
 
 		assert(v);
 
@@ -348,7 +310,7 @@ void				THIS::bridges_sub(gr::VERT_S const & n, int & t, std::vector<gr::edge> &
 
 			if(v->bridge._M_low > n->bridge._M_disc)
 			{
-				ret.push_back(*i);
+				ret.push_back(*e);
 			}
 		}
 		else if(v != n->bridge._M_parent.lock())
@@ -392,8 +354,10 @@ void				THIS::dot(std::string filename)
 	of << "overlap=false" << std::endl;
 	of << "splines=true" << std::endl;
 
-	for(auto i = edge_begin(); i != edge_end(); ++i) {
-		of << "node" << i->_M_v0.lock().get() << " -- node" << i->_M_v1.lock().get() << std::endl;
+	for(auto i = edge_begin(); i != edge_end(); ++i)
+	{
+		auto e = *i;
+		of << "node" << e->_M_v0.lock().get() << " -- node" << e->_M_v1.lock().get() << std::endl;
 	}
 	
 	for(auto i = vert_begin(); i != vert_end(); ++i) {
@@ -409,22 +373,21 @@ void				THIS::components_util(gr::VERT_S const & u, int c)
 	u->comp._M_visited = true;
 	u->comp._M_c = c;
 	
-	auto i0 = u->edge_begin();
-	auto i1 = u->edge_end();
-
-	for(auto i = i0; i != i1; ++i) {
-
-		unsigned int d = std::distance(i, i1);
+	for(auto i = u->edge_begin(); i != u->edge_end(); ++i)
+	{
+		auto e = *i;
+		unsigned int d = std::distance(i, u->edge_end());
 		assert(d!=0);
 
-		gr::VERT_S const & v = i->_M_v1.lock();
+		gr::VERT_S const & v = e->other(u);
 
-		assert(u == i->_M_v0.lock());
+		//assert(u == i->_M_v0.lock());
 		assert(v != u);
 
 		if(!v) throw std::exception();
 
-		if(!(v->comp._M_visited)) {
+		if(!(v->comp._M_visited))
+		{
 			components_util(v, c);
 		}
 	}
@@ -484,8 +447,10 @@ void				THIS::edge_enable()
 {
 	edge_erase();
 
-	for(auto i = edge_begin(); i != edge_end(); ++i) {
-		auto const & data = i->_M_data;
+	for(auto i = edge_begin(); i != edge_end(); ++i) 
+	{
+		auto e = *i;
+		auto const & data = e->_M_data;
 		assert(data);
 		data->_M_enabled = true;
 	}
@@ -526,7 +491,7 @@ unsigned int			THIS::vert_size()
 	//assert(s1 == s2);
 	return s2;
 }
-void				THIS::for_each_leaf(std::function<void(gr::VERT_S const &, gr::edge const &)> func)
+void				THIS::for_each_leaf(std::function<void(gr::VERT_S const &, gr::EDGE_S const &)> func)
 {
 	for(auto i = vert_begin(); i != vert_end(); ++i)
 	{

@@ -23,7 +23,6 @@ class layer;
 typedef std::shared_ptr<layer>	LAYER_S;
 typedef std::weak_ptr<layer>	LAYER_W;
 
-
 namespace container {
 	class edge;
 	class vert;
@@ -51,9 +50,7 @@ typedef std::weak_ptr<VERT>			VERT_W;
 
 typedef std::shared_ptr<EDGE_DATA>		EDGE_DATA_S;
 
-
-typedef std::set<edge>				CONT_EDGE;
-//typedef container::edge			CONT_EDGE;
+typedef std::set<EDGE_S>			CONT_EDGE;
 
 typedef std::set<gr::VERT_S, gr::vert_comp>	CONT_VERT;
 

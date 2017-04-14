@@ -3,7 +3,7 @@
 #include <cassert>
 
 #include <gr/container/edge.hpp> // gr/container/edge.hpp.in
-#include <gr/iterator/edge_vert.hpp> // gr/iterator/edge_vert.hpp.in
+#include <gr/iterator/edge_vert.hpp> // gr/iterator/edge_vert.hpp_in
 #include <gr/pair.hpp> // gr/pair.hpp.in
 #include <gr/edge.hpp> // gr/edge.hpp.in
 #include <gr/graph.hpp> // gr/vert.hpp.in
@@ -56,15 +56,16 @@ gr::iterator::edge_vert		THIS::edge_erase(gr::iterator::edge_vert & i)
 
 void				THIS::edge_erase_disconnected()
 {
-	for(auto i = edge_begin(); i != edge_end();) {
+	for(auto it = edge_begin(); it != edge_end();)
+	{
+		auto e = *it;
+		if(e->_M_v0.expired()) throw std::exception();
 
-		if(i->_M_v0.expired()) throw std::exception();
-
-		if(i->_M_v1.expired()) {
+		if(e->_M_v1.expired()) {
 			//std::cout << "gr::vert erase edge" << std::endl;
-			i = edge_erase(i);
+			it = edge_erase(it);
 		} else {
-			++i;
+			++it;
 		}
 	}
 }
@@ -79,9 +80,9 @@ void				THIS::add_edge_util(
 {
 	assert(_M_edges);
 
-	gr::edge edge(v0, v1, edge_data);
+	auto e = std::make_shared<gr::edge>(v0, v1, edge_data);
 
-	_M_edges->insert(edge);
+	_M_edges->insert(e);
 }
 void				THIS::edge_erase_util(gr::VERT_S & v0, gr::VERT_S & v1)
 {

@@ -2,7 +2,7 @@
 
 #include <iterator>
 
-#include <gr/decl.hpp> // gr/decl.hpp.in
+#include <gr/decl.hpp> // gr/decl.hpp_in
 //#include <gr/vert.hpp> // gr/vert.hpp.in
 //#include <gr/vert_comp.hpp> // gr/vert_comp.hpp.in
 #include <gr/edge.hpp> // gr/edge.hpp.in
@@ -20,8 +20,8 @@ class edge_vert:
 public:
 	typedef typename gr::CONT_EDGE::iterator iterator;
 
-	typedef gr::edge const &	reference;
-	typedef gr::edge		value_type;
+	typedef gr::EDGE_S const &	reference;
+	typedef gr::EDGE_S		value_type;
 
 	edge_vert(gr::container::edge &, iterator);
 	edge_vert &			operator=(edge_vert const &);

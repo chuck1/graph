@@ -1,7 +1,7 @@
 #include <gr/container/edge.hpp>
 #include <gr/edge_data.hpp>
 
-#include <gr/iterator/edge_vert.hpp> // gr/iterator/edge_vert.hpp.in
+#include <gr/iterator/edge_vert.hpp> // gr/iterator/edge_vert.hpp_in
 
 typedef gr::iterator::edge_vert THIS;
 
@@ -23,9 +23,9 @@ void				THIS::next()
 	while(true) {
 		if(_M_i == _M_container.end()) break;
 
-		gr::edge const & edge = *_M_i;
+		auto e = *_M_i;
 
-		if(!edge.enabled()) {
+		if(!e->enabled()) {
 			++_M_i;
 			continue;
 		}

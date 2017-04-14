@@ -58,14 +58,14 @@ void				THIS::next()
 			continue;
 		}
 
-		gr::edge const & edge = *_M_j;
+		auto e = *_M_j;
 		
-		if(!edge.enabled()) {
+		if(!e->enabled()) {
 			++_M_j;
 			continue;
 		}
 
-		gr::VERT_S const & v = _M_j->_M_v1.lock();
+		gr::VERT_S const & v = e->_M_v1.lock();
 		
 		assert(v);
 

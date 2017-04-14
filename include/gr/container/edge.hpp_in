@@ -20,7 +20,7 @@ public:
 
 	typename gr::CONT_EDGE::iterator	find(gr::VERT_S const &) const;
 
-	std::pair<typename gr::CONT_EDGE::iterator, bool>	insert(gr::edge const &);
+	std::pair<typename gr::CONT_EDGE::iterator, bool>	insert(gr::EDGE_S const &);
 
 	typename gr::CONT_EDGE::size_type	size() const;
 	

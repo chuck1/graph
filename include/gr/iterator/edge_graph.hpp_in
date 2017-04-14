@@ -20,8 +20,8 @@ class edge_graph:
 	public ITERATOR_EDGE
 {
 public:
-	typedef gr::edge const &	reference;
-	typedef gr::edge		value_type;
+	typedef gr::EDGE_S const &	reference;
+	typedef gr::EDGE_S		value_type;
 
 	typedef typename gr::CONT_VERT::iterator iterator0;
 	typedef typename gr::CONT_EDGE::iterator iterator1;

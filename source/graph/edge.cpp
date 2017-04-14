@@ -21,6 +21,15 @@ THIS::edge(gr::VERT_S const & v0, gr::VERT_S const & v1, EDGE_DATA_S const & dat
 	assert(v0);
 	assert(v1);
 }
+gr::VERT_S		THIS::other(gr::VERT_S v) const
+{
+	auto v0 = _M_v0.lock();
+	auto v1 = _M_v1.lock();
+
+	if((*v0) == (*v)) return v1;
+	if((*v1) == (*v)) return v0;
+	throw std::exception();
+}
 bool			THIS::enabled() const
 {
 	//assert(!_M_v0.expired());

@@ -15,7 +15,8 @@ class edge
 public:
 	//edge();
 	edge(gr::VERT_S const & v0, gr::VERT_S const & v1, EDGE_DATA_S const & data);
-
+	
+	gr::VERT_S		other(gr::VERT_S) const;
 	bool			enabled() const;
 
 	bool			operator<(edge const &) const;
@@ -24,6 +25,10 @@ public:
 	gr::VERT_W		_M_v0;
 	gr::VERT_W		_M_v1;
 	EDGE_DATA_S		_M_data;
+
+	struct {
+		bool		_M_visited;
+	} dfs;
 };
 
 

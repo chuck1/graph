@@ -35,8 +35,10 @@ void		verts(gr::GRAPH_S const & g)
 
 		std::cout << u << " " << u->_M_edges->size() << std::endl;
 
-		for(auto j = u->edge_begin(); j != u->edge_end(); ++j) {
-			std::cout << "  " << j->_M_v0.lock() << " " << j->_M_v1.lock() << std::endl;
+		for(auto j = u->edge_begin(); j != u->edge_end(); ++j)
+	       	{
+			auto e = *j;
+			std::cout << "  " << e->_M_v0.lock() << " " << e->_M_v1.lock() << std::endl;
 		}
 	}
 }
