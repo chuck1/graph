@@ -344,7 +344,7 @@ void				THIS::depth_first_search_util(
 			assert(e);
 			stack.push_back(e);
 
-			std::cout << "stack=";print_cycle(stack);
+			//std::cout << "stack=";print_cycle(stack);
 
 			//if(c)
 			{

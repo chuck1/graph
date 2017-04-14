@@ -73,6 +73,10 @@ public:
 		bool		_M_visited;
 	} dfs;
 
+	struct {
+		int		counter;
+	} algo;
+
 // private
 
 	GRAPH_W			_M_graph;
