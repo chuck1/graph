@@ -3,6 +3,7 @@
 #include <set>
 #include <vector>
 #include <memory>
+#include <deque>
 
 {{ namespace_open }}
 
@@ -55,6 +56,11 @@ typedef std::set<EDGE_S>			CONT_EDGE;
 typedef std::set<gr::VERT_S, gr::vert_comp>	CONT_VERT;
 
 typedef std::function<bool(gr::VERT_S const &)>	VERT_FUNC;
+
+class less_cycle;
+
+typedef std::deque<gr::EDGE_S>			CYCLE;
+typedef std::set<CYCLE, less_cycle>		CYCLES;
 
 {{ namespace_close }}
 

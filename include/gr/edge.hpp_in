@@ -4,8 +4,9 @@
 #include <set>
 #include <vector>
 
-#include <gr/decl.hpp> // gr/decl.hpp.in
-//#include <gr/edge_data.hpp> // gr/edge_data.hpp.in
+#include <gr/edge_data.hpp> // gr/edge_data.hpp_in
+
+#include <gr/decl.hpp> // gr/decl.hpp_in
 
 {{ namespace_open }}
 
@@ -14,21 +15,29 @@ class edge
 {
 public:
 	//edge();
-	edge(gr::VERT_S const & v0, gr::VERT_S const & v1, EDGE_DATA_S const & data);
+	edge(gr::VERT_S const & v0, gr::VERT_S const & v1);
 	
+	virtual std::string	name() const;
 	gr::VERT_S		other(gr::VERT_S) const;
 	bool			enabled() const;
+	/**
+	 * swap verticies
+	 *
+	 * used to change direction of edge
+	 */
+	void			swap();
+	gr::VERT_S		v0() const;
+	gr::VERT_S		v1() const;
+	bool			contains(gr::VERT_S) const;
 
-	bool			operator<(edge const &) const;
+	virtual bool		operator<(edge const &) const;
 	bool			operator==(edge const &) const;
+	bool			operator!=(edge const &) const;
 
 	gr::VERT_W		_M_v0;
 	gr::VERT_W		_M_v1;
-	EDGE_DATA_S		_M_data;
 
-	struct {
-		bool		_M_visited;
-	} dfs;
+	bool			_M_enabled;
 };
 
 

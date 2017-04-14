@@ -4,7 +4,7 @@
 #include <set>
 #include <vector>
 
-#include <gr/decl.hpp> // gr/decl.hpp.in
+#include <gr/decl.hpp> // gr/decl.hpp_in
 
 {{ namespace_open }}
 

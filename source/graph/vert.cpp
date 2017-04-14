@@ -73,14 +73,9 @@ unsigned int			THIS::edge_size()
 {
 	return std::distance(edge_begin(), edge_end());
 }
-void				THIS::add_edge_util(
-		gr::VERT_S v0, 
-		gr::VERT_S v1, 
-		std::shared_ptr<gr::edge_data> const & edge_data)
+void				THIS::add_edge(gr::EDGE_S e)
 {
 	assert(_M_edges);
-
-	auto e = std::make_shared<gr::edge>(v0, v1, edge_data);
 
 	_M_edges->insert(e);
 }
@@ -103,6 +98,13 @@ std::string			THIS::dot()
 {
 	return std::string();
 }
+std::string			THIS::name()
+{
+	char buffer[64];
+	sprintf(buffer, "%p", this);
+	return buffer;
+}
+
 
 
 

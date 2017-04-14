@@ -4,7 +4,7 @@
 #include <set>
 #include <vector>
 
-#include <gr/decl.hpp> // gr/decl.hpp.in
+#include <gr/decl.hpp> // gr/decl.hpp_in
 #include <gr/iterator/edge_vert.hpp> // gr/iterator/iterator.hpp.in
 
 {{ namespace_open }}
@@ -36,16 +36,16 @@ public:
 
 	void			edge_erase_disconnected();
 
-	void			add_edge_util(
-		gr::VERT_S v0, 
-		gr::VERT_S v1, 
-		std::shared_ptr<gr::edge_data> const & edge_data);
-	void			edge_erase_util(gr::VERT_S & v0, gr::VERT_S & v1);
+	void			add_edge(gr::EDGE_S);
+
+      	void			edge_erase_util(gr::VERT_S & v0, gr::VERT_S & v1);
 
 	virtual bool		operator==(vert const &) = 0;
+	virtual bool		operator!=(vert const &) = 0;
 	virtual bool		operator<(vert const &) = 0;
 
 	virtual std::string	dot();
+	virtual std::string	name();
 
 	// data
 	bool			_M_enabled;

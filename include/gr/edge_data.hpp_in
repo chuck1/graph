@@ -11,7 +11,6 @@ class edge_data
 public:
 	edge_data();
 
-	bool	_M_enabled;
 };
 
 

@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cassert>
 #include <deque>
+#include <set>
 
 // gr/decl.hpp.in
 #include <gr/container/edge.hpp> // gr/container/edge.hpp.in
@@ -19,35 +20,25 @@
 
 typedef gr::graph THIS;
 
-void				THIS::add_edge_util(gr::VERT_S v0, gr::VERT_S v1, std::shared_ptr<gr::edge_data> const & edge_data)
-{
-	auto i = iter(v0);
-	
-	(*i)->add_edge_util(v0, v1, edge_data);
-	
-	/*
-	gr::container::EDGE_S const & edges = (*i)->_M_edges;
-	
-	assert(edges);
-
-	gr::edge edge(v0, v1, edge_data);
-
-	edges->insert(edge);
-	*/
-}
 void				THIS::add_edge(gr::VERT_S v0, gr::VERT_S v1)
 {
-	auto data = std::make_shared<gr::edge_data>();
-	
-	add_edge_util(v0, v1, data);
-	add_edge_util(v1, v0, data);
+	auto e = std::make_shared<gr::edge>(v0, v1);
+	// iter adds the vert to the graph's container if not already there
+	(*iter(v0))->add_edge(e);
+	(*iter(v1))->add_edge(e);
+}
+void				THIS::add_edge(gr::EDGE_S e)
+{
+	// iter adds the vert to the graph's container if not already there
+	(*iter(e->v0()))->add_edge(e);
+	(*iter(e->v1()))->add_edge(e);
 }
 gr::iterator::vert_graph	THIS::iter(gr::VERT_S v)
 {
 	auto it = vert_find(v);
 
-	if(it == vert_end()) {
-		
+	if(it == vert_end())
+	{
 		CONT_VERT::value_type p(v);
 
 		return gr::iterator::vert_graph(_M_verts, _M_verts.insert(_M_verts.begin(), p));
@@ -55,9 +46,6 @@ gr::iterator::vert_graph	THIS::iter(gr::VERT_S v)
 
 	return it;
 }
-
-
-
 gr::iterator::vert_graph		THIS::vert_begin()
 {
 	return gr::iterator::vert_graph(_M_verts, _M_verts.begin());
@@ -225,49 +213,170 @@ void				THIS::distance(gr::VERT_S const & v0)
 
 	distance_util(v);
 }
+template<typename T>
+void print_cycle(T cycle)
+{
+	//std::cout << cycle.front()->v0()->name();
+	for(auto it = cycle.begin(); it != cycle.end(); ++it)
+	{
+		char buffer[128];
+		auto e = (*it);
+		sprintf(buffer, "(%s)%s(%s) - ", (*it)->v0()->name().c_str(), e->name().c_str(), (*it)->v1()->name().c_str());
+		std::cout << buffer;
+	}
+	std::cout << std::endl;
+}
+bool gr::less_cycle::operator()(CYCLE const & c0, CYCLE const & c1)
+{
+	if(c0.size() == c1.size())
+	{
+		auto it1 = c1.begin();
+		auto it0 = c0.begin();
+		for(; it0 != c0.end(); ++it0, ++it1)
+		{
+			gr::edge & e0 = *(*it0);
+			gr::edge & e1 = *(*it1);
+			if(e0 != e1) return e0 < e1;
+		}
+		return false;
+	}
+
+	return c0.size() < c1.size();
+}
+void		rotate_cycle(gr::CYCLE & c)
+{
+	/**
+	 * shift a cycle until the lowerest edge is at the front
+	 */
+
+	// find lowerest edge
+	auto it0 = c.begin();
+	auto e0 = *it0;
+
+	for(auto it = it0 + 1; it != c.end(); ++it)
+	{
+		auto e = *it;
+		if((*e) < (*e0))
+		{
+			it0 = it;
+			e0 = *it0;
+		}
+	}
+
+	int d = std::distance(it0, c.end());
+
+	int s = c.size();
+
+	//printf("rotate d=%i s=%i\n", d, s);
+
+	// shift
+	//
+	std::deque<gr::EDGE_S> temp(it0, c.end());
+	//
+	c.insert(c.begin(), temp.begin(), temp.end());
+
+	c.resize(s);
+}
+void save_cycle(
+		gr::VERT_S const & v1,
+		std::deque<gr::EDGE_S> & stack,
+		gr::CYCLES & cycles)
+{
+	// copy the stack
+	std::deque<gr::EDGE_S> stack_copy(stack);
+
+	// pop front until we reach v1
+	while(!stack_copy.empty())
+	{
+		auto e = stack_copy.front();
+
+		if(*v1 == *e->v0())
+		{
+			gr::CYCLE c(stack_copy.begin(), stack_copy.end());
+			rotate_cycle(c);
+			cycles.insert(c);
+		}
+
+		stack_copy.pop_front();
+	}
+}
+	template<typename C>
+bool contains_vert(C & c, gr::VERT_S const & v)
+{
+	for(auto e : c)
+	{
+		if(e->contains(v)) return true;
+	}
+	return false;
+}
+	template<typename C, typename T>
+bool contains(C c, T const & t)
+{
+	return !(std::find(c.begin(), c.end(), t) == c.end());
+}
 void				THIS::depth_first_search_util(
 		gr::VERT_S const & v,
-		std::deque<gr::EDGE_S> & stack)
+		std::deque<gr::EDGE_S> & stack,
+		CYCLES & cycles)
 {
-	v->dfs._M_visited = true;
+	/**
+	 * for this algorithm, prove that when we find an edge that
+	 * connects to a visited vertex, the associated cycle is a subset
+	 * of the edges in the stack.
+	 */
 
 	for(auto it = v->edge_begin(); it != v->edge_end(); ++it)
 	{
 		auto e = *it;
-		if(!e->dfs._M_visited)
+		if(!contains(stack, e))
 		{
-			e->dfs._M_visited = true;
-			stack.push_back(e);
+			// orient
+			if(*e->v0() != *v)
+			{
+				assert(*e->v1() == *v);
+				e->swap();
+				assert(*e->v0() == *v);
+			}
 
 			auto v1 = e->other(v);
-			if(v->dfs._M_visited)
+			bool c = contains_vert(stack, v1);
+
+			assert(e);
+			stack.push_back(e);
+
+			std::cout << "stack=";print_cycle(stack);
+
+			//if(c)
 			{
 				// cycle
+				save_cycle(v1, stack, cycles);
 			}
-			else
-			{
 
-			}
+			depth_first_search_util(v1, stack, cycles);
+
+			stack.pop_back();
 		}
 	}
 }
-void				THIS::depth_first_search(gr::VERT_S const & v)
+gr::CYCLES			THIS::depth_first_search(gr::VERT_S const & v)
 {
-	std::vector<std::vector<gr::EDGE_S>> cycles;
+	gr::CYCLES cycles;
 	std::deque<gr::EDGE_S> stack;
+
+	depth_first_search_util(v, stack, cycles);
 	
-	for(auto it = vert_begin(); it != vert_end(); ++it)
+	/*
+	std::cout << "cycles " << cycles.size() << std::endl;
+	for(auto c : cycles) print_cycle(c);
+	std::cout << "cycles after rotating " << cycles.size() << std::endl;
+	for(auto c : cycles)
 	{
-		(*it)->dfs._M_visited = false;
+		rotate_cycle(c);
+		print_cycle(c);
 	}
-	
-	for(auto it = edge_begin(); it != edge_end(); ++it)
-	{
-		auto e = *it;
-		e->dfs._M_visited = false;
-	}
-	
-	depth_first_search_util(v, stack);
+	*/
+
+	return cycles;
 }
 void				THIS::vert_erase_layer(unsigned int l)
 {
@@ -359,7 +468,7 @@ void				THIS::dot(std::string filename)
 		auto e = *i;
 		of << "node" << e->_M_v0.lock().get() << " -- node" << e->_M_v1.lock().get() << std::endl;
 	}
-	
+
 	for(auto i = vert_begin(); i != vert_end(); ++i) {
 		of << (*i)->dot() << std::endl;
 	}
@@ -372,7 +481,7 @@ void				THIS::components_util(gr::VERT_S const & u, int c)
 
 	u->comp._M_visited = true;
 	u->comp._M_c = c;
-	
+
 	for(auto i = u->edge_begin(); i != u->edge_end(); ++i)
 	{
 		auto e = *i;
@@ -450,9 +559,7 @@ void				THIS::edge_enable()
 	for(auto i = edge_begin(); i != edge_end(); ++i) 
 	{
 		auto e = *i;
-		auto const & data = e->_M_data;
-		assert(data);
-		data->_M_enabled = true;
+		e->_M_enabled = true;
 	}
 }
 void				THIS::vert_enable()
@@ -464,16 +571,16 @@ void				THIS::vert_enable()
 void				THIS::layer_move(unsigned int i0, unsigned int i1)
 {
 	// move all verts in i0 to i1
-	
+
 	if(i0 < _M_layers.size()) throw std::exception();
 	if(i1 < _M_layers.size()) throw std::exception();
 
 	auto const & l0 = _M_layers[i0];
 	auto const & l1 = _M_layers[i1];
-	
+
 	assert(l0);
 	assert(l1);
-	
+
 	for(auto i = vert_begin_all(); i != vert_end_all(); ++i) {
 		auto const & u = *i;
 
@@ -502,18 +609,5 @@ void				THIS::for_each_leaf(std::function<void(gr::VERT_S const &, gr::EDGE_S co
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
