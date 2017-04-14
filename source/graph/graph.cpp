@@ -264,7 +264,8 @@ void				THIS::distance(gr::VERT_S const & v0)
 
 	if(it == vert_end()) {
 		std::cout << "graph::distance v0 not found" << std::endl;
-		throw std::exception();
+		//throw std::exception();
+		return;
 	}
 
 	//s.insert(*it);
