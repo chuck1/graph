@@ -12,11 +12,13 @@
 #include <gr/container/vert.hpp> // gr/container/vert.hpp.in
 #include <gr/iterator/edge_graph.hpp> // gr/iterator/edge_graph.hpp_in
 #include <gr/iterator/edge_vert.hpp> // gr/iterator/edge_vert.hpp_in
+#include <gr/io.hpp> // gr/vert.hpp_in
 #include <gr/pair.hpp> // gr/pair.hpp.in
 #include <gr/pair_comp.hpp> // gr/pair_comp.hpp.in
 #include <gr/vert.hpp> // gr/vert.hpp_in
 #include <gr/edge.hpp> // gr/edge.hpp_in
 #include <gr/layer.hpp>
+#include <gr/util.hpp>
 
 
 #include <gr/graph.hpp> // gr/graph.hpp_in
@@ -73,8 +75,6 @@ gr::iterator::vert_graph_all		THIS::vert_end_all(gr::VERT_FUNC func)
 {
 	return gr::iterator::vert_graph_all(_M_verts, _M_verts.end(), func);
 }
-
-
 
 
 gr::iterator::vert_graph		THIS::vert_erase(gr::iterator::vert_graph & i)
@@ -229,6 +229,8 @@ void print_cycle(T cycle)
 	}
 	std::cout << std::endl;
 }
+
+
 bool		gr::algo::less_queue_edge::operator()(QUEUE_EDGE const & c0, QUEUE_EDGE const & c1)
 {
 	if(c0.size() == c1.size())
@@ -304,7 +306,9 @@ void				THIS::depth_first_search_util(
 	 * connects to a visited vertex, the associated cycle is a subset
 	 * of the edges in the stack.
 	 */
-
+	
+	log<0>() << "depth_first_search_util " << v->name() << " edge_size=" << v->edge_size() << std::endl;
+	
 	for(auto it = v->edge_begin(); it != v->edge_end(); ++it)
 	{
 		auto e = *it;
@@ -323,7 +327,8 @@ void				THIS::depth_first_search_util(
 			assert(e);
 			stack.push_back(e);
 
-			//std::cout << "stack=";print_cycle(stack);
+			//log<0>() << "stack = " << print_cycle(stack);
+			log<0>() << "stack = " << stack << std::endl;
 
 			ftor->operator()(v1, stack);
 
@@ -345,6 +350,14 @@ gr::algo::SET_CYCLE		THIS::cycles()
 	gr::algo::ftor_dfs_cycle ftor;
 	
 	auto v = *_M_verts.begin();
+
+	depth_first_search(v, &ftor);
+
+	return ftor._M_cycles;
+}
+gr::algo::SET_CYCLE		THIS::cycles(gr::VERT_S const & v)
+{
+	gr::algo::ftor_dfs_cycle ftor;
 
 	depth_first_search(v, &ftor);
 
@@ -447,10 +460,15 @@ void				THIS::dot()
 void				THIS::dot(std::string filename, gr::VERT_S const & v)
 {
 	distance(v);
+	
+	auto c = cycles(v);
+	gr::arrange_dot(c);
+
 	dot(filename);
 }
 void				THIS::dot(std::string filename)
 {
+	
 	std::ofstream of;
 	of.open(filename);
 
@@ -631,7 +649,10 @@ void	gr::algo::ftor_dfs_cycle::operator()(
 		if(*v1 == *e->v0())
 		{
 			gr::algo::cycle c(stack_copy.begin(), stack_copy.end(), v1);
-			rotate_cycle(c._M_edges);
+			
+			//rotate_cycle(c._M_edges);
+			c.shift();
+
 			_M_cycles.insert(c);
 		}
 

@@ -46,6 +46,10 @@ void test(int n)
 	}
 
 	// cycles
+	
+	// test logging
+	gr::graph::_level_static = 0;
+
 	auto cycles = g->cycles();
 
 	printf("cycles %lu\n", cycles.size());
@@ -56,7 +60,6 @@ void test(int n)
 	
 	for(auto it = cycles.begin(); it != cycles.end(); ++it) print_cycle(*it);
 	
-
 	gr::arrange_dot(cycles);
 
 	// dot

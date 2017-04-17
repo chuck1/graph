@@ -8,24 +8,45 @@
 
 {{ namespace_open }}
 
+/**
+ *
+ * a looped sequence of edges in which sequential edges are adjacent and
+ * edges are not repeated
+ */
 class cycle
 {
 public:
 	typedef std::deque<gr::EDGE_S> CONT;
 	typedef typename CONT::iterator iterator;
 	typedef typename CONT::const_iterator const_iterator;
-
-	//cycle();
-	cycle(iterator, iterator, gr::VERT_S const &);
-
+	/**
+	 * construct a cycle by copying from another container
+	 *
+	 * \param v the starting vertex
+	 */
+	cycle(iterator, iterator, gr::VERT_S const & v);
 	const_iterator		begin() const;
 	iterator		begin();
 	const_iterator		end() const;
 	iterator		end();
 	unsigned int		size() const;
-	
-//private:
+	/**
+	 * check if the cycle satisfies the second cycle definition that 
+	 * vertices are not repeated
+	 */
+	bool			check_def_1();
+	/**
+	 * shift the edges until the first edge is the lowest
+	 * according to the edge less-than operator
+	 *
+	 * this is used to find identical cycles
+	 */
+	void			shift();
+
+	CONT const &		container() const;
+private:
 	std::deque<gr::EDGE_S>	_M_edges;
+public:
 	/**
 	 * starting vertex
 	 */

@@ -5,6 +5,8 @@
 #include <vector>
 #include <deque>
 
+#include <logs/logger.hpp> // logs/logger.hpp_in
+
 #include <gr/decl.hpp> // gr/decl.hpp_in
 #include <gr/algo/ftor_dfs.hpp> // gr/algo/cycle.hpp_in
 #include <gr/algo/cycle.hpp> // gr/algo/cycle.hpp_in
@@ -15,21 +17,10 @@
 
 {{ namespace_open }}
 
-
-/*
-namespace algo {
-class less_cycle
+class graph: public std::enable_shared_from_this<graph>, public logs::logger<graph, {{ logs_mode }}, {{ logs_level }}>
 {
 public:
-	bool operator()(algo::cycle const & c0, algo::cycle const & c1);
-};
-}
-*/
-
-class graph:
-	public std::enable_shared_from_this<graph>
-{
-public:
+	typedef logs::logger<graph, {{ logs_mode }}, {{ logs_level }}> LOGGER;
 	//Graph(Graph const & g);
 	
 	void				add_edge(VERT_S v0, VERT_S v1);
@@ -91,6 +82,7 @@ public:
 			algo::ftor_dfs *);
 
 	algo::SET_CYCLE			cycles();
+	algo::SET_CYCLE			cycles(gr::VERT_S const &);
 	algo::SET_QUEUE_EDGE		paths();
 
 	/*
