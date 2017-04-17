@@ -352,6 +352,16 @@ gr::SET_QUEUE_EDGE		THIS::cycles()
 
 	return ftor._M_cycles;
 }
+gr::SET_QUEUE_EDGE		THIS::paths()
+{
+	ftor_dfs_paths ftor;
+	
+	auto v = *_M_verts.begin();
+
+	depth_first_search(v, &ftor);
+
+	return ftor._M_paths;
+}
 void				THIS::vert_erase_layer(unsigned int l)
 {
 	if(l > _M_layers.size()) throw std::exception();
@@ -603,6 +613,56 @@ void	gr::ftor_dfs_cycles::operator()(
 			gr::QUEUE_EDGE c(stack_copy.begin(), stack_copy.end());
 			rotate_cycle(c);
 			_M_cycles.insert(c);
+		}
+
+		stack_copy.pop_front();
+	}
+}
+bool check_path(std::deque<gr::EDGE_S> & stack)
+{
+	for(auto it = stack.begin(); it != stack.end(); ++it)
+	{
+		auto e = *it;
+		e->v0()->algo.counter = 0;
+		e->v1()->algo.counter = 0;
+	}
+
+	for(auto it = stack.begin(); it != stack.end(); ++it)
+	{
+		auto e = *it;
+		int & c0 = e->v0()->algo.counter;
+		int & c1 = e->v1()->algo.counter;
+		++c0;
+		++c1;
+		if(c0 > 2) return false;
+		if(c1 > 2) return false;
+	}
+	
+	auto e = stack.front();
+	if(e->v0()->algo.counter > 1) return false;
+	
+	e = stack.back();
+	if(e->v1()->algo.counter > 1) return false;
+
+	return true;
+}
+
+void	gr::ftor_dfs_paths::operator()(
+		gr::VERT_S const & v1,
+		std::deque<gr::EDGE_S> & stack)
+{
+	// copy the stack
+	std::deque<gr::EDGE_S> stack_copy(stack);
+
+	// pop front until we reach v1
+	while(!stack_copy.empty())
+	{
+		auto e = stack_copy.front();
+
+		if(*v1 == *e->v0())
+		{
+			gr::QUEUE_EDGE c(stack_copy.begin(), stack_copy.end());
+			if(check_path(c)) _M_paths.insert(c);
 		}
 
 		stack_copy.pop_front();

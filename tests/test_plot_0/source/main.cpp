@@ -37,6 +37,19 @@ void filter_cycles(gr::SET_QUEUE_EDGE & cycles)
 		}
 	}
 }
+template<typename T>
+void print_cycle(T cycle)
+{
+	//std::cout << cycle.front()->v0()->name();
+	for(auto it = cycle.begin(); it != cycle.end(); ++it)
+	{
+		char buffer[128];
+		auto e = (*it);
+		sprintf(buffer, "(%s)%s(%s) - ", (*it)->v0()->name().c_str(), e->name().c_str(), (*it)->v1()->name().c_str());
+		std::cout << buffer;
+	}
+	std::cout << std::endl;
+}
 
 void test(int n)
 {
@@ -66,6 +79,13 @@ void test(int n)
 	filter_cycles(cycles);
 
 	printf("cycles %lu\n", cycles.size());
+	
+	for(auto it = cycles.begin(); it != cycles.end(); ++it) print_cycle(*it);
+	
+	// paths
+	gr::SET_QUEUE_EDGE paths = g->paths();
+
+	printf("paths  %lu\n", paths.size());
 }
 int main()
 {

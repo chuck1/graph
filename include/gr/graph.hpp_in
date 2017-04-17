@@ -37,8 +37,9 @@ public:
 	SET_QUEUE_EDGE		_M_cycles;
 };
 
-class ftor_dfs_path: public ftor_dfs
+class ftor_dfs_paths: public ftor_dfs
 {
+public:
 	virtual void	operator()(
 		gr::VERT_S const & v1,
 		std::deque<gr::EDGE_S> & stack);
@@ -110,6 +111,7 @@ public:
 			ftor_dfs *);
 
 	SET_QUEUE_EDGE			cycles();
+	SET_QUEUE_EDGE			paths();
 
 	/*
 	 * mark each vertex with an index representing the component to which it belongs
