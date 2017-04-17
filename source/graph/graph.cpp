@@ -277,30 +277,7 @@ void		rotate_cycle(gr::CYCLE & c)
 
 	c.resize(s);
 }
-void save_cycle(
-		gr::VERT_S const & v1,
-		std::deque<gr::EDGE_S> & stack,
-		gr::CYCLES & cycles)
-{
-	// copy the stack
-	std::deque<gr::EDGE_S> stack_copy(stack);
-
-	// pop front until we reach v1
-	while(!stack_copy.empty())
-	{
-		auto e = stack_copy.front();
-
-		if(*v1 == *e->v0())
-		{
-			gr::CYCLE c(stack_copy.begin(), stack_copy.end());
-			rotate_cycle(c);
-			cycles.insert(c);
-		}
-
-		stack_copy.pop_front();
-	}
-}
-	template<typename C>
+template<typename C>
 bool contains_vert(C & c, gr::VERT_S const & v)
 {
 	for(auto e : c)
@@ -317,7 +294,7 @@ bool contains(C c, T const & t)
 void				THIS::depth_first_search_util(
 		gr::VERT_S const & v,
 		std::deque<gr::EDGE_S> & stack,
-		CYCLES & cycles)
+		ftor_dfs * ftor)
 {
 	/**
 	 * for this algorithm, prove that when we find an edge that
@@ -349,34 +326,31 @@ void				THIS::depth_first_search_util(
 			//if(c)
 			{
 				// cycle
-				save_cycle(v1, stack, cycles);
+				ftor->operator()(v1, stack);
 			}
 
-			depth_first_search_util(v1, stack, cycles);
+			depth_first_search_util(v1, stack, ftor);
 
 			stack.pop_back();
 		}
 	}
 }
-gr::CYCLES			THIS::depth_first_search(gr::VERT_S const & v)
+void				THIS::depth_first_search(gr::VERT_S const & v, ftor_dfs * ftor)
 {
-	gr::CYCLES cycles;
 	std::deque<gr::EDGE_S> stack;
 
-	depth_first_search_util(v, stack, cycles);
-	
-	/*
-	std::cout << "cycles " << cycles.size() << std::endl;
-	for(auto c : cycles) print_cycle(c);
-	std::cout << "cycles after rotating " << cycles.size() << std::endl;
-	for(auto c : cycles)
-	{
-		rotate_cycle(c);
-		print_cycle(c);
-	}
-	*/
+	depth_first_search_util(v, stack, ftor);
 
-	return cycles;
+}
+gr::CYCLES			THIS::cycles()
+{
+	ftor_dfs_cycles ftor;
+	
+	auto v = *_M_verts.begin();
+
+	depth_first_search(v, &ftor);
+
+	return ftor._M_cycles;
 }
 void				THIS::vert_erase_layer(unsigned int l)
 {
@@ -609,5 +583,31 @@ void				THIS::for_each_leaf(std::function<void(gr::VERT_S const &, gr::EDGE_S co
 		}
 	}
 }
+
+
+
+void	gr::ftor_dfs_cycles::operator()(
+		gr::VERT_S const & v1,
+		std::deque<gr::EDGE_S> & stack)
+{
+	// copy the stack
+	std::deque<gr::EDGE_S> stack_copy(stack);
+
+	// pop front until we reach v1
+	while(!stack_copy.empty())
+	{
+		auto e = stack_copy.front();
+
+		if(*v1 == *e->v0())
+		{
+			gr::CYCLE c(stack_copy.begin(), stack_copy.end());
+			rotate_cycle(c);
+			_M_cycles.insert(c);
+		}
+
+		stack_copy.pop_front();
+	}
+}
+
 
 

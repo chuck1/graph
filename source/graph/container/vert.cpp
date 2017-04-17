@@ -6,7 +6,7 @@
 #include <gr/vert.hpp>
 
 
-#include <gr/container/vert.hpp> // gr/container/vert.hpp.in
+#include <gr/container/vert.hpp> // gr/container/vert.hpp_in
 
 typedef gr::container::vert THIS;
 

@@ -9,11 +9,33 @@
 #include <gr/iterator/vert_comp.hpp> // gr/iterator/iterator.hpp.in
 #include <gr/iterator/vert_graph.hpp> // gr/iterator/vert_graph.hpp.in
 #include <gr/iterator/vert_graph_all.hpp> // gr/iterator/vert_graph_all.hpp.in
-#include <gr/container/vert.hpp> // gr/iterator/iterator.hpp.in
+#include <gr/container/vert.hpp> // gr/container/vert.hpp_in
 
 {{ namespace_open }}
 
-class less_cycle;
+class less_cycle
+{
+public:
+	bool operator()(CYCLE const & c0, CYCLE const & c1);
+};
+
+class ftor_dfs
+{
+public:
+	virtual void	operator()(
+		gr::VERT_S const & v1,
+		std::deque<gr::EDGE_S> & stack) = 0;
+};
+
+class ftor_dfs_cycles: public ftor_dfs
+{
+public:
+	virtual void	operator()(
+		gr::VERT_S const & v1,
+		std::deque<gr::EDGE_S> & stack);
+
+	CYCLES		_M_cycles;
+};
 
 class graph:
 	public std::enable_shared_from_this<graph>
@@ -70,12 +92,15 @@ public:
 	std::vector<gr::edge>		bridges();
 
 
-	CYCLES				depth_first_search(
-			gr::VERT_S const & v);
+	void				depth_first_search(
+			gr::VERT_S const & v,
+			ftor_dfs *);
 	void				depth_first_search_util(
 			gr::VERT_S const & v,
 			std::deque<gr::EDGE_S> & stack,
-			CYCLES & cycles);
+			ftor_dfs *);
+
+	gr::CYCLES			cycles();
 
 	/*
 	 * mark each vertex with an index representing the component to which it belongs
@@ -95,11 +120,6 @@ public:
 	std::vector<gr::LAYER_S>	_M_layers;
 	
 	gr::container::vert		_M_verts;
-};
-class less_cycle
-{
-public:
-	bool operator()(CYCLE const & c0, CYCLE const & c1);
 };
 
 {{ namespace_close }}

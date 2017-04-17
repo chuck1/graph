@@ -4,7 +4,7 @@
 #include <set>
 #include <vector>
 
-#include <gr/decl.hpp> // gr/decl.hpp.in
+#include <gr/decl.hpp> // gr/decl.hpp_in
 #include <gr/vert_comp.hpp>
 
 {{ namespace_open }}
@@ -14,6 +14,7 @@ class vert
 {
 public:
 	typedef typename CONT_VERT::iterator	iterator;
+	typedef typename CONT_VERT::value_type	value_type;
 	
 	iterator	begin();
 	iterator	end();

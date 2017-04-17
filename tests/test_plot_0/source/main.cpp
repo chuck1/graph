@@ -59,7 +59,7 @@ void test(int n)
 		g->add_edge(std::make_shared<gr::edge>(verts[i], verts[0]));
 	}
 
-	gr::CYCLES cycles = g->depth_first_search(verts[0]);
+	gr::CYCLES cycles = g->cycles();
 
 	printf("cycles %lu\n", cycles.size());
 

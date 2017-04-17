@@ -101,7 +101,7 @@ void test(int n)
 	for(int i = 0; i < n; ++i)
 	{
 		printf("\ncycle starting from vert %i\n\n", i);
-		g->depth_first_search(verts[i]);
+		g->cycles();
 	}
 
 }
