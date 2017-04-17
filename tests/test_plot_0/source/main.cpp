@@ -1,13 +1,15 @@
 #include <cassert>
 #include <iostream>
 #include <sstream>
+#include <algorithm>
+#include <cmath>
 
 #include <gr/gr.hpp> // gr/gr.hpp_in
 #include <gr/plot/vert.hpp>
 
 #include <test.hpp>
 
-bool test_cycle(gr::QUEUE_EDGE const & c)
+bool test_cycle(gr::algo::cycle const & c)
 {
 	for(auto it = c.begin(); it != c.end(); ++it)
 	{
@@ -25,7 +27,7 @@ bool test_cycle(gr::QUEUE_EDGE const & c)
 	}
 	return true;
 }
-void filter_cycles(gr::SET_QUEUE_EDGE & cycles)
+void filter_cycles(gr::algo::SET_CYCLE & cycles)
 {
 	for(auto it = cycles.begin(); it != cycles.end();)
 	{
@@ -68,7 +70,6 @@ void test(int n)
 		verts.push_back(std::make_shared<Vert>(g, ss.str()));
 	}
 
-	int c = 0;
 	for(int i = 0; i < n; ++i)
 	{
 		if(i > 0) g->add_edge(std::make_shared<gr::edge>(verts[i-1], verts[i]));
@@ -76,7 +77,7 @@ void test(int n)
 	}
 
 	// cycles
-	gr::SET_QUEUE_EDGE cycles = g->cycles();
+	auto cycles = g->cycles();
 
 	printf("cycles %lu\n", cycles.size());
 
@@ -85,12 +86,43 @@ void test(int n)
 	printf("cycles %lu\n", cycles.size());
 	
 	for(auto it = cycles.begin(); it != cycles.end(); ++it) print_cycle(*it);
+	
+	// get long cycle
+	auto c = *(--cycles.end());
+
+	std::for_each(c.begin(), c.end(), [](gr::EDGE_S const & e){  });
+	
+	unsigned int s = c.size();
+	unsigned int i = 0;
+
+	float r = s * 2.0 / 2.0 / M_PI;
+
+	auto v0 = c._M_v;
+	
+	for(auto it = c.begin(); it != c.end(); ++it)
+	{
+		auto e = *it;
+
+		e->_M_dot.color="red";
+		
+		float a = (float)i / (float)s * 2.0 * M_PI;
+		float x = r * cos(a);
+		float y = r * sin(a);
+		std::cout << a << std::endl;
+		
+		std::stringstream ss; ss << x << "," << y << "!";
+		v0->_M_dot.pos = ss.str();
+
+		v0 = e->other(v0);
+
+		++i;
+	}
 
 	// dot
 	g->dot();
 	
 	// paths
-	gr::SET_QUEUE_EDGE paths = g->paths();
+	auto paths = g->paths();
 	
 	printf("paths  %lu\n", paths.size());
 	
@@ -99,7 +131,7 @@ void test(int n)
 }
 int main()
 {
-	test(4);
+	test(6);
 
 	return 0;
 }
