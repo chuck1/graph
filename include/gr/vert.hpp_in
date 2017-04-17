@@ -49,9 +49,9 @@ public:
 
       	void			edge_erase_util(gr::VERT_S & v0, gr::VERT_S & v1);
 
-	virtual bool		operator==(vert const &) = 0;
+	virtual bool		operator==(vert const &);
 	virtual bool		operator!=(vert const &);
-	virtual bool		operator<(vert const &) = 0;
+	virtual bool		operator<(vert const &);
 
 	virtual std::string	dot();
 	virtual std::string	name();

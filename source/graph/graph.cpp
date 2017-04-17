@@ -4,8 +4,8 @@
 #include <cassert>
 #include <deque>
 #include <set>
+#include <map>
 
-// gr/decl.hpp.in
 #include <gr/algo/cycle.hpp> // gr/algo/cycle.hpp_in
 #include <gr/algo/ftor_dfs.hpp> // gr/algo/ftor_dfs.hpp_in
 #include <gr/container/edge.hpp> // gr/container/edge.hpp.in
@@ -707,6 +707,25 @@ void	gr::algo::ftor_dfs_path::operator()(
 		stack_copy.pop_front();
 	}
 }
+gr::GRAPH_S	THIS::copy()
+{
+	auto g = std::make_shared<gr::graph>();
+
+	std::map<gr::VERT_S, gr::VERT_S> m;
+
+	for(auto it = vert_begin(); it != vert_end(); ++it)
+	{
+		m[*it] = std::make_shared<gr::vert>(g);
+	}
+	
+	for(auto it = edge_begin(); it != edge_end(); ++it)
+	{
+		g->add_edge(m[(*it)->v0()], m[(*it)->v1()]);
+	}
+
+	return g;
+}
+
 
 
 

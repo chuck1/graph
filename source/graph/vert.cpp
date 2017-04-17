@@ -24,6 +24,14 @@ THIS::~vert()
 {
 //	std::cout << "vert destroyed" << std::endl;
 }
+bool				THIS::operator==(gr::vert const & v)
+{
+	return this == &v;
+}
+bool				THIS::operator<(gr::vert const & v)
+{
+	return this < &v;
+}
 bool				THIS::operator!=(gr::vert const & v)
 {
 	return !operator==(v);
