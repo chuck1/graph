@@ -226,7 +226,7 @@ void print_cycle(T cycle)
 	}
 	std::cout << std::endl;
 }
-bool gr::less_cycle::operator()(CYCLE const & c0, CYCLE const & c1)
+bool gr::less_queue_edge::operator()(QUEUE_EDGE const & c0, QUEUE_EDGE const & c1)
 {
 	if(c0.size() == c1.size())
 	{
@@ -243,7 +243,7 @@ bool gr::less_cycle::operator()(CYCLE const & c0, CYCLE const & c1)
 
 	return c0.size() < c1.size();
 }
-void		rotate_cycle(gr::CYCLE & c)
+void		rotate_cycle(gr::QUEUE_EDGE & c)
 {
 	/**
 	 * shift a cycle until the lowerest edge is at the front
@@ -342,7 +342,7 @@ void				THIS::depth_first_search(gr::VERT_S const & v, ftor_dfs * ftor)
 	depth_first_search_util(v, stack, ftor);
 
 }
-gr::CYCLES			THIS::cycles()
+gr::SET_QUEUE_EDGE		THIS::cycles()
 {
 	ftor_dfs_cycles ftor;
 	
@@ -600,7 +600,7 @@ void	gr::ftor_dfs_cycles::operator()(
 
 		if(*v1 == *e->v0())
 		{
-			gr::CYCLE c(stack_copy.begin(), stack_copy.end());
+			gr::QUEUE_EDGE c(stack_copy.begin(), stack_copy.end());
 			rotate_cycle(c);
 			_M_cycles.insert(c);
 		}

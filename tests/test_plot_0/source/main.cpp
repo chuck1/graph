@@ -5,7 +5,7 @@
 #include <gr/gr.hpp> // gr/gr.hpp_in
 #include <gr/plot/vert.hpp>
 
-bool test_cycle(gr::CYCLE const & c)
+bool test_cycle(gr::QUEUE_EDGE const & c)
 {
 	for(auto it = c.begin(); it != c.end(); ++it)
 	{
@@ -23,7 +23,7 @@ bool test_cycle(gr::CYCLE const & c)
 	}
 	return true;
 }
-void filter_cycles(gr::CYCLES & cycles)
+void filter_cycles(gr::SET_QUEUE_EDGE & cycles)
 {
 	for(auto it = cycles.begin(); it != cycles.end();)
 	{
@@ -59,7 +59,7 @@ void test(int n)
 		g->add_edge(std::make_shared<gr::edge>(verts[i], verts[0]));
 	}
 
-	gr::CYCLES cycles = g->cycles();
+	gr::SET_QUEUE_EDGE cycles = g->cycles();
 
 	printf("cycles %lu\n", cycles.size());
 

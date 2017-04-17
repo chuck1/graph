@@ -13,10 +13,10 @@
 
 {{ namespace_open }}
 
-class less_cycle
+class less_queue_edge
 {
 public:
-	bool operator()(CYCLE const & c0, CYCLE const & c1);
+	bool operator()(QUEUE_EDGE const & c0, QUEUE_EDGE const & c1);
 };
 
 class ftor_dfs
@@ -34,7 +34,16 @@ public:
 		gr::VERT_S const & v1,
 		std::deque<gr::EDGE_S> & stack);
 
-	CYCLES		_M_cycles;
+	SET_QUEUE_EDGE		_M_cycles;
+};
+
+class ftor_dfs_path: public ftor_dfs
+{
+	virtual void	operator()(
+		gr::VERT_S const & v1,
+		std::deque<gr::EDGE_S> & stack);
+
+	SET_QUEUE_EDGE		_M_paths;
 };
 
 class graph:
@@ -100,7 +109,7 @@ public:
 			std::deque<gr::EDGE_S> & stack,
 			ftor_dfs *);
 
-	gr::CYCLES			cycles();
+	SET_QUEUE_EDGE			cycles();
 
 	/*
 	 * mark each vertex with an index representing the component to which it belongs
