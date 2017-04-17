@@ -6,6 +6,8 @@
 #include <deque>
 
 #include <gr/decl.hpp> // gr/decl.hpp_in
+#include <gr/algo/ftor_dfs.hpp> // gr/algo/cycle.hpp_in
+#include <gr/algo/cycle.hpp> // gr/algo/cycle.hpp_in
 #include <gr/iterator/vert_comp.hpp> // gr/iterator/iterator.hpp.in
 #include <gr/iterator/vert_graph.hpp> // gr/iterator/vert_graph.hpp.in
 #include <gr/iterator/vert_graph_all.hpp> // gr/iterator/vert_graph_all.hpp.in
@@ -13,39 +15,16 @@
 
 {{ namespace_open }}
 
-class less_queue_edge
+
+/*
+namespace algo {
+class less_cycle
 {
 public:
-	bool operator()(QUEUE_EDGE const & c0, QUEUE_EDGE const & c1);
+	bool operator()(algo::cycle const & c0, algo::cycle const & c1);
 };
-
-class ftor_dfs
-{
-public:
-	virtual void	operator()(
-		gr::VERT_S const & v1,
-		std::deque<gr::EDGE_S> & stack) = 0;
-};
-
-class ftor_dfs_cycles: public ftor_dfs
-{
-public:
-	virtual void	operator()(
-		gr::VERT_S const & v1,
-		std::deque<gr::EDGE_S> & stack);
-
-	SET_QUEUE_EDGE		_M_cycles;
-};
-
-class ftor_dfs_paths: public ftor_dfs
-{
-public:
-	virtual void	operator()(
-		gr::VERT_S const & v1,
-		std::deque<gr::EDGE_S> & stack);
-
-	SET_QUEUE_EDGE		_M_paths;
-};
+}
+*/
 
 class graph:
 	public std::enable_shared_from_this<graph>
@@ -105,14 +84,14 @@ public:
 
 	void				depth_first_search(
 			gr::VERT_S const & v,
-			ftor_dfs *);
+			algo::ftor_dfs *);
 	void				depth_first_search_util(
 			gr::VERT_S const & v,
 			std::deque<gr::EDGE_S> & stack,
-			ftor_dfs *);
+			algo::ftor_dfs *);
 
-	SET_QUEUE_EDGE			cycles();
-	SET_QUEUE_EDGE			paths();
+	algo::SET_CYCLE			cycles();
+	algo::SET_QUEUE_EDGE		paths();
 
 	/*
 	 * mark each vertex with an index representing the component to which it belongs

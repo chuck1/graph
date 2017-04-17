@@ -12,6 +12,11 @@ doc:
 build/dot/pdf/%.pdf: build/dot/%.dot
 	mkdir -p $(dir $@)
 	neato -Tpdf -o$@ $^
+	#dot -Tpdf -o$@ $^
+	#fdp -Tpdf -o$@ $^
 
 dot: $(pdf_files)
+
+dotclean:
+	rm -rf build/dot/pdf
 

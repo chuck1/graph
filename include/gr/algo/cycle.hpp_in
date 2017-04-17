@@ -1,0 +1,42 @@
+{{ include_block_open }}
+
+#include <memory>
+#include <set>
+#include <vector>
+
+#include <gr/decl.hpp> // gr/decl.hpp_in
+
+{{ namespace_open }}
+
+class cycle
+{
+public:
+	typedef std::deque<gr::EDGE_S> CONT;
+	typedef typename CONT::iterator iterator;
+	typedef typename CONT::const_iterator const_iterator;
+
+	//cycle();
+	cycle(iterator, iterator, gr::VERT_S const &);
+
+	const_iterator		begin() const;
+	iterator		begin();
+	const_iterator		end() const;
+	iterator		end();
+	unsigned int		size() const;
+	
+//private:
+	std::deque<gr::EDGE_S>	_M_edges;
+	/**
+	 * starting vertex
+	 */
+	gr::VERT_S		_M_v;
+};
+
+typedef std::set<cycle, less_cycle> SET_CYCLE;
+
+{{ namespace_close }}
+
+{{ include_block_close }}
+
+
+

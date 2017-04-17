@@ -6,6 +6,8 @@
 #include <set>
 
 // gr/decl.hpp.in
+#include <gr/algo/cycle.hpp> // gr/algo/cycle.hpp_in
+#include <gr/algo/ftor_dfs.hpp> // gr/algo/ftor_dfs.hpp_in
 #include <gr/container/edge.hpp> // gr/container/edge.hpp.in
 #include <gr/container/vert.hpp> // gr/container/vert.hpp.in
 #include <gr/iterator/edge_graph.hpp> // gr/iterator/edge_graph.hpp_in
@@ -15,6 +17,7 @@
 #include <gr/vert.hpp> // gr/vert.hpp_in
 #include <gr/edge.hpp> // gr/edge.hpp_in
 #include <gr/layer.hpp>
+
 
 #include <gr/graph.hpp> // gr/graph.hpp_in
 
@@ -226,7 +229,7 @@ void print_cycle(T cycle)
 	}
 	std::cout << std::endl;
 }
-bool gr::less_queue_edge::operator()(QUEUE_EDGE const & c0, QUEUE_EDGE const & c1)
+bool		gr::algo::less_queue_edge::operator()(QUEUE_EDGE const & c0, QUEUE_EDGE const & c1)
 {
 	if(c0.size() == c1.size())
 	{
@@ -294,7 +297,7 @@ bool contains(C c, T const & t)
 void				THIS::depth_first_search_util(
 		gr::VERT_S const & v,
 		std::deque<gr::EDGE_S> & stack,
-		ftor_dfs * ftor)
+		algo::ftor_dfs * ftor)
 {
 	/**
 	 * for this algorithm, prove that when we find an edge that
@@ -330,16 +333,16 @@ void				THIS::depth_first_search_util(
 		}
 	}
 }
-void				THIS::depth_first_search(gr::VERT_S const & v, ftor_dfs * ftor)
+void				THIS::depth_first_search(gr::VERT_S const & v, algo::ftor_dfs * ftor)
 {
 	std::deque<gr::EDGE_S> stack;
 
 	depth_first_search_util(v, stack, ftor);
 
 }
-gr::SET_QUEUE_EDGE		THIS::cycles()
+gr::algo::SET_CYCLE		THIS::cycles()
 {
-	ftor_dfs_cycles ftor;
+	gr::algo::ftor_dfs_cycle ftor;
 	
 	auto v = *_M_verts.begin();
 
@@ -347,9 +350,9 @@ gr::SET_QUEUE_EDGE		THIS::cycles()
 
 	return ftor._M_cycles;
 }
-gr::SET_QUEUE_EDGE		THIS::paths()
+gr::algo::SET_QUEUE_EDGE	THIS::paths()
 {
-	ftor_dfs_paths ftor;
+	gr::algo::ftor_dfs_path ftor;
 	
 	auto v = *_M_verts.begin();
 
@@ -453,12 +456,13 @@ void				THIS::dot(std::string filename)
 
 	of << "graph {" << std::endl;
 	of << "overlap=false" << std::endl;
-	of << "splines=true" << std::endl;
+	of << "splines=false" << std::endl;
 
 	for(auto i = edge_begin(); i != edge_end(); ++i)
 	{
 		auto e = *i;
-		of << "node" << e->v0().get() << " -- node" << e->v1().get() << std::endl;
+		//of << "node" << e->v0().get() << " -- node" << e->v1().get() << std::endl;
+		of << e->dot() << std::endl;
 	}
 
 	for(auto i = vert_begin(); i != vert_end(); ++i) {
@@ -612,7 +616,7 @@ gr::LAYER_S			THIS::create_layer(bool e)
 }
 
 
-void	gr::ftor_dfs_cycles::operator()(
+void	gr::algo::ftor_dfs_cycle::operator()(
 		gr::VERT_S const & v1,
 		std::deque<gr::EDGE_S> & stack)
 {
@@ -626,8 +630,8 @@ void	gr::ftor_dfs_cycles::operator()(
 
 		if(*v1 == *e->v0())
 		{
-			gr::QUEUE_EDGE c(stack_copy.begin(), stack_copy.end());
-			rotate_cycle(c);
+			gr::algo::cycle c(stack_copy.begin(), stack_copy.end(), v1);
+			rotate_cycle(c._M_edges);
 			_M_cycles.insert(c);
 		}
 
@@ -663,7 +667,7 @@ bool check_path(std::deque<gr::EDGE_S> & stack)
 	return true;
 }
 
-void	gr::ftor_dfs_paths::operator()(
+void	gr::algo::ftor_dfs_path::operator()(
 		gr::VERT_S const & v1,
 		std::deque<gr::EDGE_S> & stack)
 {

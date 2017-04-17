@@ -1,6 +1,7 @@
 {{ include_block_open }}
 
 #include <iterator>
+#include <set>
 
 #include <gr/decl.hpp> // gr/decl.hpp.in
 //#include <gr/vert.hpp> // gr/vert.hpp.in
@@ -49,6 +50,8 @@ public:
 	gr::CONT_VERT::iterator		_M_i;
 	gr::CONT_EDGE::iterator		_M_j;
 	//value_type			_M_value;
+	//
+	std::set<gr::EDGE_S>		_M_edges;
 };
 
 

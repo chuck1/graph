@@ -10,6 +10,14 @@
 
 {{ namespace_open }}
 
+class edge_dot
+{
+public:
+	edge_dot():
+		color("black")
+	{}
+	std::string	color;
+};
 
 class edge
 {
@@ -33,6 +41,10 @@ public:
 	virtual bool		operator<(edge const &) const;
 	bool			operator==(edge const &) const;
 	bool			operator!=(edge const &) const;
+
+	std::string		dot();
+
+	edge_dot		_M_dot;
 
 	gr::VERT_W		_M_v0;
 	gr::VERT_W		_M_v1;

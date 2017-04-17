@@ -7,7 +7,7 @@
 #include <gr/edge.hpp> // gr/edge.hpp.in
 #include <gr/edge_data.hpp> // gr/edge_data.hpp.in
 
-#include <gr/iterator/edge_graph.hpp> // gr/iterator/edge_graph.hpp.in
+#include <gr/iterator/edge_graph.hpp> // gr/iterator/edge_graph.hpp_in
 
 typedef gr::iterator::edge_graph THIS;
 
@@ -43,12 +43,11 @@ void				THIS::next()
 
 		if(_M_i == _M_container.end()) break;
 
-		gr::VERT_S const & pu = *_M_i;
-		gr::vert & u = *pu;
+		gr::VERT_S const & u = *_M_i;
 	
 		//std::cout << "iterator edge_graph j " << std::distance(_M_j, u._M_edges->end()) << std::endl;
 
-		if(_M_j == pu->_M_edges->end()) {
+		if(_M_j == u->_M_edges->end()) {
 			++_M_i;
 
 			if(_M_i == _M_container.end()) break;
@@ -65,9 +64,19 @@ void				THIS::next()
 			continue;
 		}
 
-		gr::VERT_S const & v = e->other(pu);
+		gr::VERT_S const & v = e->other(u);
 
-		if((*pu) < (*v)) break;
+		if((*u) < (*v)) break;
+		
+		if((*u) == (*v))
+		{
+			auto it = _M_edges.find(e);
+			if(it == _M_edges.end())
+			{
+				_M_edges.insert(e);
+				break;
+			}
+		}
 
 		++_M_j;
 	}

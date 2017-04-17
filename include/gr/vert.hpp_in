@@ -9,6 +9,15 @@
 
 {{ namespace_open }}
 
+class vert_dot
+{
+public:
+	vert_dot():
+		pos("")
+	{}
+	std::string	pos;
+};
+
 class vert: public std::enable_shared_from_this<vert>
 {
 public:
@@ -49,6 +58,8 @@ public:
 
 	// data
 	//bool			_M_enabled;
+
+	vert_dot		_M_dot;
 
 	// for ditance algorithm
 	struct {

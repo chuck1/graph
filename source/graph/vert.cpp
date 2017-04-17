@@ -102,7 +102,7 @@ void				THIS::edge_erase_util(gr::VERT_S & v0, gr::VERT_S & v1)
 std::string			THIS::dot()
 {
 	std::stringstream ss;
-	ss << "node" << this << "[label=\""<< name() <<"\"]";
+	ss << "node" << this << "[label=\""<< name() <<"\",pos=\""<<_M_dot.pos<<"\"]";
 	return ss.str();
 }
 std::string			THIS::name()

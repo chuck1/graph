@@ -1,0 +1,26 @@
+{{ include_block_open }}
+
+#include <memory>
+#include <set>
+#include <vector>
+#include <deque>
+
+#include <gr/decl.hpp> // gr/decl.hpp_in
+/*
+#include <gr/iterator/vert_comp.hpp> // gr/iterator/iterator.hpp.in
+#include <gr/iterator/vert_graph.hpp> // gr/iterator/vert_graph.hpp.in
+#include <gr/iterator/vert_graph_all.hpp> // gr/iterator/vert_graph_all.hpp.in
+#include <gr/container/vert.hpp> // gr/container/vert.hpp_in
+*/
+{{ namespace_open }}
+
+class less_cycle
+{
+public:
+	bool operator()(algo::cycle const & c0, algo::cycle const & c1);
+};
+
+{{ namespace_close }}
+
+{{ include_block_close }}
+

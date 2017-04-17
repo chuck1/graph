@@ -26,11 +26,11 @@ std::string		THIS::name() const
 }
 gr::VERT_S		THIS::other(gr::VERT_S v) const
 {
-	auto v0 = _M_v0.lock();
-	auto v1 = _M_v1.lock();
+	auto v0_ = v0();
+	auto v1_ = v1();
 
-	if((*v0) == (*v)) return v1;
-	if((*v1) == (*v)) return v0;
+	if((*v0_) == (*v)) return v1_;
+	if((*v1_) == (*v)) return v0_;
 	throw std::exception();
 }
 bool			THIS::enabled() const
@@ -112,6 +112,14 @@ bool			THIS::contains(gr::VERT_S v) const
 	if((*_M_v1.lock()) == (*v)) return true;
 	return false;
 }
+std::string		THIS::dot()
+{
+	std::stringstream ss;
+	ss << "node" << v0().get() << " -- node" << v1().get() << " [color=\"" << _M_dot.color << "\"];";
+	return ss.str();
+}
+
+
 
 
 
