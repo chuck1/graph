@@ -48,7 +48,7 @@ void				THIS::next()
 	
 		//std::cout << "iterator edge_graph j " << std::distance(_M_j, u._M_edges->end()) << std::endl;
 
-		if(_M_j == u._M_edges->end()) {
+		if(_M_j == pu->_M_edges->end()) {
 			++_M_i;
 
 			if(_M_i == _M_container.end()) break;
@@ -65,13 +65,9 @@ void				THIS::next()
 			continue;
 		}
 
-		gr::VERT_S const & v = e->_M_v1.lock();
-		
-		assert(v);
+		gr::VERT_S const & v = e->v1();
 
-		if(u < (*v)) {
-			break;
-		}
+		if((*pu) < (*v)) break;
 
 		++_M_j;
 	}

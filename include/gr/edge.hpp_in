@@ -37,7 +37,8 @@ public:
 	gr::VERT_W		_M_v0;
 	gr::VERT_W		_M_v1;
 
-	bool			_M_enabled;
+	gr::LAYER_W		_M_layer;
+	//bool			_M_enabled;
 };
 
 

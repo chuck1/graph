@@ -428,6 +428,19 @@ std::vector<gr::edge>		THIS::bridges()
 
 	return ret;
 }
+std::string	next_graph_filename()
+{
+	static int a = 0;
+
+	char buf[128];
+	sprintf(buf, "build/dot/graph_%04i.dot", a);
+	++a;
+	return buf;
+}
+void				THIS::dot()
+{
+	dot(next_graph_filename());
+}
 void				THIS::dot(std::string filename, gr::VERT_S const & v)
 {
 	distance(v);
@@ -445,7 +458,7 @@ void				THIS::dot(std::string filename)
 	for(auto i = edge_begin(); i != edge_end(); ++i)
 	{
 		auto e = *i;
-		of << "node" << e->_M_v0.lock().get() << " -- node" << e->_M_v1.lock().get() << std::endl;
+		of << "node" << e->v0().get() << " -- node" << e->v1().get() << std::endl;
 	}
 
 	for(auto i = vert_begin(); i != vert_end(); ++i) {
@@ -534,11 +547,11 @@ void				THIS::component(int c)
 void				THIS::edge_enable()
 {
 	edge_erase();
-
+	
 	for(auto i = edge_begin(); i != edge_end(); ++i) 
 	{
 		auto e = *i;
-		e->_M_enabled = true;
+		e->_M_layer.reset();
 	}
 }
 /*

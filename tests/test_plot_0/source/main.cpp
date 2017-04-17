@@ -59,6 +59,7 @@ void test(int n)
 
 	auto g = std::make_shared<gr::graph>();
 	
+	// construct
 	std::vector<std::shared_ptr<gr::plot::vert>> verts;
 	
 	for(int i = 0; i < n; ++i)
@@ -74,6 +75,7 @@ void test(int n)
 		g->add_edge(std::make_shared<gr::edge>(verts[i], verts[0]));
 	}
 
+	// cycles
 	gr::SET_QUEUE_EDGE cycles = g->cycles();
 
 	printf("cycles %lu\n", cycles.size());
@@ -83,13 +85,17 @@ void test(int n)
 	printf("cycles %lu\n", cycles.size());
 	
 	for(auto it = cycles.begin(); it != cycles.end(); ++it) print_cycle(*it);
+
+	// dot
+	g->dot();
 	
 	// paths
 	gr::SET_QUEUE_EDGE paths = g->paths();
-
+	
 	printf("paths  %lu\n", paths.size());
-
+	
 	for(auto it = paths.begin(); it != paths.end(); ++it) print_cycle(*it);
+
 }
 int main()
 {

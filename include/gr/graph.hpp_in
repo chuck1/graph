@@ -124,6 +124,10 @@ public:
 
 	void				dot(std::string filename, gr::VERT_S const & v);
 	void				dot(std::string filename);
+	/**
+	 * automatic file name
+	 */
+	void				dot();
 	
 	void				layer_move(unsigned int, unsigned int);
 	

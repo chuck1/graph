@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <cassert>
+#include <sstream>
 
 #include <gr/container/edge.hpp> // gr/container/edge.hpp.in
 #include <gr/iterator/edge_vert.hpp> // gr/iterator/edge_vert.hpp_in
@@ -100,7 +101,9 @@ void				THIS::edge_erase_util(gr::VERT_S & v0, gr::VERT_S & v1)
 }
 std::string			THIS::dot()
 {
-	return std::string();
+	std::stringstream ss;
+	ss << "node" << this << "[label=\""<< name() <<"\"]";
+	return ss.str();
 }
 std::string			THIS::name()
 {
