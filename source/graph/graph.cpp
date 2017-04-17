@@ -312,22 +312,17 @@ void				THIS::depth_first_search_util(
 			{
 				assert(*e->v1() == *v);
 				e->swap();
-				assert(*e->v0() == *v);
 			}
+			assert(*e->v0() == *v);
 
 			auto v1 = e->other(v);
-			bool c = contains_vert(stack, v1);
 
 			assert(e);
 			stack.push_back(e);
 
 			//std::cout << "stack=";print_cycle(stack);
 
-			//if(c)
-			{
-				// cycle
-				ftor->operator()(v1, stack);
-			}
+			ftor->operator()(v1, stack);
 
 			depth_first_search_util(v1, stack, ftor);
 
@@ -659,11 +654,9 @@ void	gr::ftor_dfs_paths::operator()(
 	{
 		auto e = stack_copy.front();
 
-		if(*v1 == *e->v0())
-		{
-			gr::QUEUE_EDGE c(stack_copy.begin(), stack_copy.end());
-			if(check_path(c)) _M_paths.insert(c);
-		}
+		gr::QUEUE_EDGE c(stack_copy.begin(), stack_copy.end());
+		//print_cycle(c);
+		if(check_path(c)) _M_paths.insert(c);
 
 		stack_copy.pop_front();
 	}

@@ -10,6 +10,8 @@ l = pbs2.Library(self, 'graph', __file__)
 
 #self.include("tests")
 
+l.doc_out_dir = "/media/sf_P_DRIVE/html/graph"
+
 self.parts.append(l)
 
 self.execfile(os.path.join(__dir__, "tests/config.py"))

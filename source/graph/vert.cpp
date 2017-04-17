@@ -29,7 +29,7 @@ bool				THIS::operator!=(gr::vert const & v)
 }
 bool				THIS::enabled() const
 {
-	if(!_M_enabled) return false;
+	//if(!_M_enabled) return false;
 
 	if(!_M_layer.expired()) {
 		if(!_M_layer.lock()->_M_enabled) return false;

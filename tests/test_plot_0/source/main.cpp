@@ -5,6 +5,8 @@
 #include <gr/gr.hpp> // gr/gr.hpp_in
 #include <gr/plot/vert.hpp>
 
+#include <test.hpp>
+
 bool test_cycle(gr::QUEUE_EDGE const & c)
 {
 	for(auto it = c.begin(); it != c.end(); ++it)
@@ -62,7 +64,7 @@ void test(int n)
 	for(int i = 0; i < n; ++i)
 	{
 		std::stringstream ss; ss << i;
-		verts.push_back(std::make_shared<gr::plot::vert>(g, ss.str()));
+		verts.push_back(std::make_shared<Vert>(g, ss.str()));
 	}
 
 	int c = 0;
@@ -86,6 +88,8 @@ void test(int n)
 	gr::SET_QUEUE_EDGE paths = g->paths();
 
 	printf("paths  %lu\n", paths.size());
+
+	for(auto it = paths.begin(); it != paths.end(); ++it) print_cycle(*it);
 }
 int main()
 {

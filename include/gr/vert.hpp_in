@@ -48,7 +48,7 @@ public:
 	virtual std::string	name();
 
 	// data
-	bool			_M_enabled;
+	//bool			_M_enabled;
 
 	// for ditance algorithm
 	struct {
