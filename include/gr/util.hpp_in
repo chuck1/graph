@@ -1,0 +1,17 @@
+{{ include_block_open }}
+
+#include <gr/algo/cycle.hpp> // gr/algo/cycle.hpp_in
+//#include <gr/algo/less_cycle.hpp>
+#include <gr/decl.hpp>
+
+{{ namespace_open }}
+
+void	filter_cycles(gr::algo::SET_CYCLE & cycles);
+void	arrange_dot(gr::algo::SET_CYCLE & cycles);
+
+{{ namespace_close }}
+
+{{ include_block_close }}
+
+
+

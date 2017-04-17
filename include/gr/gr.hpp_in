@@ -12,6 +12,7 @@
 #include <gr/pair_comp.hpp> // gr/pair_comp.hpp.in
 #include <gr/graph.hpp> // gr/graph.hpp.in
 #include <gr/layer.hpp> // gr/graph.hpp.in
+#include <gr/util.hpp> // gr/graph.hpp.in
 
 
 {{ include_block_close }}
