@@ -14,7 +14,7 @@
 #include <gr/pair_comp.hpp> // gr/pair_comp.hpp.in
 #include <gr/vert.hpp> // gr/vert.hpp_in
 #include <gr/edge.hpp> // gr/edge.hpp_in
-#include <gr/edge_data.hpp>
+#include <gr/layer.hpp>
 
 #include <gr/graph.hpp> // gr/graph.hpp_in
 
@@ -541,12 +541,14 @@ void				THIS::edge_enable()
 		e->_M_enabled = true;
 	}
 }
+/*
 void				THIS::vert_enable()
 {
 	for(auto i = vert_begin(); i != vert_end(); ++i) {
 		(*i)->_M_enabled = true;
 	}
 }
+*/
 void				THIS::layer_move(unsigned int i0, unsigned int i1)
 {
 	// move all verts in i0 to i1
@@ -588,7 +590,13 @@ void				THIS::for_each_leaf(std::function<void(gr::VERT_S const &, gr::EDGE_S co
 		}
 	}
 }
-
+gr::LAYER_S			THIS::create_layer(bool e)
+{
+	auto layer = std::make_shared<gr::layer>();
+	layer->_M_enabled = e;
+	_M_layers.push_back(layer);
+	return layer;
+}
 
 
 void	gr::ftor_dfs_cycles::operator()(

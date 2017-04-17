@@ -57,7 +57,7 @@ public:
 	void				add_edge(EDGE_S e);
 
 	void				edge_enable();
-	void				vert_enable();
+	//void				vert_enable();
 
 	/** vert functions */
 
@@ -67,6 +67,7 @@ public:
 	gr::iterator::vert_graph	vert_erase(gr::iterator::vert_graph &);
 	void				vert_erase_layer(unsigned int l);
 	
+	gr::LAYER_S			create_layer(bool);
 
 	gr::iterator::vert_graph_all	vert_begin_all(VERT_FUNC);
 	gr::iterator::vert_graph_all	vert_end_all(VERT_FUNC);

@@ -14,7 +14,7 @@
 typedef gr::vert THIS;
 
 THIS::vert(gr::GRAPH_S g):
-	_M_enabled(true),
+	//_M_enabled(true),
 	_M_graph(g),
 	_M_edges(new gr::container::edge)
 {
