@@ -65,7 +65,7 @@ void				THIS::next()
 			continue;
 		}
 
-		gr::VERT_S const & v = e->v1();
+		gr::VERT_S const & v = e->other(pu);
 
 		if((*pu) < (*v)) break;
 
