@@ -4,6 +4,7 @@
 
 #include <gr/vert.hpp> // gr/vert.hpp.in
 #include <gr/edge_data.hpp> // gr/edge.hpp.in
+#include <gr/graph.hpp>
 #include <gr/layer.hpp>
 
 #include <gr/edge.hpp> // gr/edge.hpp_in
@@ -115,7 +116,7 @@ bool			THIS::contains(gr::VERT_S v) const
 std::string		THIS::dot()
 {
 	std::stringstream ss;
-	ss << "node" << v0().get() << " -- node" << v1().get() << " [color=\"" << _M_dot.color << "\"];";
+	ss << "node" << v0().get() << v0()->get_graph()->dot_edge_symbol() << "node" << v1().get() << " [color=\"" << _M_dot.color << "\"];";
 	return ss.str();
 }
 

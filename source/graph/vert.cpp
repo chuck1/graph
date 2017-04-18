@@ -46,7 +46,7 @@ bool				THIS::enabled() const
 
 	return true;
 }
-gr::GRAPH_S			THIS::get_graph()
+gr::GRAPH_S			THIS::get_graph() const
 {
 	auto ret = _M_graph.lock();
 	assert(ret);
@@ -119,7 +119,10 @@ std::string			THIS::name()
 	sprintf(buffer, "%p", this);
 	return buffer;
 }
-
+gr::VERT_S			THIS::copy() const
+{
+	return std::make_shared<gr::vert>(get_graph());
+}
 
 
 

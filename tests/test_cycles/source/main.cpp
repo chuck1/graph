@@ -23,6 +23,9 @@ void print_cycle(T cycle)
 	std::cout << std::endl;
 }
 
+int Factorial(int x) {
+	return (x<=1 ? 1 : x * Factorial(x-1));
+}
 
 void test(int n)
 {
@@ -41,37 +44,38 @@ void test(int n)
 
 	for(int i = 0; i < n; ++i)
 	{
-		if(i > 0) g->add_edge(std::make_shared<gr::edge>(verts[i-1], verts[i]));
-		g->add_edge(std::make_shared<gr::edge>(verts[i], verts[0]));
+		for(int j = i+1; j < n; ++j)
+		{
+			g->add_edge(std::make_shared<gr::edge>(verts[i], verts[j]));
+		}
 	}
 
 	// cycles
 	
 	// test logging
-	//gr::graph::_level_static = 0;
 
-	auto cycles = g->cycles();
-
-	printf("cycles %lu\n", cycles.size());
-
-	gr::filter_cycles(cycles);
-
-	printf("cycles %lu\n", cycles.size());
-	
-	//for(auto it = cycles.begin(); it != cycles.end(); ++it) print_cycle(*it);
-	
-	//gr::arrange_dot(cycles);
-
-	// dot
 	g->dot();
-	
-	// paths
-	auto paths = g->paths();
-	
-	printf("paths  %lu\n", paths.size());
-	
-	//for(auto it = paths.begin(); it != paths.end(); ++it) print_cycle(*it);
 
+	// analytical
+	int c = 0;
+	for(int k = 3; k < n+1; ++k)
+	{
+		int m = Factorial(n) / Factorial(n-k) / k;
+		printf("N=%i k=%i res=%i\n",n,k,m);
+		c += m;
+	}
+
+	//gr::graph::_level_static = 0;
+	auto cycles = g->cycles();
+	//gr::graph::_level_static = 1;
+
+	printf("cycles %lu\n", cycles.size());
+	gr::filter_cycles(cycles);
+	printf("cycles %lu\n", cycles.size());
+
+	
+
+	assert(cycles.size() == c);
 }
 int main()
 {
@@ -79,7 +83,7 @@ int main()
 	 * the purpose of this test is to calculate the number of def 1 cycles
 	 * and compare to known values
 	 */
-	
+
 	for(int i = 3; i < 7; ++i) test(i);
 
 	return 0;

@@ -23,6 +23,7 @@ public:
 	typedef logs::logger<graph, {{ logs_mode }}, {{ logs_level }}> LOGGER;
 	//Graph(Graph const & g);
 
+	graph();	
 	GRAPH_S				copy();
 
 	void				add_edge(VERT_S v0, VERT_S v1);
@@ -80,7 +81,7 @@ public:
 			algo::ftor_dfs *);
 	void				depth_first_search_util(
 			gr::VERT_S const & v,
-			std::deque<gr::EDGE_S> & stack,
+			algo::stack & stack,
 			algo::ftor_dfs *);
 
 	algo::SET_CYCLE			cycles();
@@ -95,12 +96,15 @@ public:
 	void				components_util(VERT_S const & n, int c);
 	void				component(int c);
 
+	virtual void			dot_sub0(std::ostream & of);
+	virtual void			dot_sub1(std::ostream & of);
 	void				dot(std::string filename, gr::VERT_S const & v);
 	void				dot(std::string filename);
 	/**
 	 * automatic file name
 	 */
 	void				dot();
+	virtual std::string		dot_edge_symbol();
 	
 	/**
 	 * simplify according to the following
@@ -116,6 +120,18 @@ public:
 	std::vector<gr::LAYER_S>	_M_layers;
 	
 	gr::container::vert		_M_verts;
+
+	struct {
+		GRAPH_S			graph;
+	} _M_algo;
+	struct {
+	} _M_dot;
+};
+class digraph: public graph
+{
+public:
+	virtual void			dot_sub0(std::ostream & of);
+	virtual std::string		dot_edge_symbol();
 };
 
 {{ namespace_close }}

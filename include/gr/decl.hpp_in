@@ -63,6 +63,7 @@ namespace algo {
 	class less_queue_edge;
 	class less_cycle;
 	class cycle;
+	class stack;
 	//typedef std::set<cycle, less_cycle>	SET_CYCLE;
 }
 

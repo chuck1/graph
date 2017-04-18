@@ -6,6 +6,7 @@
 #include <set>
 #include <map>
 
+#include <gr/algo/stack.hpp> // gr/algo/stack.hpp_in
 #include <gr/algo/cycle.hpp> // gr/algo/cycle.hpp_in
 #include <gr/algo/ftor_dfs.hpp> // gr/algo/ftor_dfs.hpp_in
 #include <gr/container/edge.hpp> // gr/container/edge.hpp.in
@@ -20,11 +21,13 @@
 #include <gr/layer.hpp>
 #include <gr/util.hpp>
 
-
 #include <gr/graph.hpp> // gr/graph.hpp_in
 
 typedef gr::graph THIS;
 
+THIS::graph()
+{
+}
 void				THIS::add_edge(gr::VERT_S v0, gr::VERT_S v1)
 {
 	auto e = std::make_shared<gr::edge>(v0, v1);
@@ -299,7 +302,7 @@ bool contains(C c, T const & t)
 }
 void				THIS::depth_first_search_util(
 		gr::VERT_S const & v,
-		std::deque<gr::EDGE_S> & stack,
+		algo::stack & stack,
 		algo::ftor_dfs * ftor)
 {
 	/**
@@ -328,6 +331,9 @@ void				THIS::depth_first_search_util(
 			assert(e);
 			stack.push_back(e);
 
+			// debug graph
+			_M_algo.graph->add_edge(*_M_algo.graph->vert_find(e->v0()), *_M_algo.graph->vert_find(e->v1()));
+
 			//log<0>() << "stack = " << print_cycle(stack);
 			//log<0>() << "stack = " << stack << std::endl;
 
@@ -341,10 +347,15 @@ void				THIS::depth_first_search_util(
 }
 void				THIS::depth_first_search(gr::VERT_S const & v, algo::ftor_dfs * ftor)
 {
-	std::deque<gr::EDGE_S> stack;
+	gr::algo::stack stack;
+	
+	// debugging graph
+	_M_algo.graph.reset(new gr::graph());
+	for(auto it = vert_begin(); it != vert_end(); ++it) _M_algo.graph->iter((*it)->copy());
 
 	depth_first_search_util(v, stack, ftor);
 
+	_M_algo.graph->dot();
 }
 gr::algo::SET_CYCLE		THIS::cycles()
 {
@@ -467,28 +478,34 @@ void				THIS::dot(std::string filename, gr::VERT_S const & v)
 
 	dot(filename);
 }
-void				THIS::dot(std::string filename)
+void				THIS::dot_sub1(std::ostream & of)
 {
-	
-	std::ofstream of;
-	of.open(filename);
-
-	of << "graph {" << std::endl;
-	of << "overlap=false" << std::endl;
-	of << "splines=false" << std::endl;
-
 	for(auto i = edge_begin(); i != edge_end(); ++i)
 	{
 		auto e = *i;
-		//of << "node" << e->v0().get() << " -- node" << e->v1().get() << std::endl;
 		of << e->dot() << std::endl;
 	}
 
 	for(auto i = vert_begin(); i != vert_end(); ++i) {
 		of << (*i)->dot() << std::endl;
 	}
+}
+void				THIS::dot_sub0(std::ostream & of)
+{
+	of << "graph {" << std::endl;
+	of << "overlap=false" << std::endl;
+	of << "splines=false" << std::endl;
+
+	dot_sub1(of);
 
 	of << "}" << std::endl;
+}
+void				THIS::dot(std::string filename)
+{
+	std::ofstream of;
+	of.open(filename);
+
+	dot_sub0(of);
 }
 void				THIS::components_util(gr::VERT_S const & u, int c)
 {
@@ -637,24 +654,29 @@ gr::LAYER_S			THIS::create_layer(bool e)
 
 void	gr::algo::ftor_dfs_cycle::operator()(
 		gr::VERT_S const & v1,
-		std::deque<gr::EDGE_S> & stack)
+		algo::stack & stack)
 {
 	// copy the stack
-	std::deque<gr::EDGE_S> stack_copy(stack);
+	algo::stack stack_copy(stack);
 
+	assert(stack._M_counter[v1] > 0);
+	
 	// pop front until we reach v1
-	while(!stack_copy.empty())
+	while((!stack_copy.empty()) && (stack_copy._M_counter[v1] > 1))
 	{
 		auto e = stack_copy.front();
 
 		if(*v1 == *e->v0())
 		{
-			gr::algo::cycle c(stack_copy.begin(), stack_copy.end(), v1);
+			// if we are looking for def1 cycles
+			if(stack_copy._M_count_gt_2 == 0)
+			{
+				gr::algo::cycle c(stack_copy.begin(), stack_copy.end(), v1);
 			
-			//rotate_cycle(c._M_edges);
-			c.shift();
+				c.shift();
 
-			_M_cycles.insert(c);
+				_M_cycles.insert(c);
+			}
 		}
 
 		stack_copy.pop_front();
@@ -691,10 +713,10 @@ bool check_path(std::deque<gr::EDGE_S> & stack)
 
 void	gr::algo::ftor_dfs_path::operator()(
 		gr::VERT_S const & v1,
-		std::deque<gr::EDGE_S> & stack)
+		algo::stack & stack)
 {
 	// copy the stack
-	std::deque<gr::EDGE_S> stack_copy(stack);
+	algo::stack stack_copy(stack);
 
 	// pop front until we reach v1
 	while(!stack_copy.empty())
@@ -784,9 +806,20 @@ void		THIS::simplify()
 	}
 
 }
+std::string			THIS::dot_edge_symbol() { return " -- "; }
 
 
+void				gr::digraph::dot_sub0(std::ostream & of)
+{
+	of << "digraph {" << std::endl;
+	of << "overlap=false" << std::endl;
+	of << "splines=false" << std::endl;
 
+	dot_sub1(of);
+
+	of << "}" << std::endl;
+}
+std::string			gr::digraph::dot_edge_symbol() { return " -> "; }
 
 
 

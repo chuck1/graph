@@ -29,7 +29,7 @@ class ftor_dfs
 public:
 	virtual void	operator()(
 		gr::VERT_S const & v1,
-		std::deque<gr::EDGE_S> & stack) = 0;
+		algo::stack & stack) = 0;
 };
 
 class ftor_dfs_cycle: public ftor_dfs
@@ -37,7 +37,7 @@ class ftor_dfs_cycle: public ftor_dfs
 public:
 	virtual void	operator()(
 		gr::VERT_S const & v1,
-		std::deque<gr::EDGE_S> & stack);
+		algo::stack & stack);
 
 	algo::SET_CYCLE		_M_cycles;
 };
@@ -47,7 +47,7 @@ class ftor_dfs_path: public ftor_dfs
 public:
 	virtual void	operator()(
 		gr::VERT_S const & v1,
-		std::deque<gr::EDGE_S> & stack);
+		algo::stack & stack);
 
 	SET_QUEUE_EDGE		_M_paths;
 };

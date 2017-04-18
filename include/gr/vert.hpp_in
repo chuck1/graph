@@ -25,11 +25,9 @@ public:
 
 	vert(GRAPH_S);
 	virtual ~vert();
-
+	virtual gr::VERT_S	copy() const;
 	bool			enabled() const;
-
-	GRAPH_S			get_graph();
-
+	GRAPH_S			get_graph() const;
 	/*
 	std::vector<S_Edge>	get_edges();
 	S_Node			get_other(graph::S_Edge e);
