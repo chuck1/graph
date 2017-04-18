@@ -28,12 +28,13 @@ typedef gr::graph THIS;
 THIS::graph()
 {
 }
-void				THIS::add_edge(gr::VERT_S v0, gr::VERT_S v1)
+gr::EDGE_S			THIS::add_edge(gr::VERT_S v0, gr::VERT_S v1)
 {
 	auto e = std::make_shared<gr::edge>(v0, v1);
 	// iter adds the vert to the graph's container if not already there
 	(*iter(v0))->add_edge(e);
 	(*iter(v1))->add_edge(e);
+	return e;
 }
 void				THIS::add_edge(gr::EDGE_S e)
 {
@@ -332,7 +333,11 @@ void				THIS::depth_first_search_util(
 			stack.push_back(e);
 
 			// debug graph
-			_M_algo.graph->add_edge(*_M_algo.graph->vert_find(e->v0()), *_M_algo.graph->vert_find(e->v1()));
+			auto algo_v = v1->copy(_M_algo.graph);
+			_M_algo.graph_stack.push_back(_M_algo.graph->add_edge(_M_algo.graph_head, algo_v));
+			_M_algo.graph_head = algo_v;
+			
+			std::cout << "algo graph stack " << _M_algo.graph_stack << std::endl;
 
 			//log<0>() << "stack = " << print_cycle(stack);
 			//log<0>() << "stack = " << stack << std::endl;
@@ -342,6 +347,9 @@ void				THIS::depth_first_search_util(
 			depth_first_search_util(v1, stack, ftor);
 
 			stack.pop_back();
+
+			_M_algo.graph_head = _M_algo.graph_stack.back()->other(_M_algo.graph_head);
+			_M_algo.graph_stack.pop_back();
 		}
 	}
 }
@@ -350,8 +358,9 @@ void				THIS::depth_first_search(gr::VERT_S const & v, algo::ftor_dfs * ftor)
 	gr::algo::stack stack;
 	
 	// debugging graph
-	_M_algo.graph.reset(new gr::graph());
-	for(auto it = vert_begin(); it != vert_end(); ++it) _M_algo.graph->iter((*it)->copy());
+	_M_algo.graph.reset(new gr::digraph());
+	_M_algo.graph_stack.clear();
+	_M_algo.graph_head = *_M_algo.graph->iter(v->copy(_M_algo.graph));
 
 	depth_first_search_util(v, stack, ftor);
 
@@ -492,6 +501,7 @@ void				THIS::dot_sub1(std::ostream & of)
 }
 void				THIS::dot_sub0(std::ostream & of)
 {
+	of << "#neato" << std::endl;
 	of << "graph {" << std::endl;
 	of << "overlap=false" << std::endl;
 	of << "splines=false" << std::endl;
@@ -656,8 +666,14 @@ void	gr::algo::ftor_dfs_cycle::operator()(
 		gr::VERT_S const & v1,
 		algo::stack & stack)
 {
+	auto g = v1->get_graph();
+	auto algo_g = v1->get_graph()->_M_algo.graph;
+
 	// copy the stack
 	algo::stack stack_copy(stack);
+	
+	// copy the debug stack
+	std::deque<gr::EDGE_S> algo_stack_copy(g->_M_algo.graph_stack);
 
 	assert(stack._M_counter[v1] > 0);
 	
@@ -676,10 +692,15 @@ void	gr::algo::ftor_dfs_cycle::operator()(
 				c.shift();
 
 				_M_cycles.insert(c);
+
+				// mark on algo graph
+				auto algo_e = algo_g->add_edge(algo_stack_copy.front()->v0(), algo_stack_copy.back()->v1());
+				algo_e->_M_dot.color = "blue";
 			}
 		}
 
 		stack_copy.pop_front();
+		algo_stack_copy.pop_front();
 	}
 }
 bool check_path(std::deque<gr::EDGE_S> & stack)
@@ -811,6 +832,7 @@ std::string			THIS::dot_edge_symbol() { return " -- "; }
 
 void				gr::digraph::dot_sub0(std::ostream & of)
 {
+	of << "#dot" << std::endl;
 	of << "digraph {" << std::endl;
 	of << "overlap=false" << std::endl;
 	of << "splines=false" << std::endl;

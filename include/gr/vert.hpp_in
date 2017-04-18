@@ -25,7 +25,7 @@ public:
 
 	vert(GRAPH_S);
 	virtual ~vert();
-	virtual gr::VERT_S	copy() const;
+	virtual gr::VERT_S	copy(GRAPH_S) const;
 	bool			enabled() const;
 	GRAPH_S			get_graph() const;
 	/*

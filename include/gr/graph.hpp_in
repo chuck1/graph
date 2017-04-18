@@ -23,10 +23,11 @@ public:
 	typedef logs::logger<graph, {{ logs_mode }}, {{ logs_level }}> LOGGER;
 	//Graph(Graph const & g);
 
-	graph();	
+	graph();
+	virtual ~graph() {}
 	GRAPH_S				copy();
 
-	void				add_edge(VERT_S v0, VERT_S v1);
+	EDGE_S				add_edge(VERT_S v0, VERT_S v1);
 	void				add_edge(EDGE_S e);
 
 	void				edge_enable();
@@ -123,6 +124,8 @@ public:
 
 	struct {
 		GRAPH_S			graph;
+		std::deque<gr::EDGE_S>	graph_stack;
+		VERT_S			graph_head;
 	} _M_algo;
 	struct {
 	} _M_dot;

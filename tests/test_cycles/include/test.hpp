@@ -14,9 +14,9 @@ public:
 	{
 		return id;
 	}
-	virtual gr::VERT_S	copy() const
+	virtual gr::VERT_S	copy(gr::GRAPH_S g) const
 	{
-		return std::make_shared<Vert>(get_graph(), id);
+		return std::make_shared<Vert>(g, id);
 	}
 	/*
 	virtual bool		operator==(gr::vert const & v)

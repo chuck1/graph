@@ -119,9 +119,9 @@ std::string			THIS::name()
 	sprintf(buffer, "%p", this);
 	return buffer;
 }
-gr::VERT_S			THIS::copy() const
+gr::VERT_S			THIS::copy(GRAPH_S g) const
 {
-	return std::make_shared<gr::vert>(get_graph());
+	return std::make_shared<gr::vert>(g);
 }
 
 

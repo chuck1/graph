@@ -10,8 +10,8 @@ class vert: public gr::vert
 {
 public:
 	vert(gr::GRAPH_S g, std::string nid);
-	virtual bool	operator==(gr::vert const & v);
-	virtual bool	operator<(gr::vert const & v);
+	//virtual bool	operator==(gr::vert const & v);
+	//virtual bool	operator<(gr::vert const & v);
 	std::string	id;
 };
 
