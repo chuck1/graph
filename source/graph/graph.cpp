@@ -84,7 +84,8 @@ gr::iterator::vert_graph		THIS::vert_erase(gr::iterator::vert_graph & i)
 
 	auto ret = _M_verts.erase(i._M_j);
 
-	assert(w.expired());
+	// is this really necessary?
+	//assert(w.expired());
 
 	edge_erase();
 
@@ -461,8 +462,8 @@ void				THIS::dot(std::string filename, gr::VERT_S const & v)
 {
 	distance(v);
 	
-	auto c = cycles(v);
-	gr::arrange_dot(c);
+	//auto c = cycles(v);
+	//gr::arrange_dot(c);
 
 	dot(filename);
 }
@@ -725,6 +726,70 @@ gr::GRAPH_S	THIS::copy()
 
 	return g;
 }
+void		THIS::simplify()
+{
+	std::cout << "graph::simplify" << std::endl;
+
+	unsigned int s = vert_size();
+	while(true)
+	{
+		for(auto it = vert_begin(); it != vert_end();)
+		{
+			auto v = *it;
+			if(v->edge_size() == 1)
+			{
+				it = vert_erase(it);
+				continue;
+			}
+
+			++it;
+		}
+		unsigned int s1 = vert_size();
+		if(s==s1) break;
+		s=s1;
+	}
+
+	// step 2
+	
+	for(auto it = vert_begin(); it != vert_end();)
+	{
+		auto v = *it;
+		if(v->edge_size() == 2)
+		{
+			std::cout << "eliminate vert with two edges" << std::endl;
+
+			auto it1 = v->edge_begin();
+			auto e0 = *it1;
+			++it1;
+			auto e1 = *it1;
+			
+			auto v0 = e0->other(v);
+			auto v1 = e1->other(v);
+			
+			/*
+			if((*v0)==(*v1))
+			{
+				++it;
+				continue;
+			}
+			*/
+
+			add_edge(v0, v1);
+
+			it = vert_erase(it);
+			continue;
+		}
+
+		++it;
+	}
+
+}
+
+
+
+
+
+
 
 
 

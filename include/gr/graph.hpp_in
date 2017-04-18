@@ -102,6 +102,13 @@ public:
 	 */
 	void				dot();
 	
+	/**
+	 * simplify according to the following
+	 *
+	 *  - remove verticies that are adjacent to exactly one edge
+	 */
+	void				simplify();
+
 	void				layer_move(unsigned int, unsigned int);
 	
 	void				for_each_leaf(std::function<void(gr::VERT_S const &, gr::EDGE_S const &)> func);
