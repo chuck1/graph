@@ -308,7 +308,7 @@ void				THIS::depth_first_search_util(
 	 * of the edges in the stack.
 	 */
 	
-	log<0>() << "depth_first_search_util " << v->name() << " edge_size=" << v->edge_size() << std::endl;
+	log<0>() << "depth_first_search_util " << v->name() << " stack size=" << stack.size() << std::endl;
 	
 	for(auto it = v->edge_begin(); it != v->edge_end(); ++it)
 	{
@@ -329,7 +329,7 @@ void				THIS::depth_first_search_util(
 			stack.push_back(e);
 
 			//log<0>() << "stack = " << print_cycle(stack);
-			log<0>() << "stack = " << stack << std::endl;
+			//log<0>() << "stack = " << stack << std::endl;
 
 			ftor->operator()(v1, stack);
 
