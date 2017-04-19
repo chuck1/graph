@@ -337,7 +337,7 @@ void				THIS::depth_first_search_util(
 			_M_algo.graph_stack.push_back(_M_algo.graph->add_edge(_M_algo.graph_head, algo_v));
 			_M_algo.graph_head = algo_v;
 			
-			std::cout << "algo graph stack " << _M_algo.graph_stack << std::endl;
+			//std::cout << "algo graph stack " << _M_algo.graph_stack << std::endl;
 
 			//log<0>() << "stack = " << print_cycle(stack);
 			//log<0>() << "stack = " << stack << std::endl;
@@ -691,11 +691,15 @@ void	gr::algo::ftor_dfs_cycle::operator()(
 			
 				c.shift();
 
-				_M_cycles.insert(c);
+				auto ret = _M_cycles.insert(c);
 
 				// mark on algo graph
 				auto algo_e = algo_g->add_edge(algo_stack_copy.front()->v0(), algo_stack_copy.back()->v1());
-				algo_e->_M_dot.color = "blue";
+				if(ret.second) {
+					algo_e->_M_dot.color = "blue";
+				} else {
+					algo_e->_M_dot.color = "red";
+				}
 			}
 		}
 

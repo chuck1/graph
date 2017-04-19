@@ -8,7 +8,7 @@
 #include <logs/logger.hpp> // logs/logger.hpp_in
 
 #include <gr/decl.hpp> // gr/decl.hpp_in
-#include <gr/algo/ftor_dfs.hpp> // gr/algo/cycle.hpp_in
+#include <gr/algo/ftor_dfs.hpp> // gr/algo/ftor_dfs.hpp_in
 #include <gr/algo/cycle.hpp> // gr/algo/cycle.hpp_in
 #include <gr/iterator/vert_comp.hpp> // gr/iterator/iterator.hpp.in
 #include <gr/iterator/vert_graph.hpp> // gr/iterator/vert_graph.hpp.in

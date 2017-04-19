@@ -84,7 +84,7 @@ int main()
 	 * and compare to known values
 	 */
 
-	for(int i = 3; i < 7; ++i) test(i);
+	for(int i = 3; i < 6; ++i) test(i);
 
 	return 0;
 }
