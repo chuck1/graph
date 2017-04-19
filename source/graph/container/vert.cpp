@@ -6,7 +6,7 @@
 #include <gr/vert.hpp>
 
 
-#include <gr/container/vert.hpp> // gr/container/vert.hpp.in
+#include <gr/container/vert.hpp> // gr/container/vert.hpp_in
 
 typedef gr::container::vert THIS;
 
@@ -29,8 +29,9 @@ THIS::iterator		THIS::erase(THIS::iterator & i)
 	assert(!w.expired());
 	
 	auto ret = _M_container.erase(i);
-	
-	assert(w.expired());
+
+	// is this really necessary?	
+	//assert(w.expired());
 	
 	return ret;
 }

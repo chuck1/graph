@@ -1,0 +1,10 @@
+{{ include_block_open }}
+
+#include <gr/decl.hpp>
+
+std::ostream & operator<<(std::ostream & os, std::deque<gr::EDGE_S> const & stack);
+
+{{ include_block_close }}
+
+
+

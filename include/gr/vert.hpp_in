@@ -9,6 +9,15 @@
 
 {{ namespace_open }}
 
+class vert_dot
+{
+public:
+	vert_dot():
+		pos("")
+	{}
+	std::string	pos;
+};
+
 class vert: public std::enable_shared_from_this<vert>
 {
 public:
@@ -16,11 +25,9 @@ public:
 
 	vert(GRAPH_S);
 	virtual ~vert();
-
+	virtual gr::VERT_S	copy(GRAPH_S) const;
 	bool			enabled() const;
-
-	GRAPH_S			get_graph();
-
+	GRAPH_S			get_graph() const;
 	/*
 	std::vector<S_Edge>	get_edges();
 	S_Node			get_other(graph::S_Edge e);
@@ -40,15 +47,17 @@ public:
 
       	void			edge_erase_util(gr::VERT_S & v0, gr::VERT_S & v1);
 
-	virtual bool		operator==(vert const &) = 0;
+	virtual bool		operator==(vert const &);
 	virtual bool		operator!=(vert const &);
-	virtual bool		operator<(vert const &) = 0;
+	virtual bool		operator<(vert const &);
 
 	virtual std::string	dot();
 	virtual std::string	name();
 
 	// data
-	bool			_M_enabled;
+	//bool			_M_enabled;
+
+	vert_dot		_M_dot;
 
 	// for ditance algorithm
 	struct {
@@ -72,6 +81,10 @@ public:
 	struct {
 		bool		_M_visited;
 	} dfs;
+
+	struct {
+		int		counter;
+	} algo;
 
 // private
 

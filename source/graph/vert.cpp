@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <cassert>
+#include <sstream>
 
 #include <gr/container/edge.hpp> // gr/container/edge.hpp.in
 #include <gr/iterator/edge_vert.hpp> // gr/iterator/edge_vert.hpp_in
@@ -14,7 +15,7 @@
 typedef gr::vert THIS;
 
 THIS::vert(gr::GRAPH_S g):
-	_M_enabled(true),
+	//_M_enabled(true),
 	_M_graph(g),
 	_M_edges(new gr::container::edge)
 {
@@ -23,13 +24,21 @@ THIS::~vert()
 {
 //	std::cout << "vert destroyed" << std::endl;
 }
+bool				THIS::operator==(gr::vert const & v)
+{
+	return this == &v;
+}
+bool				THIS::operator<(gr::vert const & v)
+{
+	return this < &v;
+}
 bool				THIS::operator!=(gr::vert const & v)
 {
 	return !operator==(v);
 }
 bool				THIS::enabled() const
 {
-	if(!_M_enabled) return false;
+	//if(!_M_enabled) return false;
 
 	if(!_M_layer.expired()) {
 		if(!_M_layer.lock()->_M_enabled) return false;
@@ -37,7 +46,7 @@ bool				THIS::enabled() const
 
 	return true;
 }
-gr::GRAPH_S			THIS::get_graph()
+gr::GRAPH_S			THIS::get_graph() const
 {
 	auto ret = _M_graph.lock();
 	assert(ret);
@@ -100,7 +109,9 @@ void				THIS::edge_erase_util(gr::VERT_S & v0, gr::VERT_S & v1)
 }
 std::string			THIS::dot()
 {
-	return std::string();
+	std::stringstream ss;
+	ss << "node" << this << "[label=\""<< name() <<"\",pos=\""<<_M_dot.pos<<"\"]";
+	return ss.str();
 }
 std::string			THIS::name()
 {
@@ -108,7 +119,10 @@ std::string			THIS::name()
 	sprintf(buffer, "%p", this);
 	return buffer;
 }
-
+gr::VERT_S			THIS::copy(GRAPH_S g) const
+{
+	return std::make_shared<gr::vert>(g);
+}
 
 
 

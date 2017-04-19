@@ -5,27 +5,33 @@
 #include <vector>
 #include <deque>
 
+#include <logs/logger.hpp> // logs/logger.hpp_in
+
 #include <gr/decl.hpp> // gr/decl.hpp_in
+#include <gr/algo/ftor_dfs.hpp> // gr/algo/ftor_dfs.hpp_in
+#include <gr/algo/cycle.hpp> // gr/algo/cycle.hpp_in
 #include <gr/iterator/vert_comp.hpp> // gr/iterator/iterator.hpp.in
 #include <gr/iterator/vert_graph.hpp> // gr/iterator/vert_graph.hpp.in
 #include <gr/iterator/vert_graph_all.hpp> // gr/iterator/vert_graph_all.hpp.in
-#include <gr/container/vert.hpp> // gr/iterator/iterator.hpp.in
+#include <gr/container/vert.hpp> // gr/container/vert.hpp_in
 
 {{ namespace_open }}
 
-class less_cycle;
-
-class graph:
-	public std::enable_shared_from_this<graph>
+class graph: public std::enable_shared_from_this<graph>, public logs::logger<graph, {{ logs_mode }}, {{ logs_level }}>
 {
 public:
+	typedef logs::logger<graph, {{ logs_mode }}, {{ logs_level }}> LOGGER;
 	//Graph(Graph const & g);
-	
-	void				add_edge(VERT_S v0, VERT_S v1);
+
+	graph();
+	virtual ~graph() {}
+	GRAPH_S				copy();
+
+	EDGE_S				add_edge(VERT_S v0, VERT_S v1);
 	void				add_edge(EDGE_S e);
 
 	void				edge_enable();
-	void				vert_enable();
+	//void				vert_enable();
 
 	/** vert functions */
 
@@ -35,6 +41,7 @@ public:
 	gr::iterator::vert_graph	vert_erase(gr::iterator::vert_graph &);
 	void				vert_erase_layer(unsigned int l);
 	
+	gr::LAYER_S			create_layer(bool);
 
 	gr::iterator::vert_graph_all	vert_begin_all(VERT_FUNC);
 	gr::iterator::vert_graph_all	vert_end_all(VERT_FUNC);
@@ -70,12 +77,17 @@ public:
 	std::vector<gr::edge>		bridges();
 
 
-	CYCLES				depth_first_search(
-			gr::VERT_S const & v);
+	void				depth_first_search(
+			gr::VERT_S const & v,
+			algo::ftor_dfs *);
 	void				depth_first_search_util(
 			gr::VERT_S const & v,
-			std::deque<gr::EDGE_S> & stack,
-			CYCLES & cycles);
+			algo::stack & stack,
+			algo::ftor_dfs *);
+
+	algo::SET_CYCLE			cycles();
+	algo::SET_CYCLE			cycles(gr::VERT_S const &);
+	algo::SET_QUEUE_EDGE		paths();
 
 	/*
 	 * mark each vertex with an index representing the component to which it belongs
@@ -85,9 +97,23 @@ public:
 	void				components_util(VERT_S const & n, int c);
 	void				component(int c);
 
+	virtual void			dot_sub0(std::ostream & of);
+	virtual void			dot_sub1(std::ostream & of);
 	void				dot(std::string filename, gr::VERT_S const & v);
 	void				dot(std::string filename);
+	/**
+	 * automatic file name
+	 */
+	void				dot();
+	virtual std::string		dot_edge_symbol();
 	
+	/**
+	 * simplify according to the following
+	 *
+	 *  - remove verticies that are adjacent to exactly one edge
+	 */
+	void				simplify();
+
 	void				layer_move(unsigned int, unsigned int);
 	
 	void				for_each_leaf(std::function<void(gr::VERT_S const &, gr::EDGE_S const &)> func);
@@ -95,11 +121,20 @@ public:
 	std::vector<gr::LAYER_S>	_M_layers;
 	
 	gr::container::vert		_M_verts;
+
+	struct {
+		GRAPH_S			graph;
+		std::deque<gr::EDGE_S>	graph_stack;
+		VERT_S			graph_head;
+	} _M_algo;
+	struct {
+	} _M_dot;
 };
-class less_cycle
+class digraph: public graph
 {
 public:
-	bool operator()(CYCLE const & c0, CYCLE const & c1);
+	virtual void			dot_sub0(std::ostream & of);
+	virtual std::string		dot_edge_symbol();
 };
 
 {{ namespace_close }}

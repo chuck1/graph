@@ -1,0 +1,60 @@
+{{ include_block_open }}
+
+#include <memory>
+#include <set>
+#include <vector>
+#include <deque>
+
+#include <gr/algo/cycle.hpp>
+#include <gr/algo/less_cycle.hpp>
+#include <gr/decl.hpp> // gr/decl.hpp_in
+/*
+#include <gr/iterator/vert_comp.hpp> // gr/iterator/iterator.hpp.in
+#include <gr/iterator/vert_graph.hpp> // gr/iterator/vert_graph.hpp.in
+#include <gr/iterator/vert_graph_all.hpp> // gr/iterator/vert_graph_all.hpp.in
+#include <gr/container/vert.hpp> // gr/container/vert.hpp_in
+*/
+{{ namespace_open }}
+
+class less_queue_edge
+{
+public:
+	bool operator()(QUEUE_EDGE const & c0, QUEUE_EDGE const & c1);
+};
+
+typedef std::set<QUEUE_EDGE, less_queue_edge>	SET_QUEUE_EDGE;
+
+class ftor_dfs
+{
+public:
+	virtual void	operator()(
+		gr::VERT_S const & v1,
+		algo::stack & stack) = 0;
+};
+
+class ftor_dfs_cycle: public ftor_dfs
+{
+public:
+	virtual void	operator()(
+		gr::VERT_S const & v1,
+		algo::stack & stack);
+
+	algo::SET_CYCLE		_M_cycles;
+};
+
+class ftor_dfs_path: public ftor_dfs
+{
+public:
+	virtual void	operator()(
+		gr::VERT_S const & v1,
+		algo::stack & stack);
+
+	SET_QUEUE_EDGE		_M_paths;
+};
+
+
+
+{{ namespace_close }}
+
+{{ include_block_close }}
+

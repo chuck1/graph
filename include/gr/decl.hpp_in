@@ -57,12 +57,21 @@ typedef std::set<gr::VERT_S, gr::vert_comp>	CONT_VERT;
 
 typedef std::function<bool(gr::VERT_S const &)>	VERT_FUNC;
 
-class less_cycle;
 
-typedef std::deque<gr::EDGE_S>			CYCLE;
-typedef std::set<CYCLE, less_cycle>		CYCLES;
+namespace algo {
+	class ftor_dfs;
+	class less_queue_edge;
+	class less_cycle;
+	class cycle;
+	class stack;
+	//typedef std::set<cycle, less_cycle>	SET_CYCLE;
+}
+
+typedef std::deque<gr::EDGE_S>			QUEUE_EDGE;
 
 {{ namespace_close }}
 
 {{ include_block_close }}
+
+
 
