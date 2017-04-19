@@ -66,7 +66,7 @@ void test(int n)
 	}
 
 	//gr::graph::_level_static = 0;
-	auto cycles = g->cycles();
+	auto cycles = g->cycles(verts[0]);
 	//gr::graph::_level_static = 1;
 
 	printf("cycles %lu\n", cycles.size());
