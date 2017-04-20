@@ -368,15 +368,23 @@ void				THIS::depth_first_search(gr::VERT_S const & v, algo::ftor_dfs * ftor)
 }
 gr::algo::SET_CYCLE		THIS::cycles()
 {
-	gr::algo::ftor_dfs_cycle ftor;
-	
 	auto v = *_M_verts.begin();
 
-	depth_first_search(v, &ftor);
+	return cycles(v);
+}
+gr::algo::SET_CYCLE		THIS::cycles2()
+{
+	gr::algo::ftor_dfs_cycle2 ftor;
 	
+	for(auto it = vert_begin(); it != vert_end(); ++it)
+	{	
+		depth_first_search(*it, &ftor);
+	}
+
 	printf("fail inserts = %i\n", ftor._M_count_insert_fail);
 
 	return ftor._M_cycles;
+
 }
 gr::algo::SET_CYCLE		THIS::cycles(gr::VERT_S const & v)
 {
@@ -665,6 +673,57 @@ gr::LAYER_S			THIS::create_layer(bool e)
 	return layer;
 }
 
+gr::algo::ftor_dfs_cycle2::ftor_dfs_cycle2():
+	_M_count_insert_fail(0)
+{
+}
+void	gr::algo::ftor_dfs_cycle2::operator()(
+		gr::VERT_S const & v1,
+		algo::stack & stack)
+{
+	auto g = v1->get_graph();
+	auto algo_g = v1->get_graph()->_M_algo.graph;
+
+	// copy the stack
+	algo::stack stack_copy(stack);
+	
+	// copy the debug stack
+	std::deque<gr::EDGE_S> algo_stack_copy(g->_M_algo.graph_stack);
+
+	assert(stack._M_counter[v1] > 0);
+	
+	// pop front until we reach v1
+	while((!stack_copy.empty()) && (stack_copy._M_counter[v1] > 1))
+	{
+		auto e = stack_copy.front();
+
+		if(*v1 == *e->v0())
+		{
+			// if we are looking for def1 cycles
+			if(stack_copy._M_count_gt_2 == 0)
+			{
+				gr::algo::cycle c(stack_copy.begin(), stack_copy.end(), v1);
+			
+				c.shift();
+
+				auto ret = _M_cycles.insert(c);
+
+				// mark on algo graph
+				auto algo_e = algo_g->add_edge(algo_stack_copy.front()->v0(), algo_stack_copy.back()->v1());
+				if(ret.second) {
+					algo_e->_M_dot.color = "blue";
+				} else {
+					algo_e->_M_dot.color = "red";
+
+					++_M_count_insert_fail;
+				}
+			}
+		}
+
+		stack_copy.pop_front();
+		algo_stack_copy.pop_front();
+	}
+}
 gr::algo::ftor_dfs_cycle::ftor_dfs_cycle():
 	_M_count_insert_fail(0)
 {

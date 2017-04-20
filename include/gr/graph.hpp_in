@@ -85,6 +85,7 @@ public:
 			algo::stack & stack,
 			algo::ftor_dfs *);
 
+	algo::SET_CYCLE			cycles2();
 	algo::SET_CYCLE			cycles();
 	algo::SET_CYCLE			cycles(gr::VERT_S const &);
 	algo::SET_QUEUE_EDGE		paths();

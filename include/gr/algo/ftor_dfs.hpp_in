@@ -43,6 +43,17 @@ public:
 	algo::SET_CYCLE		_M_cycles;
 	int			_M_count_insert_fail;
 };
+class ftor_dfs_cycle2: public ftor_dfs
+{
+public:
+	ftor_dfs_cycle2();
+	virtual void	operator()(
+		gr::VERT_S const & v1,
+		algo::stack & stack);
+
+	algo::SET_CYCLE		_M_cycles;
+	int			_M_count_insert_fail;
+};
 
 class ftor_dfs_path: public ftor_dfs
 {

@@ -65,17 +65,24 @@ void test(int n)
 		c += m;
 	}
 
-	//gr::graph::_level_static = 0;
-	auto cycles = g->cycles(verts[0]);
-	//gr::graph::_level_static = 1;
+	{
+		//gr::graph::_level_static = 0;
+		auto cycles = g->cycles(verts[0]);
+		//gr::graph::_level_static = 1;
 
-	printf("cycles %lu\n", cycles.size());
-	gr::filter_cycles(cycles);
-	printf("cycles %lu\n", cycles.size());
+		printf("cycles %lu\n", cycles.size());
 
-	
+		assert(cycles.size() == c);
+	}
+	{
+		//gr::graph::_level_static = 0;
+		auto cycles = g->cycles2();
+		//gr::graph::_level_static = 1;
 
-	assert(cycles.size() == c);
+		printf("cycles2 %lu\n", cycles.size());
+
+		assert(cycles.size() == c);
+	}
 }
 int main()
 {
