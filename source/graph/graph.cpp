@@ -373,6 +373,8 @@ gr::algo::SET_CYCLE		THIS::cycles()
 	auto v = *_M_verts.begin();
 
 	depth_first_search(v, &ftor);
+	
+	printf("fail inserts = %i\n", ftor._M_count_insert_fail);
 
 	return ftor._M_cycles;
 }
@@ -381,6 +383,8 @@ gr::algo::SET_CYCLE		THIS::cycles(gr::VERT_S const & v)
 	gr::algo::ftor_dfs_cycle ftor;
 
 	depth_first_search(v, &ftor);
+
+	printf("fail inserts = %i\n", ftor._M_count_insert_fail);
 
 	return ftor._M_cycles;
 }
@@ -661,7 +665,10 @@ gr::LAYER_S			THIS::create_layer(bool e)
 	return layer;
 }
 
-
+gr::algo::ftor_dfs_cycle::ftor_dfs_cycle():
+	_M_count_insert_fail(0)
+{
+}
 void	gr::algo::ftor_dfs_cycle::operator()(
 		gr::VERT_S const & v1,
 		algo::stack & stack)
@@ -699,6 +706,8 @@ void	gr::algo::ftor_dfs_cycle::operator()(
 					algo_e->_M_dot.color = "blue";
 				} else {
 					algo_e->_M_dot.color = "red";
+
+					++_M_count_insert_fail;
 				}
 			}
 		}
