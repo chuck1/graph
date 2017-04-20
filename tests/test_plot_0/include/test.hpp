@@ -12,7 +12,7 @@ public:
 	}
 	virtual std::string	name()
 	{
-		return id;
+		return _M_name;
 	}
 	/*
 	virtual bool		operator!=(gr::vert const & v)

@@ -3,6 +3,7 @@
 #include <gr/decl.hpp>
 
 std::ostream & operator<<(std::ostream & os, std::deque<gr::EDGE_S> const & stack);
+//std::ostream & operator<<(std::ostream & os, gr::algo::cycle const & cycle);
 
 {{ include_block_close }}
 

@@ -30,6 +30,7 @@ public:
 	virtual void	operator()(
 		gr::VERT_S const & v1,
 		algo::stack & stack) = 0;
+	std::set<gr::VERT_S>	_M_verts_completed;
 };
 
 class ftor_dfs_cycle: public ftor_dfs

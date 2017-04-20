@@ -1,3 +1,4 @@
+#include <gr/vert.hpp>
 #include <gr/edge.hpp>
 
 #include <gr/algo/cycle.hpp> // gr/algo/cycle.hpp_in
@@ -76,5 +77,20 @@ THIS::CONT const &	THIS::container() const
 {
 	return _M_edges;
 }
+std::ostream &		THIS::print(std::ostream & os) const
+{
+	for(auto it = begin(); it != end(); ++it)
+	{
+		char buffer[128];
+		auto e = (*it);
+		sprintf(buffer, "(%s)%s(%s) - ", (*it)->v0()->name().c_str(), e->name().c_str(), (*it)->v1()->name().c_str());
+		os << buffer;
+	}
+	return os;
+}
 
+std::ostream &	operator<<(std::ostream & os, gr::algo::cycle const & c)
+{
+	return c.print(os);
+}
 

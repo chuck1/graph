@@ -1,3 +1,5 @@
+#include <cassert>
+
 #include <gr/edge.hpp>
 #include <gr/vert.hpp>
 
@@ -15,49 +17,48 @@ void			THIS::push_back(gr::EDGE_S const & e)
 {
 	_M_edges.push_back(e);
 
-	//++e->v0()->algo.counter;
-	//++e->v1()->algo.counter;
+	push(e->v0());
+	push(e->v1());
+}
+void			THIS::push(gr::VERT_S const & v)
+{
+	auto it = _M_counter.find(v);
 	
-	{
-		auto it = _M_counter.find(e->v0());
-		if(it == _M_counter.end()) _M_counter[e->v0()] = 0;
-	}
-	{
-		auto it = _M_counter.find(e->v1());
-		if(it == _M_counter.end()) _M_counter[e->v1()] = 0;
-	}
-	auto & c0 = _M_counter[e->v0()];
-	auto & c1 = _M_counter[e->v1()];
-	if(c0==2) ++_M_count_gt_2;
-	if(c1==2) ++_M_count_gt_2;
-	++c0;
-	++c1;
+	if(it == _M_counter.end()) _M_counter[v] = 0;
+	
+	auto & c = _M_counter[v];
+	
+	if(c==2) ++_M_count_gt_2;
+	
+	++c;
+}
+void			THIS::pop(gr::VERT_S const & v)
+{
+	auto it = _M_counter.find(v);
+
+	assert(it != _M_counter.end());
+	
+	int & c = it->second;
+
+	if(c==3) --_M_count_gt_2;
+	
+	--c;
 }
 void			THIS::pop_back()
 {
 	auto e = _M_edges.back();
-	//--e->v0()->algo.counter;
-	//--e->v1()->algo.counter;
-	auto & c0 = _M_counter[e->v0()];
-	auto & c1 = _M_counter[e->v1()];
-	if(c0==3) --_M_count_gt_2;
-	if(c1==3) --_M_count_gt_2;
-	--c0;
-	--c1;
+	
+	pop(e->v0());
+	pop(e->v1());
 
 	_M_edges.pop_back();
 }
 void			THIS::pop_front()
 {
 	auto e = _M_edges.front();
-	//--e->v0()->algo.counter;
-	//--e->v1()->algo.counter;
-	auto & c0 = _M_counter[e->v0()];
-	auto & c1 = _M_counter[e->v1()];
-	if(c0==3) --_M_count_gt_2;
-	if(c1==3) --_M_count_gt_2;
-	--c0;
-	--c1;
+
+	pop(e->v0());
+	pop(e->v1());
 
 	_M_edges.pop_front();
 }
@@ -76,6 +77,12 @@ THIS::iterator		THIS::begin()
 THIS::iterator		THIS::end()
 {
 	return _M_edges.end();
+}
+int			THIS::counter(gr::VERT_S const & v) const
+{
+	auto it = _M_counter.find(v);
+	assert(it != _M_counter.end());
+	return it->second;
 }
 
 

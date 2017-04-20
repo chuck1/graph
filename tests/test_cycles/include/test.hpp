@@ -12,11 +12,11 @@ public:
 	}
 	virtual std::string	name()
 	{
-		return id;
+		return _M_name;
 	}
 	virtual gr::VERT_S	copy(gr::GRAPH_S g) const
 	{
-		return std::make_shared<Vert>(g, id);
+		return std::make_shared<Vert>(g, _M_name);
 	}
 	/*
 	virtual bool		operator==(gr::vert const & v)

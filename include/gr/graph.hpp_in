@@ -101,6 +101,7 @@ public:
 
 	virtual void			dot_sub0(std::ostream & of);
 	virtual void			dot_sub1(std::ostream & of);
+	void				dot(gr::VERT_S const & v);
 	void				dot(std::string filename, gr::VERT_S const & v);
 	void				dot(std::string filename);
 	/**

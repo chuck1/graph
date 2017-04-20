@@ -44,6 +44,8 @@ public:
 	void			shift();
 
 	CONT const &		container() const;
+
+	std::ostream &		print(std::ostream & os) const;
 private:
 	std::deque<gr::EDGE_S>	_M_edges;
 public:
@@ -57,7 +59,10 @@ typedef std::set<cycle, less_cycle> SET_CYCLE;
 
 {{ namespace_close }}
 
+std::ostream &	operator<<(std::ostream & os, gr::algo::cycle const & c);
+
 {{ include_block_close }}
+
 
 
 

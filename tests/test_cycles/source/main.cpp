@@ -65,7 +65,7 @@ void test(int n)
 		c += m;
 	}
 
-	{
+	if(0){
 		//gr::graph::_level_static = 0;
 		auto cycles = g->cycles(verts[0]);
 		//gr::graph::_level_static = 1;
@@ -91,7 +91,7 @@ int main()
 	 * and compare to known values
 	 */
 
-	for(int i = 3; i < 6; ++i) test(i);
+	for(int i = 3; i < 8; ++i) test(i);
 
 	return 0;
 }

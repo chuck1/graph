@@ -23,9 +23,14 @@ public:
 	gr::EDGE_S			front();
 	iterator			begin();
 	iterator			end();
+	int				counter(gr::VERT_S const &) const;
+private:
+	void				push(gr::VERT_S const &);
+	void				pop(gr::VERT_S const &);
 
 	container			_M_edges;
 	std::map<gr::VERT_S, int>	_M_counter;
+public:
 	int				_M_count_gt_2;
 };
 

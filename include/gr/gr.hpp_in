@@ -8,6 +8,7 @@
 #include <gr/edge.hpp> // gr/edge.hpp_in
 #include <gr/edge_data.hpp> // gr/edge_data.hpp_in
 #include <gr/graph.hpp> // gr/graph.hpp_in
+#include <gr/io.hpp> // gr/io.hpp_in
 #include <gr/layer.hpp> // gr/layer.hpp_in
 #include <gr/pair.hpp> // gr/pair.hpp_in
 #include <gr/pair_comp.hpp> // gr/pair_comp.hpp_in
