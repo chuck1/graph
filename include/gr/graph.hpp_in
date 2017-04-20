@@ -60,6 +60,7 @@ public:
 
 	gr::iterator::edge_graph	edge_begin();
 	gr::iterator::edge_graph	edge_end();
+	unsigned int			edge_size();
 
 	void				edge_erase();
 

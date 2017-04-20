@@ -654,6 +654,11 @@ unsigned int			THIS::vert_size()
 	//assert(s1 == s2);
 	return s2;
 }
+unsigned int			THIS::edge_size()
+{
+	auto s = std::distance(edge_begin(), edge_end());
+	return s;
+}
 void				THIS::for_each_leaf(std::function<void(gr::VERT_S const &, gr::EDGE_S const &)> func)
 {
 	for(auto i = vert_begin(); i != vert_end(); ++i)
