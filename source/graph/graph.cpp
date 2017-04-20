@@ -684,44 +684,31 @@ void	gr::algo::ftor_dfs_cycle2::operator()(
 	auto g = v1->get_graph();
 	auto algo_g = v1->get_graph()->_M_algo.graph;
 
-	// copy the stack
-	algo::stack stack_copy(stack);
-	
-	// copy the debug stack
-	std::deque<gr::EDGE_S> algo_stack_copy(g->_M_algo.graph_stack);
-
 	assert(stack._M_counter[v1] > 0);
-	
-	// pop front until we reach v1
-	while((!stack_copy.empty()) && (stack_copy._M_counter[v1] > 1))
+
+	auto e = stack.front();
+
+	if(*v1 == *e->v0())
 	{
-		auto e = stack_copy.front();
-
-		if(*v1 == *e->v0())
+		// if we are looking for def1 cycles, no repeated vertices
+		if(stack._M_count_gt_2 == 0)
 		{
-			// if we are looking for def1 cycles
-			if(stack_copy._M_count_gt_2 == 0)
-			{
-				gr::algo::cycle c(stack_copy.begin(), stack_copy.end(), v1);
-			
-				c.shift();
+			gr::algo::cycle c(stack.begin(), stack.end(), v1);
 
-				auto ret = _M_cycles.insert(c);
+			c.shift();
 
-				// mark on algo graph
-				auto algo_e = algo_g->add_edge(algo_stack_copy.front()->v0(), algo_stack_copy.back()->v1());
-				if(ret.second) {
-					algo_e->_M_dot.color = "blue";
-				} else {
-					algo_e->_M_dot.color = "red";
+			auto ret = _M_cycles.insert(c);
 
-					++_M_count_insert_fail;
-				}
+			// mark on algo graph
+			auto algo_e = algo_g->add_edge(g->_M_algo.graph_stack.front()->v0(), g->_M_algo.graph_stack.back()->v1());
+			if(ret.second) {
+				algo_e->_M_dot.color = "blue";
+			} else {
+				algo_e->_M_dot.color = "red";
+
+				++_M_count_insert_fail;
 			}
 		}
-
-		stack_copy.pop_front();
-		algo_stack_copy.pop_front();
 	}
 }
 gr::algo::ftor_dfs_cycle::ftor_dfs_cycle():
@@ -737,12 +724,12 @@ void	gr::algo::ftor_dfs_cycle::operator()(
 
 	// copy the stack
 	algo::stack stack_copy(stack);
-	
+
 	// copy the debug stack
 	std::deque<gr::EDGE_S> algo_stack_copy(g->_M_algo.graph_stack);
 
 	assert(stack._M_counter[v1] > 0);
-	
+
 	// pop front until we reach v1
 	while((!stack_copy.empty()) && (stack_copy._M_counter[v1] > 1))
 	{
@@ -754,7 +741,7 @@ void	gr::algo::ftor_dfs_cycle::operator()(
 			if(stack_copy._M_count_gt_2 == 0)
 			{
 				gr::algo::cycle c(stack_copy.begin(), stack_copy.end(), v1);
-			
+
 				c.shift();
 
 				auto ret = _M_cycles.insert(c);
@@ -794,10 +781,10 @@ bool check_path(std::deque<gr::EDGE_S> & stack)
 		if(c0 > 2) return false;
 		if(c1 > 2) return false;
 	}
-	
+
 	auto e = stack.front();
 	if(e->v0()->algo.counter > 1) return false;
-	
+
 	e = stack.back();
 	if(e->v1()->algo.counter > 1) return false;
 
@@ -833,7 +820,7 @@ gr::GRAPH_S	THIS::copy()
 	{
 		m[*it] = std::make_shared<gr::vert>(g);
 	}
-	
+
 	for(auto it = edge_begin(); it != edge_end(); ++it)
 	{
 		g->add_edge(m[(*it)->v0()], m[(*it)->v1()]);
@@ -865,7 +852,7 @@ void		THIS::simplify()
 	}
 
 	// step 2
-	
+
 	for(auto it = vert_begin(); it != vert_end();)
 	{
 		auto v = *it;
@@ -877,17 +864,17 @@ void		THIS::simplify()
 			auto e0 = *it1;
 			++it1;
 			auto e1 = *it1;
-			
+
 			auto v0 = e0->other(v);
 			auto v1 = e1->other(v);
-			
+
 			/*
-			if((*v0)==(*v1))
-			{
-				++it;
-				continue;
-			}
-			*/
+			   if((*v0)==(*v1))
+			   {
+			   ++it;
+			   continue;
+			   }
+			   */
 
 			add_edge(v0, v1);
 
