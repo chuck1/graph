@@ -323,8 +323,6 @@ void				THIS::depth_first_search_util(
 
 		auto v1 = e->other(v);
 
-
-
 		// debug graph
 		auto algo_v = std::make_shared<gr::plot::vert>(_M_algo.graph, v1->name() + " " + std::to_string(v1->edge_size())); //v1->copy(_M_algo.graph);
 		auto algo_e = _M_algo.graph->add_edge(_M_algo.graph_head, algo_v);
@@ -753,13 +751,10 @@ void	gr::algo::ftor_dfs_cycle2::operator()(
 			auto ret = _M_cycles.insert(c);
 
 			// mark on algo graph
-			auto algo_e = algo_g->add_edge(g->_M_algo.graph_stack.front()->v0(), g->_M_algo.graph_stack.back()->v1());
 			if(ret.second) {
-				algo_e->_M_dot.color = "blue";
+				g->_M_algo.graph_stack.back()->_M_dot.color="blue";
 			} else {
-				algo_e->_M_dot.color = "red";
-
-				++_M_count_insert_fail;
+				g->_M_algo.graph_stack.back()->_M_dot.color="red";
 			}
 		}
 	}
