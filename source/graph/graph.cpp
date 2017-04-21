@@ -100,7 +100,6 @@ gr::iterator::vert_graph		THIS::vert_find(gr::VERT_S v)
 {
 	return gr::iterator::vert_graph(_M_verts, _M_verts.find(v));
 }
-
 void					THIS::edge_erase()
 {
 	//std::cout << "edge erase" << std::endl;
@@ -113,19 +112,19 @@ gr::iterator::edge_graph		THIS::edge_begin()
 {
 	return gr::iterator::edge_graph(_M_verts, _M_verts.begin());
 }
-gr::iterator::edge_graph	THIS::edge_end()
+gr::iterator::edge_graph		THIS::edge_end()
 {
 	return gr::iterator::edge_graph(_M_verts, _M_verts.end());
 }
-gr::iterator::vert_comp		THIS::comp_vert_begin(int c)
+gr::iterator::vert_comp			THIS::comp_vert_begin(int c)
 {
 	return gr::iterator::vert_comp(_M_verts, _M_verts.begin(), c);
 }
-gr::iterator::vert_comp		THIS::comp_vert_end(int c)
+gr::iterator::vert_comp			THIS::comp_vert_end(int c)
 {
 	return gr::iterator::vert_comp(_M_verts, _M_verts.end(), c);
 }
-void				THIS::edge_erase_util(gr::VERT_S & v0, gr::VERT_S & v1)
+void					THIS::edge_erase_util(gr::VERT_S & v0, gr::VERT_S & v1)
 {
 	auto i = vert_find(v0);
 
@@ -303,18 +302,92 @@ bool contains(C c, T const & t)
 {
 	return !(std::find(c.begin(), c.end(), t) == c.end());
 }
-void				THIS::depth_first_search_util(
-		gr::VERT_S const & v,
+void				THIS::depth_first_search(
+		gr::EDGE_S const & e0,
+		gr::EDGE_S const & e,
 		algo::stack & stack,
-		algo::ftor_dfs * ftor)
+		algo::ftor_dfs_edge * ftor)
 {
 	/**
-	 * for this algorithm, prove that when we find an edge that
-	 * connects to a visited vertex, the associated cycle is a subset
-	 * of the edges in the stack.
 	 */
 	
-	log<0>() << "depth_first_search_util " << v->name() << " stack size=" << stack.size() << std::endl;
+	//log<0>() << "depth_first_search_util " << v->name() << " stack size=" << stack.size() << std::endl;
+	
+	auto v = e->v1();
+	for(auto it = v->edge_begin(); it != v->edge_end(); ++it)
+	{
+		auto e1 = *it;
+		assert(e1);
+
+		auto v1 = e1->other(v);
+
+		// debug graph
+		auto algo_v = std::make_shared<gr::plot::vert>(_M_algo.graph, v1->name() + "\ne=" + std::to_string(v1->edge_size())); //v1->copy(_M_algo.graph);
+		auto algo_e = _M_algo.graph->add_edge(_M_algo.graph_head, algo_v);
+		_M_algo.graph_stack.push_back(algo_e);
+		_M_algo.graph_head = algo_v;
+
+		if(!contains(stack, e1))
+		{
+			stack.push_back(e1);
+
+			e1->orient_start(v);
+
+			ftor->yield(e0, e1, stack);
+
+			if(ftor->descend(e0, e1, stack))
+				depth_first_search(e0, e1, stack, ftor);
+
+			stack.pop_back();
+		}
+		else
+		{
+			// debugging
+			algo_e->_M_dot.color = "green";
+		}
+
+		_M_algo.graph_head = _M_algo.graph_stack.back()->other(_M_algo.graph_head);
+		_M_algo.graph_stack.pop_back();
+	}
+}
+void				THIS::depth_first_search(
+		algo::ftor_dfs_edge * ftor,
+		gr::EDGE_S const & e)
+{
+	gr::algo::stack stack;
+
+	if(1) { // debugging graph
+		_M_algo.graph.reset(new gr::digraph());
+		_M_algo.graph_stack.clear();
+		_M_algo.graph_head = *_M_algo.graph->iter(std::make_shared<gr::plot::vert>(_M_algo.graph, e->v1()->name()));
+	}
+	
+	stack.push_back(e);
+
+	depth_first_search(e, e, stack, ftor);
+
+	_M_algo.graph->dot();
+}
+void				THIS::depth_first_search(algo::ftor_dfs_edge * ftor)
+{
+	for(auto it = edge_begin(); it != edge_end(); ++it)
+	{
+		auto e = *it;
+		depth_first_search(ftor, e);
+		e->swap();
+		depth_first_search(ftor, e);
+	}
+}
+void				THIS::depth_first_search(
+		gr::VERT_S const & v0,
+		gr::VERT_S const & v,
+		algo::stack & stack,
+		algo::ftor_dfs_vert * ftor)
+{
+	/**
+	 */
+	
+	//log<0>() << "depth_first_search_util " << v->name() << " stack size=" << stack.size() << std::endl;
 	
 	for(auto it = v->edge_begin(); it != v->edge_end(); ++it)
 	{
@@ -324,7 +397,7 @@ void				THIS::depth_first_search_util(
 		auto v1 = e->other(v);
 
 		// debug graph
-		auto algo_v = std::make_shared<gr::plot::vert>(_M_algo.graph, v1->name() + " " + std::to_string(v1->edge_size())); //v1->copy(_M_algo.graph);
+		auto algo_v = std::make_shared<gr::plot::vert>(_M_algo.graph, v1->name() + "\ne=" + std::to_string(v1->edge_size())); //v1->copy(_M_algo.graph);
 		auto algo_e = _M_algo.graph->add_edge(_M_algo.graph_head, algo_v);
 		_M_algo.graph_stack.push_back(algo_e);
 		_M_algo.graph_head = algo_v;
@@ -333,52 +406,18 @@ void				THIS::depth_first_search_util(
 		{
 			stack.push_back(e);
 
-			// orient
-			if(*e->v0() != *v)
-			{
-				assert(*e->v1() == *v);
-				e->swap();
-			}
-			assert(*e->v0() == *v);
+			e->orient_start(v);
 
-			// make sure previous starting vertices do not appear in stack
-			auto it1 = ftor->_M_verts_completed.find(v1);
-			if(it1 == ftor->_M_verts_completed.end())
-			{
+			ftor->yield(v0, v1, stack);
 
-				// if we are looking for def1 cycles using cycles2 ftor
-				// then we do not allow repeated verticies
-				// if we find repeated vertices then dont decend any farther
-				if(stack._M_count_gt_2 < 0)
-				{
-					std::cout << "stack count_gt_2 " << stack._M_count_gt_2 << std::endl;
-					assert(0);
-				}
-				if(stack._M_count_gt_2 == 0)
-				{
-					//std::cout << "algo graph stack " << _M_algo.graph_stack << std::endl;
-
-					//log<0>() << "stack = " << stack << std::endl;
-
-					ftor->operator()(v1, stack);
-
-					depth_first_search_util(v1, stack, ftor);
-				}
-				else
-				{
-					algo_e->_M_dot.color = "magenta";
-				}
-			}
-			else
-			{
-				algo_e->_M_dot.color = "orange";
-			}
+			if(ftor->descend(v0, v1, stack))
+				depth_first_search(v0, v1, stack, ftor);
 
 			stack.pop_back();
-
 		}
 		else
 		{
+			// debugging
 			algo_e->_M_dot.color = "green";
 		}
 
@@ -386,59 +425,68 @@ void				THIS::depth_first_search_util(
 		_M_algo.graph_stack.pop_back();
 	}
 }
-void				THIS::depth_first_search(gr::VERT_S const & v, algo::ftor_dfs * ftor)
+void				THIS::depth_first_search(algo::ftor_dfs_vert * ftor, gr::VERT_S const & v)
 {
 	gr::algo::stack stack;
 
-	// debugging graph
-	_M_algo.graph.reset(new gr::digraph());
-	_M_algo.graph_stack.clear();
-	_M_algo.graph_head = *_M_algo.graph->iter(std::make_shared<gr::plot::vert>(_M_algo.graph, v->name()));
+	if(1) { // debugging graph
+		_M_algo.graph.reset(new gr::digraph());
+		_M_algo.graph_stack.clear();
+		_M_algo.graph_head = *_M_algo.graph->iter(std::make_shared<gr::plot::vert>(_M_algo.graph, v->name()));
+	}
 
-	depth_first_search_util(v, stack, ftor);
+	depth_first_search(v, v, stack, ftor);
 
 	_M_algo.graph->dot();
 }
-gr::algo::SET_CYCLE		THIS::cycles()
+void				THIS::depth_first_search(algo::ftor_dfs_vert * ftor)
 {
-	auto v = *_M_verts.begin();
-
-	return cycles(v);
-}
-gr::algo::SET_CYCLE		THIS::cycles2()
-{
-	gr::algo::ftor_dfs_cycle2 ftor;
-
 	for(auto it = vert_begin(); it != vert_end(); ++it)
 	{
-		log<1>() << "cycles starting from " << (*it)->name() << std::endl;
-		depth_first_search(*it, &ftor);
+		//log<1>() << "cycles starting from " << (*it)->name() << std::endl;
 
-		ftor._M_verts_completed.insert(*it);
+		depth_first_search(ftor, *it);
+
+		//ftor->_M_verts_completed.insert(*it);
 	}
-
-	printf("fail inserts = %i\n", ftor._M_count_insert_fail);
-
-	return ftor._M_cycles;
-
 }
-gr::algo::SET_CYCLE		THIS::cycles(gr::VERT_S const & v)
+gr::algo::SET_CYCLE		THIS::cycles0()
 {
-	gr::algo::ftor_dfs_cycle ftor;
+	gr::algo::ftor_dfs_cycle0 ftor;
 
-	depth_first_search(v, &ftor);
+	depth_first_search(&ftor);
 
 	printf("fail inserts = %i\n", ftor._M_count_insert_fail);
 
 	return ftor._M_cycles;
 }
-gr::algo::SET_QUEUE_EDGE	THIS::paths()
+gr::algo::SET_CYCLE		THIS::cycles1()
 {
-	gr::algo::ftor_dfs_path ftor;
+	gr::algo::ftor_dfs_cycle1 ftor;
 
-	auto v = *_M_verts.begin();
+	depth_first_search(&ftor);
 
-	depth_first_search(v, &ftor);
+	printf("fail inserts = %i\n", ftor._M_count_insert_fail);
+
+	return ftor._M_cycles;
+}
+gr::algo::SET_QUEUE_EDGE	THIS::paths0()
+{
+	gr::algo::ftor_dfs_path0 ftor;
+
+	depth_first_search(&ftor);
+
+	printf("fail inserts = %i\n", ftor._M_count_insert_fail);
+
+	return ftor._M_paths;
+}
+gr::algo::SET_QUEUE_EDGE	THIS::paths1()
+{
+	gr::algo::ftor_dfs_path1 ftor;
+
+	depth_first_search(&ftor);
+
+	printf("fail inserts = %i\n", ftor._M_count_insert_fail);
 
 	return ftor._M_paths;
 }
@@ -717,103 +765,6 @@ gr::LAYER_S			THIS::create_layer(bool e)
 	return layer;
 }
 
-gr::algo::ftor_dfs_cycle2::ftor_dfs_cycle2():
-	_M_count_insert_fail(0)
-{
-}
-void	gr::algo::ftor_dfs_cycle2::operator()(
-		gr::VERT_S const & v1,
-		algo::stack & stack)
-{
-	auto g = v1->get_graph();
-	auto algo_g = v1->get_graph()->_M_algo.graph;
-
-	//assert(stack._M_counter[v1] > 0);
-
-	auto e = stack.front();
-
-	if(0){
-	printf("ftor operator e=%p\n",e.get());
-	printf("ftor operator v0=%s v1=%s\n",e->v0()->name().c_str(),v1->name().c_str());
-	printf("ftor operator v0=%p v1=%p\n",e->v0().get(),v1.get());
-	}
-
-	//if(*v1 == *e->v0())
-	if(v1 == e->v0())
-	{
-		// if we are looking for def1 cycles, no repeated vertices
-		if(stack._M_count_gt_2 == 0)
-		{
-			gr::algo::cycle c(stack.begin(), stack.end(), v1);
-
-			c.shift();
-
-			auto ret = _M_cycles.insert(c);
-
-			// mark on algo graph
-			if(ret.second) {
-				g->_M_algo.graph_stack.back()->_M_dot.color="blue";
-			} else {
-				g->_M_algo.graph_stack.back()->_M_dot.color="red";
-			}
-		}
-	}
-	else
-	{
-		g->_M_algo.graph_stack.back()->_M_dot.color="cyan";
-	}
-}
-gr::algo::ftor_dfs_cycle::ftor_dfs_cycle():
-	_M_count_insert_fail(0)
-{
-}
-void	gr::algo::ftor_dfs_cycle::operator()(
-		gr::VERT_S const & v1,
-		algo::stack & stack)
-{
-	auto g = v1->get_graph();
-	auto algo_g = v1->get_graph()->_M_algo.graph;
-
-	// copy the stack
-	algo::stack stack_copy(stack);
-
-	// copy the debug stack
-	std::deque<gr::EDGE_S> algo_stack_copy(g->_M_algo.graph_stack);
-
-	//assert(stack._M_counter[v1] > 0);
-
-	// pop front until we reach v1
-	while((!stack_copy.empty()) && (stack_copy.counter(v1) > 1))
-	{
-		auto e = stack_copy.front();
-
-		if(*v1 == *e->v0())
-		{
-			// if we are looking for def1 cycles
-			if(stack_copy._M_count_gt_2 == 0)
-			{
-				gr::algo::cycle c(stack_copy.begin(), stack_copy.end(), v1);
-
-				c.shift();
-
-				auto ret = _M_cycles.insert(c);
-
-				// mark on algo graph
-				auto algo_e = algo_g->add_edge(algo_stack_copy.front()->v0(), algo_stack_copy.back()->v1());
-				if(ret.second) {
-					algo_e->_M_dot.color = "blue";
-				} else {
-					algo_e->_M_dot.color = "red";
-
-					++_M_count_insert_fail;
-				}
-			}
-		}
-
-		stack_copy.pop_front();
-		algo_stack_copy.pop_front();
-	}
-}
 bool check_path(std::deque<gr::EDGE_S> & stack)
 {
 	for(auto it = stack.begin(); it != stack.end(); ++it)
@@ -843,25 +794,6 @@ bool check_path(std::deque<gr::EDGE_S> & stack)
 	return true;
 }
 
-void	gr::algo::ftor_dfs_path::operator()(
-		gr::VERT_S const & v1,
-		algo::stack & stack)
-{
-	// copy the stack
-	algo::stack stack_copy(stack);
-
-	// pop front until we reach v1
-	while(!stack_copy.empty())
-	{
-		auto e = stack_copy.front();
-
-		gr::QUEUE_EDGE c(stack_copy.begin(), stack_copy.end());
-		//print_cycle(c);
-		if(check_path(c)) _M_paths.insert(c);
-
-		stack_copy.pop_front();
-	}
-}
 gr::GRAPH_S	THIS::copy()
 {
 	auto g = std::make_shared<gr::graph>();

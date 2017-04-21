@@ -119,7 +119,15 @@ std::string		THIS::dot()
 	ss << "node" << v0().get() << v0()->get_graph()->dot_edge_symbol() << "node" << v1().get() << " [color=\"" << _M_dot.color << "\"];";
 	return ss.str();
 }
+void			THIS::orient_start(gr::VERT_S const & v)
+{
+	assert(contains(v));
 
+	// orient
+	if(*v0() != *v) swap();
+	
+	assert(*v0() == *v);
+}
 
 
 

@@ -26,13 +26,8 @@ void print_cycle(T cycle)
 int Factorial(int x) {
 	return (x<=1 ? 1 : x * Factorial(x-1));
 }
-
-void test(int n)
+void construct(gr::GRAPH_S g, int n)
 {
-	printf("test n=%i\n", n);
-
-	auto g = std::make_shared<gr::graph>();
-	
 	// construct
 	std::vector<std::shared_ptr<gr::plot::vert>> verts;
 	
@@ -49,14 +44,9 @@ void test(int n)
 			g->add_edge(std::make_shared<gr::edge>(verts[i], verts[j]));
 		}
 	}
-
-	// cycles
-	
-	// test logging
-
-	g->dot();
-
-	// analytical
+}
+int calc_cycles1(int n)
+{
 	int c = 0;
 	for(int k = 3; k < n+1; ++k)
 	{
@@ -64,25 +54,63 @@ void test(int n)
 		printf("N=%i k=%i res=%i\n",n,k,m);
 		c += m;
 	}
+	return c;
+}
+void test(int n)
+{
+	printf("test n=%i\n", n);
 
-	if(0){
-		//gr::graph::_level_static = 0;
-		auto cycles = g->cycles(verts[0]);
-		//gr::graph::_level_static = 1;
+	auto g = std::make_shared<gr::graph>();
+	
+	construct(g, n);	
 
-		printf("cycles %lu\n", cycles.size());
+	g->dot();
 
-		assert(cycles.size() == c);
+	// cycles0
+
+	auto cycles0 = g->cycles0();
+
+	printf("cycles0 %lu\n", cycles0.size());
+
+	// cycles1
+
+	// analytical solution
+	int c = calc_cycles1(n);
+
+	printf("c = %i\n", c);
+
+	auto cycles1 = g->cycles1();
+
+	printf("cycles1 %lu\n", cycles1.size());
+
+	assert(cycles1.size() == c);
+}
+void test1(int n)
+{
+	auto g = std::make_shared<gr::graph>();
+
+	int i = 0;
+
+	auto v0 = std::make_shared<Vert>(g, std::to_string(i));
+	++i;
+
+	for(int j = 0; j < n; ++j) {
+		auto v1 = std::make_shared<Vert>(g, std::to_string(i));
+		++i;
+		auto v2 = std::make_shared<Vert>(g, std::to_string(i));
+		++i;
+		
+		g->add_edge(v0, v1);
+		g->add_edge(v1, v2);
+		g->add_edge(v2, v0);
 	}
-	{
-		//gr::graph::_level_static = 0;
-		auto cycles = g->cycles2();
-		//gr::graph::_level_static = 1;
 
-		printf("cycles2 %lu\n", cycles.size());
+	g->dot();
 
-		assert(cycles.size() == c);
-	}
+	auto cycles0 = g->cycles0();
+
+	printf("cycles0 %lu\n", cycles0.size());
+
 }
 int main()
 {
@@ -90,8 +118,12 @@ int main()
 	 * the purpose of this test is to calculate the number of def 1 cycles
 	 * and compare to known values
 	 */
+	
+	//for(int i = 2; i < 6; ++i) test1(i);
+	
+	//return 0;
 
-	for(int i = 3; i < 8; ++i) test(i);
+	for(int i = 3; i < 6; ++i) test(i);
 
 	return 0;
 }

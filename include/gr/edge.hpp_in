@@ -42,6 +42,8 @@ public:
 	bool			operator==(edge const &) const;
 	bool			operator!=(edge const &) const;
 
+	void			orient_start(gr::VERT_S const & v);
+
 	std::string		dot();
 
 	edge_dot		_M_dot;

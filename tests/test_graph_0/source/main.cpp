@@ -98,11 +98,7 @@ void test(int n)
 
 	print_verts(g);
 
-	for(int i = 0; i < n; ++i)
-	{
-		printf("\ncycle starting from vert %i\n\n", i);
-		g->cycles();
-	}
+	g->cycles1();
 
 }
 int main()

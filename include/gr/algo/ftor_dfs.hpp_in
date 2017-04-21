@@ -24,42 +24,92 @@ public:
 
 typedef std::set<QUEUE_EDGE, less_queue_edge>	SET_QUEUE_EDGE;
 
-class ftor_dfs
+class ftor_dfs_edge
 {
 public:
-	virtual void	operator()(
+	ftor_dfs_edge(): _M_count_insert_fail(0) {}
+
+	virtual void	yield(
+		gr::EDGE_S const & v0,
+		gr::EDGE_S const & v1,
+		algo::stack & stack) = 0;
+	virtual bool	descend(
+		gr::EDGE_S const & v0,
+		gr::EDGE_S const & v1,
+		algo::stack & stack) = 0;
+
+	int			_M_count_insert_fail;
+};
+class ftor_dfs_vert
+{
+public:
+	ftor_dfs_vert(): _M_count_insert_fail(0) {}
+
+	virtual void	yield(
+		gr::VERT_S const & v0,
 		gr::VERT_S const & v1,
 		algo::stack & stack) = 0;
-	std::set<gr::VERT_S>	_M_verts_completed;
+	virtual bool	descend(
+		gr::VERT_S const & v0,
+		gr::VERT_S const & v1,
+		algo::stack & stack) = 0;
+
+	int			_M_count_insert_fail;
 };
 
-class ftor_dfs_cycle: public ftor_dfs
+class ftor_dfs_cycle0: public ftor_dfs_edge
 {
 public:
-	ftor_dfs_cycle();
-	virtual void	operator()(
+	virtual void	yield(
+		gr::EDGE_S const & v0,
+		gr::EDGE_S const & v1,
+		algo::stack & stack);
+	virtual bool	descend(
+		gr::EDGE_S const & v0,
+		gr::EDGE_S const & v1,
+		algo::stack & stack);
+
+	algo::SET_CYCLE		_M_cycles;
+};
+class ftor_dfs_cycle1: public ftor_dfs_vert
+{
+public:
+	virtual void	yield(
+		gr::VERT_S const & v0,
+		gr::VERT_S const & v1,
+		algo::stack & stack);
+	virtual bool	descend(
+		gr::VERT_S const & v0,
 		gr::VERT_S const & v1,
 		algo::stack & stack);
 
 	algo::SET_CYCLE		_M_cycles;
-	int			_M_count_insert_fail;
 };
-class ftor_dfs_cycle2: public ftor_dfs
+
+class ftor_dfs_path0: public ftor_dfs_edge
 {
 public:
-	ftor_dfs_cycle2();
-	virtual void	operator()(
-		gr::VERT_S const & v1,
+	virtual void	yield(
+		gr::EDGE_S const & v0,
+		gr::EDGE_S const & v1,
+		algo::stack & stack);
+	virtual bool	descend(
+		gr::EDGE_S const & v0,
+		gr::EDGE_S const & v1,
 		algo::stack & stack);
 
-	algo::SET_CYCLE		_M_cycles;
-	int			_M_count_insert_fail;
+	SET_QUEUE_EDGE		_M_paths;
 };
 
-class ftor_dfs_path: public ftor_dfs
+class ftor_dfs_path1: public ftor_dfs_vert
 {
 public:
-	virtual void	operator()(
+	virtual void	yield(
+		gr::VERT_S const & v0,
+		gr::VERT_S const & v1,
+		algo::stack & stack);
+	virtual bool	descend(
+		gr::VERT_S const & v0,
 		gr::VERT_S const & v1,
 		algo::stack & stack);
 

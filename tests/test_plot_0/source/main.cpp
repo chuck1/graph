@@ -50,7 +50,7 @@ void test(int n)
 	// test logging
 	//gr::graph::_level_static = 0;
 
-	auto cycles = g->cycles();
+	auto cycles = g->cycles1();
 
 	printf("cycles %lu\n", cycles.size());
 
@@ -66,9 +66,9 @@ void test(int n)
 	g->dot();
 	
 	// paths
-	auto paths = g->paths();
+	//auto paths = g->paths();
 	
-	printf("paths  %lu\n", paths.size());
+	//printf("paths  %lu\n", paths.size());
 	
 	//for(auto it = paths.begin(); it != paths.end(); ++it) print_cycle(*it);
 

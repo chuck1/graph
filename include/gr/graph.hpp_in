@@ -79,17 +79,31 @@ public:
 
 
 	void				depth_first_search(
-			gr::VERT_S const & v,
-			algo::ftor_dfs *);
-	void				depth_first_search_util(
+			gr::EDGE_S const & v0,
+			gr::EDGE_S const & v,
+			algo::stack & stack,
+			algo::ftor_dfs_edge *);
+	void				depth_first_search(
+			algo::ftor_dfs_edge *,
+			gr::EDGE_S const & v);
+	void				depth_first_search(
+			algo::ftor_dfs_edge *);
+
+	void				depth_first_search(
+			gr::VERT_S const & v0,
 			gr::VERT_S const & v,
 			algo::stack & stack,
-			algo::ftor_dfs *);
+			algo::ftor_dfs_vert *);
+	void				depth_first_search(
+			algo::ftor_dfs_vert *,
+			gr::VERT_S const & v);
+	void				depth_first_search(
+			algo::ftor_dfs_vert *);
 
-	algo::SET_CYCLE			cycles2();
-	algo::SET_CYCLE			cycles();
-	algo::SET_CYCLE			cycles(gr::VERT_S const &);
-	algo::SET_QUEUE_EDGE		paths();
+	algo::SET_CYCLE			cycles0();
+	algo::SET_CYCLE			cycles1();
+	algo::SET_QUEUE_EDGE		paths0();
+	algo::SET_QUEUE_EDGE		paths1();
 
 	/*
 	 * mark each vertex with an index representing the component to which it belongs
