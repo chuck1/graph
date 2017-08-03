@@ -2,7 +2,7 @@
 import os
 import pbs2
 
-self.execfile(os.path.join(os.environ['HOME'],'git/hvac/logs/config.py'))
+self.execfile(os.path.join(__dir__, '../logs/config.py'))
 
 l = pbs2.Library(self, 'graph', __file__)
 

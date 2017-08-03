@@ -1,6 +1,7 @@
 #include <sstream>
 #include <iostream>
 #include <algorithm>
+#include <cmath>
 
 #include <gr/algo/less_cycle.hpp>
 #include <gr/edge.hpp> // gr/edge.hpp_in
