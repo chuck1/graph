@@ -152,7 +152,7 @@ void		gr::repel(gr::GRAPH_S & g)
 	
 	float d0 = 2;
 
-	for(int i = 0; i < 100; ++i)
+	for(int i = 0; i < 1000; ++i)
 	{
 		gr::zero_force(g);
 
@@ -180,21 +180,33 @@ void		gr::repel(gr::GRAPH_S & g)
 		}
 		
 		float m = 0;
-
+		float m_max = 0;
+		
 		// move
 		for(auto it = g->vert_begin(); it != g->vert_end(); ++it)
 		{
 			auto v = *it;
 			float x = v->_M_dot.f_x * 0.1;
 			float y = v->_M_dot.f_y * 0.1;
+
+			float d = sqrt(x*x + y*y);
+			
+			if(d > 1) {
+				x = x / d;
+				y = y / d;
+				d = 1;
+			}
+
 			v->_M_dot.x += x;
 			v->_M_dot.y += y;
-			m += sqrt(x*x + y*y);
+			
+			m += d;
+			m_max = fmax(m_max, d);
 		}
-		printf("m = %8.3e\n", m);
+		printf("m = %8.3e m_max = %8.3e\n", m, m_max);
 
-		record_pos(g);
-		g->dot();
+		//record_pos(g);
+		//g->dot();
 
 		if(m < 1e-2) break;
 	}
