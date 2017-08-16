@@ -10,6 +10,13 @@
 
 typedef gr::container::vert THIS;
 
+THIS::~vert()
+{
+}
+void			THIS::clear()
+{
+	_M_container.clear();
+}
 THIS::iterator		THIS::begin()
 {
 	return _M_container.begin();

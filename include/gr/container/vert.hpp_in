@@ -13,11 +13,15 @@
 class vert
 {
 public:
+	virtual ~vert();
+
 	typedef typename CONT_VERT::iterator	iterator;
 	typedef typename CONT_VERT::value_type	value_type;
 	
 	iterator	begin();
 	iterator	end();
+
+	void		clear();
 
 	unsigned int	size() const;
 

@@ -13,8 +13,14 @@ class vert_dot
 {
 public:
 	vert_dot():
-		pos("")
+		pos(""),
+		x(0),
+		y(0)
 	{}
+	float		x;
+	float		y;
+	float f_x;
+	float f_y;
 	std::string	pos;
 };
 

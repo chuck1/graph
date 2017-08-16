@@ -20,7 +20,7 @@
 #include <gr/vert.hpp> // gr/vert.hpp_in
 #include <gr/edge.hpp> // gr/edge.hpp_in
 #include <gr/layer.hpp>
-#include <gr/util.hpp>
+#include <gr/util.hpp> // gr/util.hpp_in
 
 #include <gr/graph.hpp> // gr/graph.hpp_in
 
@@ -28,6 +28,10 @@ typedef gr::graph THIS;
 
 THIS::graph()
 {
+}
+void				THIS::clear()
+{
+	_M_verts.clear();
 }
 gr::EDGE_S			THIS::add_edge(gr::VERT_S v0, gr::VERT_S v1)
 {
@@ -320,12 +324,16 @@ void				THIS::depth_first_search(
 		assert(e1);
 
 		auto v1 = e1->other(v);
-
+		assert(v1);
+		
 		// debug graph
-		auto algo_v = std::make_shared<gr::plot::vert>(_M_algo.graph, v1->name() + "\ne=" + std::to_string(v1->edge_size())); //v1->copy(_M_algo.graph);
-		auto algo_e = _M_algo.graph->add_edge(_M_algo.graph_head, algo_v);
-		_M_algo.graph_stack.push_back(algo_e);
-		_M_algo.graph_head = algo_v;
+		if(0) {
+			assert(_M_algo.graph);
+			auto algo_v = std::make_shared<gr::plot::vert>(_M_algo.graph, v1->name() + "\ne=" + std::to_string(v1->edge_size())); //v1->copy(_M_algo.graph);
+			auto algo_e = _M_algo.graph->add_edge(_M_algo.graph_head, algo_v);
+			_M_algo.graph_stack.push_back(algo_e);
+			_M_algo.graph_head = algo_v;
+		}
 
 		if(!contains(stack, e1))
 		{
@@ -343,11 +351,13 @@ void				THIS::depth_first_search(
 		else
 		{
 			// debugging
-			algo_e->_M_dot.color = "green";
+			//algo_e->_M_dot.color = "green";
 		}
-
-		_M_algo.graph_head = _M_algo.graph_stack.back()->other(_M_algo.graph_head);
-		_M_algo.graph_stack.pop_back();
+		
+		if(0) {
+			_M_algo.graph_head = _M_algo.graph_stack.back()->other(_M_algo.graph_head);
+			_M_algo.graph_stack.pop_back();
+		}
 	}
 }
 void				THIS::depth_first_search(
@@ -602,7 +612,10 @@ void				THIS::dot_sub0(std::ostream & of)
 {
 	of << "#neato" << std::endl;
 	of << "graph {" << std::endl;
-	of << "overlap=scalexy" << std::endl;
+	
+	// overlap=false overrides manual node positions
+	//of << "overlap=false" << std::endl;
+	
 	of << "splines=false" << std::endl;
 
 	dot_sub1(of);
@@ -613,6 +626,9 @@ void				THIS::dot(std::string filename)
 {
 	std::ofstream of;
 	of.open(filename);
+	
+	//auto c = cycles0();
+	//gr::arrange_dot(c);
 
 	dot_sub0(of);
 }

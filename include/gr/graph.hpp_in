@@ -25,6 +25,7 @@ public:
 
 	graph();
 	virtual ~graph() {}
+	void				clear();
 	GRAPH_S				copy();
 
 	EDGE_S				add_edge(VERT_S v0, VERT_S v1);

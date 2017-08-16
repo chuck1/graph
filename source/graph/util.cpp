@@ -7,7 +7,8 @@
 #include <gr/edge.hpp> // gr/edge.hpp_in
 #include <gr/graph.hpp>
 #include <gr/io.hpp> // gr/io.hpp_in
-#include <gr/vert.hpp>
+#include <gr/vert.hpp> // gr/vert.hpp_in
+#include <gr/iterator/edge_graph.hpp>
 
 #include <gr/util.hpp> // gr/util.hpp_in
 
@@ -45,8 +46,10 @@ void		gr::filter_cycles(gr::algo::SET_CYCLE & cycles)
 }
 void		gr::arrange_dot(gr::algo::SET_CYCLE & cycles)
 {
+	if(cycles.empty()) return;
+
 	auto g = (*(*cycles.begin()).begin())->v0()->get_graph();
-		
+
 	g->log<0>() << "cycles " << cycles.size() << std::endl;
 	
 	filter_cycles(cycles);
@@ -80,8 +83,10 @@ void		gr::arrange_dot(gr::algo::SET_CYCLE & cycles)
 		float a = (float)i / (float)s * 2.0 * M_PI;
 		float x = r * cos(a);
 		float y = r * sin(a);
-		std::cout << a << std::endl;
-		
+	
+		v0->_M_dot.x = x;
+		v0->_M_dot.y = y;
+
 		std::stringstream ss; ss << x << "," << y << "!";
 		v0->_M_dot.pos = ss.str();
 
@@ -89,5 +94,96 @@ void		gr::arrange_dot(gr::algo::SET_CYCLE & cycles)
 
 		++i;
 	}
+
+	// repel
+	gr::repel(g);
 }
+void		gr::zero_force(gr::GRAPH_S & g)
+{
+	for(auto it = g->vert_begin(); it != g->vert_end(); ++it)
+	{
+		auto v1 = *it;
+		v1->_M_dot.f_x = 0;
+		v1->_M_dot.f_y = 0;
+	}
+}
+void		apply_force(gr::VERT_S & v0, gr::VERT_S & v1, float d0, float k)
+{
+	float d_x = v1->_M_dot.x - v0->_M_dot.x;
+	float d_y = v1->_M_dot.y - v0->_M_dot.y;
+
+	float d = sqrt(d_x*d_x + d_y*d_y);
+	
+	if(d < 0.0001) return;
+	
+	float f_x = d_x / d * (d - d0) * k;
+	float f_y = d_y / d * (d - d0) * k;
+
+	printf("d  =%f\n", d);
+	printf("d_x=%f\n", d_x);
+	printf("d_y=%f\n", d_y);
+	printf("f_x=%f\n", f_x);
+	printf("f_y=%f\n", f_y);
+
+	v0->_M_dot.f_x += f_x;
+	v0->_M_dot.f_y += f_y;
+
+	v1->_M_dot.f_x -= f_x;
+	v1->_M_dot.f_y -= f_y;
+}
+void		gr::repel(gr::GRAPH_S & g)
+{
+	auto v = g->vert_size();
+	
+	float d0 = 2;
+
+	for(int i = 0; i < 10; ++i)
+	{
+		gr::zero_force(g);
+
+		unsigned int i1 = 0;
+		for(auto it1 = g->vert_begin(); it1 != g->vert_end(); ++it1, ++i1)
+		{
+			unsigned int i2 = 0;
+			for(auto it2 = g->vert_begin(); it2 != g->vert_end(); ++it2, ++i2)
+			{
+				if(i1 == i2) break;
+
+				auto v0 = *it1;
+				auto v1 = *it2;
+
+				apply_force(v0, v1, d0, 1);
+			}	
+		}
+
+		for(auto it = g->edge_begin(); it != g->edge_end(); ++it)
+		{
+			auto e = *it;
+			auto v0 = e->v0();
+			auto v1 = e->v1();
+			apply_force(v0, v1, d0, 2);
+		}
+
+		// move
+		for(auto it = g->vert_begin(); it != g->vert_end(); ++it)
+		{
+			auto v = *it;
+			v->_M_dot.x += v->_M_dot.f_x * 0.5;
+			v->_M_dot.y += v->_M_dot.f_y * 0.5;
+		}
+	}
+
+	// record
+	for(auto it = g->vert_begin(); it != g->vert_end(); ++it)
+	{
+		auto v = *it;
+		std::stringstream ss;
+		ss << v->_M_dot.x << "," << v->_M_dot.y << "!";
+		v->_M_dot.pos = ss.str();
+	}
+}
+
+
+
+
 

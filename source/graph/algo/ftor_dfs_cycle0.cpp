@@ -23,7 +23,7 @@ void	THIS::yield(
 
 		auto ret = _M_cycles.insert(c);
 
-		if(1) { // debugging
+		if(0) { // debugging
 			// mark on algo graph
 			if(ret.second) {
 				g->_M_algo.graph_stack.back()->_M_dot.color="blue";
@@ -33,7 +33,7 @@ void	THIS::yield(
 			}
 		}
 	} else {
-		if(1) { // debugging
+		if(0) { // debugging
 			g->_M_algo.graph_stack.back()->_M_dot.color="cyan";
 		}
 	}
