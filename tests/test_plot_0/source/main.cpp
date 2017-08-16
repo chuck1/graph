@@ -49,18 +49,25 @@ void test(int n)
 	
 	// test logging
 	//gr::graph::_level_static = 0;
+	/*
 
 	auto cycles = g->cycles1();
-
 	printf("cycles %lu\n", cycles.size());
 
 	gr::filter_cycles(cycles);
 
 	printf("cycles %lu\n", cycles.size());
-	
+	*/
 	//for(auto it = cycles.begin(); it != cycles.end(); ++it) print_cycle(*it);
 	
-	//gr::arrange_dot(cycles);
+
+	auto cycles0 = g->cycles0();
+	printf("cycles0 %lu\n", cycles0.size());
+	
+	auto cycles1 = g->cycles1();
+	printf("cycles1 %lu\n", cycles1.size());
+
+	gr::arrange_dot(cycles0);
 
 	// dot
 	g->dot();
@@ -80,7 +87,8 @@ int main()
 	 * and compare to known values
 	 */
 	
-	for(int i = 3; i < 7; ++i) test(i);
+	//for(int i = 3; i < 7; ++i) test(i);
+	test(8);
 
 	return 0;
 }

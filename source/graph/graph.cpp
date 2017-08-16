@@ -376,7 +376,7 @@ void				THIS::depth_first_search(
 
 	depth_first_search(e, e, stack, ftor);
 
-	_M_algo.graph->dot();
+	//_M_algo.graph->dot();
 }
 void				THIS::depth_first_search(algo::ftor_dfs_edge * ftor)
 {
@@ -447,7 +447,7 @@ void				THIS::depth_first_search(algo::ftor_dfs_vert * ftor, gr::VERT_S const & 
 
 	depth_first_search(v, v, stack, ftor);
 
-	_M_algo.graph->dot();
+	//_M_algo.graph->dot();
 }
 void				THIS::depth_first_search(algo::ftor_dfs_vert * ftor)
 {
@@ -627,9 +627,6 @@ void				THIS::dot(std::string filename)
 	std::ofstream of;
 	of.open(filename);
 	
-	//auto c = cycles0();
-	//gr::arrange_dot(c);
-
 	dot_sub0(of);
 }
 void				THIS::components_util(gr::VERT_S const & u, int c)

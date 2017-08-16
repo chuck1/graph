@@ -107,7 +107,15 @@ void		gr::zero_force(gr::GRAPH_S & g)
 		v1->_M_dot.f_y = 0;
 	}
 }
-void		apply_force(gr::VERT_S & v0, gr::VERT_S & v1, float d0, float k)
+float		force_repel(float d, float d0, float k)
+{
+	return k / d;
+}
+float		force_spring(float d, float d0, float k)
+{
+	return (d0 - d) * k;
+}
+void		apply_force(gr::VERT_S & v0, gr::VERT_S & v1, float d0, float k, float(*force)(float,float,float))
 {
 	float d_x = v1->_M_dot.x - v0->_M_dot.x;
 	float d_y = v1->_M_dot.y - v0->_M_dot.y;
@@ -115,21 +123,28 @@ void		apply_force(gr::VERT_S & v0, gr::VERT_S & v1, float d0, float k)
 	float d = sqrt(d_x*d_x + d_y*d_y);
 	
 	if(d < 0.0001) return;
-	
-	float f_x = d_x / d * (d - d0) * k;
-	float f_y = d_y / d * (d - d0) * k;
 
-	printf("d  =%f\n", d);
-	printf("d_x=%f\n", d_x);
-	printf("d_y=%f\n", d_y);
-	printf("f_x=%f\n", f_x);
-	printf("f_y=%f\n", f_y);
+	float f = (*force)(d, d0, k);
 
-	v0->_M_dot.f_x += f_x;
-	v0->_M_dot.f_y += f_y;
+	float f_x = d_x / d * f;
+	float f_y = d_y / d * f;
 
-	v1->_M_dot.f_x -= f_x;
-	v1->_M_dot.f_y -= f_y;
+
+	v0->_M_dot.f_x -= f_x;
+	v0->_M_dot.f_y -= f_y;
+
+	v1->_M_dot.f_x += f_x;
+	v1->_M_dot.f_y += f_y;
+}
+void		record_pos(gr::GRAPH_S & g)
+{
+	for(auto it = g->vert_begin(); it != g->vert_end(); ++it)
+	{
+		auto v = *it;
+		std::stringstream ss;
+		ss << v->_M_dot.x << "," << v->_M_dot.y << "!";
+		v->_M_dot.pos = ss.str();
+	}
 }
 void		gr::repel(gr::GRAPH_S & g)
 {
@@ -137,7 +152,7 @@ void		gr::repel(gr::GRAPH_S & g)
 	
 	float d0 = 2;
 
-	for(int i = 0; i < 10; ++i)
+	for(int i = 0; i < 100; ++i)
 	{
 		gr::zero_force(g);
 
@@ -152,7 +167,7 @@ void		gr::repel(gr::GRAPH_S & g)
 				auto v0 = *it1;
 				auto v1 = *it2;
 
-				apply_force(v0, v1, d0, 1);
+				apply_force(v0, v1, 0, 1, force_repel);
 			}	
 		}
 
@@ -161,26 +176,30 @@ void		gr::repel(gr::GRAPH_S & g)
 			auto e = *it;
 			auto v0 = e->v0();
 			auto v1 = e->v1();
-			apply_force(v0, v1, d0, 2);
+			apply_force(v0, v1, d0, 1, force_spring);
 		}
+		
+		float m = 0;
 
 		// move
 		for(auto it = g->vert_begin(); it != g->vert_end(); ++it)
 		{
 			auto v = *it;
-			v->_M_dot.x += v->_M_dot.f_x * 0.5;
-			v->_M_dot.y += v->_M_dot.f_y * 0.5;
+			float x = v->_M_dot.f_x * 0.1;
+			float y = v->_M_dot.f_y * 0.1;
+			v->_M_dot.x += x;
+			v->_M_dot.y += y;
+			m += sqrt(x*x + y*y);
 		}
+		printf("m = %8.3e\n", m);
+
+		record_pos(g);
+		g->dot();
+
+		if(m < 1e-2) break;
 	}
 
-	// record
-	for(auto it = g->vert_begin(); it != g->vert_end(); ++it)
-	{
-		auto v = *it;
-		std::stringstream ss;
-		ss << v->_M_dot.x << "," << v->_M_dot.y << "!";
-		v->_M_dot.pos = ss.str();
-	}
+	record_pos(g);
 }
 
 

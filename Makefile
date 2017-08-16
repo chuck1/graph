@@ -16,7 +16,13 @@ build/dot/pdf/%.pdf: build/dot/%.dot
 	#dot -Tpdf -o$@ $^
 	#fdp -Tpdf -o$@ $^
 
+build/dot/png/%.png: build/dot/%.dot
+	@mkdir -p $(dir $@)
+	@bash build_dot.bash $< '-Tpng -o$@ $^'
+
 dot: $(pdf_files)
+
+png: $(png_files)
 
 dotclean:
 	rm -rf build/dot/pdf
