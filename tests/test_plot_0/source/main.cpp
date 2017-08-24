@@ -42,8 +42,29 @@ void test(int n)
 	for(int i = 0; i < n; ++i)
 	{
 		if(i > 0) g->add_edge(std::make_shared<gr::edge>(verts[i-1], verts[i]));
-		g->add_edge(std::make_shared<gr::edge>(verts[i], verts[0]));
+		//g->add_edge(std::make_shared<gr::edge>(verts[i], verts[0]));
 	}
+	g->add_edge(std::make_shared<gr::edge>(verts[0], verts[n-1]));
+	
+	// attachment points for second cycle
+	int i0 = 0;
+	int i1 = n / 2 - 1;
+	
+	// number of vertices common to original cycle and new cycle
+	int n0 = i1 - i0 + 1;
+
+	// number of new vertices
+	int n1 = n - n0 - 1;
+
+	for(int i = 0; i < n1; ++i)
+	{
+		std::stringstream ss; ss << i + n;
+		verts.push_back(std::make_shared<Vert>(g, ss.str()));
+		if(i > 0) g->add_edge(std::make_shared<gr::edge>(verts[n+i-1], verts[n+i]));
+	}
+	g->add_edge(std::make_shared<gr::edge>(verts[i0], verts[n]));
+	g->add_edge(std::make_shared<gr::edge>(verts[i1], verts[n+n1-1]));
+
 
 	// cycles
 	
