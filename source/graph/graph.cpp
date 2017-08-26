@@ -312,12 +312,8 @@ void				THIS::depth_first_search(
 		algo::stack & stack,
 		algo::ftor_dfs_edge * ftor)
 {
-	/**
-	 */
-	
-	//log<0>() << "depth_first_search_util " << v->name() << " stack size=" << stack.size() << std::endl;
-	
 	auto v = e->v1();
+
 	for(auto it = v->edge_begin(); it != v->edge_end(); ++it)
 	{
 		auto e1 = *it;
@@ -326,15 +322,6 @@ void				THIS::depth_first_search(
 		auto v1 = e1->other(v);
 		assert(v1);
 		
-		// debug graph
-		if(0) {
-			assert(_M_algo.graph);
-			auto algo_v = std::make_shared<gr::plot::vert>(_M_algo.graph, v1->name() + "\ne=" + std::to_string(v1->edge_size())); //v1->copy(_M_algo.graph);
-			auto algo_e = _M_algo.graph->add_edge(_M_algo.graph_head, algo_v);
-			_M_algo.graph_stack.push_back(algo_e);
-			_M_algo.graph_head = algo_v;
-		}
-
 		if(!contains(stack, e1))
 		{
 			stack.push_back(e1);
@@ -348,16 +335,6 @@ void				THIS::depth_first_search(
 
 			stack.pop_back();
 		}
-		else
-		{
-			// debugging
-			//algo_e->_M_dot.color = "green";
-		}
-		
-		if(0) {
-			_M_algo.graph_head = _M_algo.graph_stack.back()->other(_M_algo.graph_head);
-			_M_algo.graph_stack.pop_back();
-		}
 	}
 }
 void				THIS::depth_first_search(
@@ -366,17 +343,9 @@ void				THIS::depth_first_search(
 {
 	gr::algo::stack stack;
 
-	if(1) { // debugging graph
-		_M_algo.graph.reset(new gr::digraph());
-		_M_algo.graph_stack.clear();
-		_M_algo.graph_head = *_M_algo.graph->iter(std::make_shared<gr::plot::vert>(_M_algo.graph, e->v1()->name()));
-	}
-	
 	stack.push_back(e);
 
 	depth_first_search(e, e, stack, ftor);
-
-	//_M_algo.graph->dot();
 }
 void				THIS::depth_first_search(algo::ftor_dfs_edge * ftor)
 {
@@ -394,11 +363,6 @@ void				THIS::depth_first_search(
 		algo::stack & stack,
 		algo::ftor_dfs_vert * ftor)
 {
-	/**
-	 */
-	
-	//log<0>() << "depth_first_search_util " << v->name() << " stack size=" << stack.size() << std::endl;
-	
 	for(auto it = v->edge_begin(); it != v->edge_end(); ++it)
 	{
 		auto e = *it;
@@ -453,8 +417,6 @@ void				THIS::depth_first_search(algo::ftor_dfs_vert * ftor)
 {
 	for(auto it = vert_begin(); it != vert_end(); ++it)
 	{
-		//log<1>() << "cycles starting from " << (*it)->name() << std::endl;
-
 		depth_first_search(ftor, *it);
 
 		//ftor->_M_verts_completed.insert(*it);
