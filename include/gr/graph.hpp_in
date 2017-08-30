@@ -105,7 +105,12 @@ public:
 	algo::SET_CYCLE			cycles1();
 	algo::SET_QUEUE_EDGE		paths0();
 	algo::SET_QUEUE_EDGE		paths1();
-
+	
+	/**
+	 * check is there exists a cycle with edge e
+	 */
+	bool				cycle_exists(gr::EDGE_S const & e);
+	
 	/*
 	 * mark each vertex with an index representing the component to which it belongs
 	 * a component is a subgraph that is disconnected from the rest of the graph

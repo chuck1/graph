@@ -872,6 +872,36 @@ void				gr::digraph::dot_sub0(std::ostream & of)
 }
 std::string			gr::digraph::dot_edge_symbol() { return " -> "; }
 
+bool	cycle_exists_(gr::VERT_S const & v0, gr::VERT_S const & v)
+{
+	for(auto it = v->edge_begin(); it != v->edge_end(); ++it)
+	{
+		auto e = *it;
+		
+		if(e->_M_visited) continue;
+		e->_M_visited = true;
+
+		auto v1 = e->other(v);
+		if(*v1 == *v0) return true;
+		cycle_exists_(v0, v1);
+	}
+}
+bool				THIS::cycle_exists(gr::EDGE_S const & e)
+{
+	// initialize
+	for(auto it = edge_begin(); it != edge_end(); ++it)
+	{
+		(*it)->_M_visited = false;
+	}
+	
+	auto v0 = e->v0();
+	auto v1 = e->v1();
+	
+	e->_M_visited = true;
+
+	return cycle_exists_(v0, v1);
+}
+
 
 
 

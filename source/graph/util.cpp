@@ -56,45 +56,45 @@ void		gr::arrange_dot(gr::algo::SET_CYCLE & cycles)
 
 	g->log<0>() << "cycles " << cycles.size() << std::endl;
 
-	if(cycles.empty()) return;
+	if(!cycles.empty()) {
 
-	// get long cycle
-	auto c = *(--cycles.end());
+		// get long cycle
+		auto c = *(--cycles.end());
 
-	std::for_each(c.begin(), c.end(), [](gr::EDGE_S const & e){  });
-	
-	unsigned int s = c.size();
-	unsigned int i = 0;
+		std::for_each(c.begin(), c.end(), [](gr::EDGE_S const & e){  });
 
-	float r = s * 2.0 / 2.0 / M_PI;
+		unsigned int s = c.size();
+		unsigned int i = 0;
 
-	auto v0 = c._M_v;
-	
-	g->log<0>() << "cycle = " << c.container() << std::endl;
+		float r = s * 2.0 / 2.0 / M_PI;
 
-	for(auto it = c.begin(); it != c.end(); ++it)
-	{
-		g->log<0>() << "v0 = " << v0->name() << std::endl;
+		auto v0 = c._M_v;
 
-		auto e = *it;
+		g->log<0>() << "cycle = " << c.container() << std::endl;
 
-		e->_M_dot.color="red";
-		
-		float a = (float)i / (float)s * 2.0 * M_PI;
-		float x = r * cos(a);
-		float y = r * sin(a);
-	
-		v0->_M_dot.x = x;
-		v0->_M_dot.y = y;
+		for(auto it = c.begin(); it != c.end(); ++it)
+		{
+			g->log<0>() << "v0 = " << v0->name() << std::endl;
 
-		std::stringstream ss; ss << x << "," << y << "!";
-		v0->_M_dot.pos = ss.str();
+			auto e = *it;
 
-		v0 = e->other(v0);
+			e->_M_dot.color="red";
 
-		++i;
+			float a = (float)i / (float)s * 2.0 * M_PI;
+			float x = r * cos(a);
+			float y = r * sin(a);
+
+			v0->_M_dot.x = x;
+			v0->_M_dot.y = y;
+
+			std::stringstream ss; ss << x << "," << y << "!";
+			v0->_M_dot.pos = ss.str();
+
+			v0 = e->other(v0);
+
+			++i;
+		}
 	}
-
 	// repel
 	gr::repel(g);
 }
@@ -121,7 +121,7 @@ void		apply_force(gr::VERT_S & v0, gr::VERT_S & v1, float d0, float k, float(*fo
 	float d_y = v1->_M_dot.y - v0->_M_dot.y;
 
 	float d = sqrt(d_x*d_x + d_y*d_y);
-	
+
 	if(d < 0.0001) return;
 
 	float f = (*force)(d, d0, k);
@@ -149,7 +149,7 @@ void		record_pos(gr::GRAPH_S & g)
 void		gr::repel(gr::GRAPH_S & g)
 {
 	auto v = g->vert_size();
-	
+
 	float d0 = 2;
 
 	for(int i = 0; i < 1000; ++i)
@@ -178,10 +178,10 @@ void		gr::repel(gr::GRAPH_S & g)
 			auto v1 = e->v1();
 			apply_force(v0, v1, d0, 1, force_spring);
 		}
-		
+
 		float m = 0;
 		float m_max = 0;
-		
+
 		// move
 		for(auto it = g->vert_begin(); it != g->vert_end(); ++it)
 		{
@@ -190,7 +190,7 @@ void		gr::repel(gr::GRAPH_S & g)
 			float y = v->_M_dot.f_y * 0.1;
 
 			float d = sqrt(x*x + y*y);
-			
+
 			if(d > 1) {
 				x = x / d;
 				y = y / d;
@@ -199,7 +199,7 @@ void		gr::repel(gr::GRAPH_S & g)
 
 			v->_M_dot.x += x;
 			v->_M_dot.y += y;
-			
+
 			m += d;
 			m_max = fmax(m_max, d);
 		}
