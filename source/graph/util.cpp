@@ -148,7 +148,7 @@ void		record_pos(gr::GRAPH_S & g)
 }
 void		gr::repel(gr::GRAPH_S & g)
 {
-	auto v = g->vert_size();
+	//auto v = g->vert_size();
 
 	float d0 = 2;
 

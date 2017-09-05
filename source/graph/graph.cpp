@@ -278,7 +278,7 @@ void		rotate_cycle(gr::QUEUE_EDGE & c)
 		}
 	}
 
-	int d = std::distance(it0, c.end());
+	//int d = std::distance(it0, c.end());
 
 	int s = c.size();
 
@@ -885,6 +885,8 @@ bool	cycle_exists_(gr::VERT_S const & v0, gr::VERT_S const & v)
 		if(*v1 == *v0) return true;
 		cycle_exists_(v0, v1);
 	}
+	
+	return false;
 }
 bool				THIS::cycle_exists(gr::EDGE_S const & e)
 {

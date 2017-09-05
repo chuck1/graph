@@ -75,7 +75,7 @@ void test(int n)
 	// cycles1
 
 	// analytical solution
-	int c = calc_cycles1(n);
+	unsigned int c = calc_cycles1(n);
 
 	printf("c = %i\n", c);
 

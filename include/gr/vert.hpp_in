@@ -13,9 +13,9 @@ class vert_dot
 {
 public:
 	vert_dot():
-		pos(""),
 		x(0),
-		y(0)
+		y(0),
+		pos("")
 	{}
 	float		x;
 	float		y;

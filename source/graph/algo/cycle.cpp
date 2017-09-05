@@ -56,7 +56,7 @@ void			THIS::shift()
 		}
 	}
 
-	int d = std::distance(it0, _M_edges.end());
+	//int d = std::distance(it0, _M_edges.end());
 
 	int s = _M_edges.size();
 
