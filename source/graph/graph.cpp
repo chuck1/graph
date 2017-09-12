@@ -19,6 +19,7 @@
 #include <gr/pair_comp.hpp> // gr/pair_comp.hpp.in
 #include <gr/vert.hpp> // gr/vert.hpp_in
 #include <gr/edge.hpp> // gr/edge.hpp_in
+#include <gr/edge_virt.hpp> // gr/edge_virt.hpp_in
 #include <gr/layer.hpp>
 #include <gr/util.hpp> // gr/util.hpp_in
 
@@ -36,6 +37,14 @@ void				THIS::clear()
 gr::EDGE_S			THIS::add_edge(gr::VERT_S v0, gr::VERT_S v1)
 {
 	auto e = std::make_shared<gr::edge>(v0, v1);
+	// iter adds the vert to the graph's container if not already there
+	(*iter(v0))->add_edge(e);
+	(*iter(v1))->add_edge(e);
+	return e;
+}
+gr::EDGE_S			THIS::add_virtual_edge(gr::VERT_S v0, gr::VERT_S v1, gr::VERT_S v)
+{
+	auto e = std::make_shared<gr::edge_virt>(v0, v1, v);
 	// iter adds the vert to the graph's container if not already there
 	(*iter(v0))->add_edge(e);
 	(*iter(v1))->add_edge(e);
@@ -422,13 +431,48 @@ void				THIS::depth_first_search(algo::ftor_dfs_vert * ftor)
 		//ftor->_M_verts_completed.insert(*it);
 	}
 }
+void				THIS::mark_leaves_recursive(gr::LAYER_S layer)
+{
+	unsigned int C = 0;
+	while(true)
+	{
+		unsigned int c = 0;
+
+		auto f = [&](gr::VERT_S const & v, gr::EDGE_S const &)
+		{
+			v->_M_layer = layer;
+			++c;
+		};
+
+		for_each_leaf(f);
+		
+		C += c;
+		if(c == 0) break;
+	}
+	std::cout << "mark leaves " << C << std::endl;
+}
 gr::algo::SET_CYCLE		THIS::cycles0()
 {
+	std::cout << "cycles0 e: " << edge_size() << " v: " << vert_size() << std::endl;
+
+	// preliminary
+	auto layer = create_layer(false);
+	mark_leaves_recursive(layer);
+	
+	mark_bridges(layer);
+
+	std::cout << "cycles0 e: " << edge_size() << " v: " << vert_size() << std::endl;
+
+	// actual algorithm
+
 	gr::algo::ftor_dfs_cycle0 ftor;
 
 	depth_first_search(&ftor);
 
 	printf("fail inserts = %i\n", ftor._M_count_insert_fail);
+	
+	// cleanup
+	layer->_M_enabled = true;
 
 	return ftor._M_cycles;
 }
@@ -468,10 +512,13 @@ void				THIS::vert_erase_layer(unsigned int l)
 
 	auto const & layer = _M_layers[l];
 
-	for(auto i = vert_begin(); i != vert_end();) {
-
-		if(!(*i)->_M_layer.expired()) {
-			if((*i)->_M_layer.lock() == layer) {
+	for(auto i = vert_begin(); i != vert_end();)
+	{
+		auto v = *i;
+		if(!v->_M_layer.expired())
+		{
+			if(v->_M_layer.lock() == layer)
+			{
 				i = vert_erase(i);
 				continue;
 			}
@@ -480,7 +527,7 @@ void				THIS::vert_erase_layer(unsigned int l)
 		++i;
 	}
 }
-void				THIS::bridges_sub(gr::VERT_S const & n, int & t, std::vector<gr::edge> & ret)
+void				THIS::bridges_sub(gr::VERT_S const & n, int & t, std::vector<gr::EDGE_S> & ret)
 {
 	n->bridge._M_visited = true;
 
@@ -503,7 +550,7 @@ void				THIS::bridges_sub(gr::VERT_S const & n, int & t, std::vector<gr::edge> &
 
 			if(v->bridge._M_low > n->bridge._M_disc)
 			{
-				ret.push_back(*e);
+				ret.push_back(e);
 			}
 		}
 		else if(v != n->bridge._M_parent.lock())
@@ -512,9 +559,17 @@ void				THIS::bridges_sub(gr::VERT_S const & n, int & t, std::vector<gr::edge> &
 		}
 	}
 }
-std::vector<gr::edge>		THIS::bridges()
+void				THIS::mark_bridges(gr::LAYER_S layer)
 {
-	std::vector<gr::edge> ret;
+	auto l = bridges();
+	for(auto e : l)
+	{
+		e->_M_layer = layer;
+	}
+}
+std::vector<gr::EDGE_S>		THIS::bridges()
+{
+	std::vector<gr::EDGE_S> ret;
 
 	int t = 0;
 
@@ -530,6 +585,8 @@ std::vector<gr::edge>		THIS::bridges()
 			bridges_sub(*i, t, ret);
 		}
 	}
+	
+	std::cout << "bridges: " << ret.size() << std::endl;
 
 	return ret;
 }
@@ -574,10 +631,10 @@ void				THIS::dot_sub0(std::ostream & of)
 {
 	of << "#neato" << std::endl;
 	of << "graph {" << std::endl;
-	
+
 	// overlap=false overrides manual node positions
 	//of << "overlap=false" << std::endl;
-	
+
 	of << "splines=false" << std::endl;
 
 	dot_sub1(of);
@@ -588,7 +645,7 @@ void				THIS::dot(std::string filename)
 {
 	std::ofstream of;
 	of.open(filename);
-	
+
 	dot_sub0(of);
 }
 void				THIS::components_util(gr::VERT_S const & u, int c)
@@ -601,15 +658,16 @@ void				THIS::components_util(gr::VERT_S const & u, int c)
 	for(auto i = u->edge_begin(); i != u->edge_end(); ++i)
 	{
 		auto e = *i;
-		unsigned int d = std::distance(i, u->edge_end());
-		assert(d!=0);
+		
+		// what?
+		unsigned int d = std::distance(i, u->edge_end()); assert(d!=0);
 
 		gr::VERT_S const & v = e->other(u);
 
-		//assert(u == i->_M_v0.lock());
-		assert(v != u);
+		// why?
+		//assert(v != u);
 
-		if(!v) throw std::exception();
+		assert(v);
 
 		if(!(v->comp._M_visited))
 		{
@@ -678,14 +736,6 @@ void				THIS::edge_enable()
 		e->_M_layer.reset();
 	}
 }
-/*
-   void				THIS::vert_enable()
-   {
-   for(auto i = vert_begin(); i != vert_end(); ++i) {
-   (*i)->_M_enabled = true;
-   }
-   }
-   */
 void				THIS::layer_move(unsigned int i0, unsigned int i1)
 {
 	// move all verts in i0 to i1
@@ -711,9 +761,12 @@ void				THIS::layer_move(unsigned int i0, unsigned int i1)
 }
 unsigned int			THIS::vert_size()
 {
-	//auto s1 = _M_verts.size();
 	auto s2 = std::distance(vert_begin(), vert_end());
-	//assert(s1 == s2);
+	return s2;
+}
+unsigned int			THIS::comp_vert_size(int c)
+{
+	auto s2 = std::distance(comp_vert_begin(c), comp_vert_end(c));
 	return s2;
 }
 unsigned int			THIS::edge_size()
@@ -787,32 +840,11 @@ gr::GRAPH_S	THIS::copy()
 
 	return g;
 }
-void		THIS::simplify()
+bool		THIS::add_virtual_edges(gr::LAYER_S layer)
 {
-	std::cout << "graph::simplify" << std::endl;
+	bool b = false;
 
-	unsigned int s = vert_size();
-	while(true)
-	{
-		for(auto it = vert_begin(); it != vert_end();)
-		{
-			auto v = *it;
-			if(v->edge_size() == 1)
-			{
-				it = vert_erase(it);
-				continue;
-			}
-
-			++it;
-		}
-		unsigned int s1 = vert_size();
-		if(s==s1) break;
-		s=s1;
-	}
-
-	// step 2
-
-	for(auto it = vert_begin(); it != vert_end();)
+	for(auto it = vert_begin(); it != vert_end(); ++it)
 	{
 		auto v = *it;
 		if(v->edge_size() == 2)
@@ -825,36 +857,28 @@ void		THIS::simplify()
 			auto v0 = e0->other(v);
 			auto v1 = e1->other(v);
 
-			add_edge(v0, v1);
+			add_virtual_edge(v0, v1, v);
+			
+			// remove middle vertex
+			v->_M_layer = layer;
 
-			it = vert_erase(it);
-			continue;
+			b = true;
 		}
-
-		++it;
 	}
 
-	// step 1 again
+	return b;
+}
+void		THIS::simplify()
+{
+	std::cout << "graph::simplify" << std::endl;
 
-	s = vert_size();
-	while(true)
-	{
-		for(auto it = vert_begin(); it != vert_end();)
-		{
-			auto v = *it;
-			if(v->edge_size() == 1)
-			{
-				it = vert_erase(it);
-				continue;
-			}
+	auto layer = create_layer(false);
+	
+	// remove leaves	
+	mark_leaves_recursive(layer);
 
-			++it;
-		}
-		unsigned int s1 = vert_size();
-		if(s==s1) break;
-		s=s1;
-	}
-
+	// virtual edges
+	while(add_virtual_edges(layer));
 }
 std::string			THIS::dot_edge_symbol() { return " -- "; }
 
@@ -877,7 +901,7 @@ bool	cycle_exists_(gr::VERT_S const & v0, gr::VERT_S const & v)
 	for(auto it = v->edge_begin(); it != v->edge_end(); ++it)
 	{
 		auto e = *it;
-		
+
 		if(e->_M_visited) continue;
 		e->_M_visited = true;
 
@@ -885,7 +909,7 @@ bool	cycle_exists_(gr::VERT_S const & v0, gr::VERT_S const & v)
 		if(*v1 == *v0) return true;
 		cycle_exists_(v0, v1);
 	}
-	
+
 	return false;
 }
 bool				THIS::cycle_exists(gr::EDGE_S const & e)
@@ -895,13 +919,18 @@ bool				THIS::cycle_exists(gr::EDGE_S const & e)
 	{
 		(*it)->_M_visited = false;
 	}
-	
+
 	auto v0 = e->v0();
 	auto v1 = e->v1();
-	
+
 	e->_M_visited = true;
 
 	return cycle_exists_(v0, v1);
+}
+void				THIS::arrange()
+{
+	auto c = cycles0();
+	gr::arrange_dot(c);
 }
 
 

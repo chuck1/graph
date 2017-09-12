@@ -1,0 +1,18 @@
+{{ include_block_open }}
+
+#include <gr/edge.hpp> // gr/edge.hpp_in
+
+{{ namespace_open }}
+
+class edge_virt: public gr::edge
+{
+public:
+	edge_virt(gr::VERT_S const & v0, gr::VERT_S const & v1, gr::VERT_S const);
+	
+	gr::VERT_W		_M_v_replaced;
+};
+
+{{ namespace_close }}
+
+{{ include_block_close }}
+

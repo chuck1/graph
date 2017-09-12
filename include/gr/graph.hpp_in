@@ -29,6 +29,10 @@ public:
 	GRAPH_S				copy();
 
 	EDGE_S				add_edge(VERT_S v0, VERT_S v1);
+	/*
+	 * v should be a vertex with exactly two neighbors, v0 and v1
+	 */
+	EDGE_S				add_virtual_edge(VERT_S v0, VERT_S v1, VERT_S v);
 	void				add_edge(EDGE_S e);
 
 	void				edge_enable();
@@ -55,6 +59,7 @@ public:
 
 	gr::iterator::vert_comp		comp_vert_begin(int);
 	gr::iterator::vert_comp		comp_vert_end(int);
+	unsigned int			comp_vert_size(int);
 
 
 	/** edge functions */
@@ -75,8 +80,11 @@ public:
 	void				distance_util(gr::VERT_S);
 	void				distance(gr::VERT_S const &);
 
-	void				bridges_sub(VERT_S const & n, int & t, std::vector<gr::edge> & ret);
-	std::vector<gr::edge>		bridges();
+	void				bridges_sub(VERT_S const & n, int & t, std::vector<gr::EDGE_S> & ret);
+	std::vector<gr::EDGE_S>		bridges();
+	void				mark_bridges(gr::LAYER_S layer);
+
+	bool				add_virtual_edges(gr::LAYER_S layer);
 
 
 	void				depth_first_search(
@@ -118,6 +126,10 @@ public:
 	int				components();
 	void				components_util(VERT_S const & n, int c);
 	void				component(int c);
+
+	void				mark_leaves_recursive(gr::LAYER_S layer);
+
+	void				arrange();
 
 	virtual void			dot_sub0(std::ostream & of);
 	virtual void			dot_sub1(std::ostream & of);

@@ -15,13 +15,15 @@ public:
 	vert_dot():
 		x(0),
 		y(0),
-		pos("")
+		pos(""),
+		shape("oval")
 	{}
 	float		x;
 	float		y;
 	float f_x;
 	float f_y;
 	std::string	pos;
+	std::string	shape;
 };
 
 class vert: public std::enable_shared_from_this<vert>
