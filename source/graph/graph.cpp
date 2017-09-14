@@ -8,7 +8,11 @@
 
 #include <gr/algo/stack.hpp> // gr/algo/stack.hpp_in
 #include <gr/algo/cycle.hpp> // gr/algo/cycle.hpp_in
-#include <gr/algo/ftor_dfs.hpp> // gr/algo/ftor_dfs.hpp_in
+
+#include <gr/algo/ftor_dfs/ftor_dfs.hpp> // gr/algo/ftor_dfs.hpp_in
+#include <gr/algo/ftor_dfs/ftor_dfs_vert2_spanning_tree.hpp> // gr/algo/ftor_dfs/ftor_dfs_vert2_spanning_tree.hpp_in
+#include <gr/algo/ftor_dfs/ftor_dfs_vert2_spanning_tree_arrange.hpp> // gr/algo/ftor_dfs/ftor_dfs_vert2_spanning_tree_arrange.hpp_in
+
 #include <gr/container/edge.hpp> // gr/container/edge.hpp.in
 #include <gr/container/vert.hpp> // gr/container/vert.hpp.in
 #include <gr/iterator/edge_graph.hpp> // gr/iterator/edge_graph.hpp_in
@@ -248,9 +252,18 @@ void print_cycle(T cycle)
 	}
 	std::cout << std::endl;
 }
+template<typename T>
+void	print_vert_container(T & t)
+{
+	for(auto it = t.begin(); it != t.end(); ++it)
+	{
+		std::cout << (*it)->name() << " ";
+	}
+	std::cout << std::endl;
+}
 
 
-bool		gr::algo::less_queue_edge::operator()(QUEUE_EDGE const & c0, QUEUE_EDGE const & c1)
+bool		gr::algo::ftor_dfs::less_queue_edge::operator()(QUEUE_EDGE const & c0, QUEUE_EDGE const & c1)
 {
 	if(c0.size() == c1.size())
 	{
@@ -319,35 +332,34 @@ void				THIS::depth_first_search(
 		gr::EDGE_S const & e0,
 		gr::EDGE_S const & e,
 		algo::stack & stack,
-		algo::ftor_dfs_edge * ftor)
+		algo::ftor_dfs::ftor_dfs_edge * ftor)
 {
 	auto v = e->v1();
 
 	for(auto it = v->edge_begin(); it != v->edge_end(); ++it)
 	{
-		auto e1 = *it;
-		assert(e1);
+		auto e1 = *it; assert(e1);
 
-		auto v1 = e1->other(v);
-		assert(v1);
-		
-		if(!contains(stack, e1))
-		{
-			stack.push_back(e1);
+		auto v1 = e1->other(v); assert(v1);
 
-			e1->orient_start(v);
+		if(contains(stack, e1)) continue;
 
-			ftor->yield(e0, e1, stack);
+		if(!ftor->check(e0, e1, stack)) continue;
 
-			if(ftor->descend(e0, e1, stack))
-				depth_first_search(e0, e1, stack, ftor);
+		stack.push_back(e1);
 
-			stack.pop_back();
-		}
+		e1->orient_start(v);
+
+		ftor->yield(e0, e1, stack);
+
+		if(ftor->descend(e0, e1, stack))
+			depth_first_search(e0, e1, stack, ftor);
+
+		stack.pop_back();
 	}
 }
 void				THIS::depth_first_search(
-		algo::ftor_dfs_edge * ftor,
+		algo::ftor_dfs::ftor_dfs_edge * ftor,
 		gr::EDGE_S const & e)
 {
 	gr::algo::stack stack;
@@ -356,7 +368,8 @@ void				THIS::depth_first_search(
 
 	depth_first_search(e, e, stack, ftor);
 }
-void				THIS::depth_first_search(algo::ftor_dfs_edge * ftor)
+void				THIS::depth_first_search(
+		algo::ftor_dfs::ftor_dfs_edge * ftor)
 {
 	for(auto it = edge_begin(); it != edge_end(); ++it)
 	{
@@ -366,11 +379,70 @@ void				THIS::depth_first_search(algo::ftor_dfs_edge * ftor)
 		depth_first_search(ftor, e);
 	}
 }
+void				THIS::depth_first_search2(
+		gr::EDGE_S const & e0,
+		gr::EDGE_S const & e,
+		algo::stack & stack,
+		STACK_VERT & stack_vert,
+		algo::ftor_dfs::ftor_dfs_edge * ftor)
+{
+	auto v = e->v1();
+
+	for(auto it = v->edge_begin(); it != v->edge_end(); ++it)
+	{
+		auto e1 = *it; assert(e1);
+
+		if(contains(stack, e1)) continue;
+
+		if(contains(stack_vert, v)) continue;
+
+		if(ftor->check(e0, e1, stack))
+		{
+			stack.push_back(e1);
+			stack_vert.push_back(v);
+
+			//print_vert_container(stack_vert);
+
+			e1->orient_start(v);
+
+			ftor->yield(e0, e1, stack);
+
+			if(ftor->descend(e0, e1, stack))
+				depth_first_search2(e0, e1, stack, stack_vert, ftor);
+
+			stack_vert.pop_back();
+			stack.pop_back();
+		}
+	}
+}
+void				THIS::depth_first_search2(
+		algo::ftor_dfs::ftor_dfs_edge * ftor,
+		gr::EDGE_S const & e)
+{
+	gr::algo::stack stack;
+	STACK_VERT stack_vert;
+
+	stack.push_back(e);
+	stack_vert.push_back(e->v0());
+
+	depth_first_search2(e, e, stack, stack_vert, ftor);
+}
+void				THIS::depth_first_search2(
+		algo::ftor_dfs::ftor_dfs_edge * ftor)
+{
+	for(auto it = edge_begin(); it != edge_end(); ++it)
+	{
+		auto e = *it;
+		depth_first_search2(ftor, e);
+		e->swap();
+		depth_first_search2(ftor, e);
+	}
+}
 void				THIS::depth_first_search(
 		gr::VERT_S const & v0,
 		gr::VERT_S const & v,
 		algo::stack & stack,
-		algo::ftor_dfs_vert * ftor)
+		algo::ftor_dfs::ftor_dfs_vert * ftor)
 {
 	for(auto it = v->edge_begin(); it != v->edge_end(); ++it)
 	{
@@ -408,7 +480,9 @@ void				THIS::depth_first_search(
 		_M_algo.graph_stack.pop_back();
 	}
 }
-void				THIS::depth_first_search(algo::ftor_dfs_vert * ftor, gr::VERT_S const & v)
+void				THIS::depth_first_search(
+		gr::algo::ftor_dfs::ftor_dfs_vert * ftor, 
+		gr::VERT_S const & v)
 {
 	gr::algo::stack stack;
 
@@ -422,7 +496,8 @@ void				THIS::depth_first_search(algo::ftor_dfs_vert * ftor, gr::VERT_S const & 
 
 	//_M_algo.graph->dot();
 }
-void				THIS::depth_first_search(algo::ftor_dfs_vert * ftor)
+void				THIS::depth_first_search(
+		algo::ftor_dfs::ftor_dfs_vert * ftor)
 {
 	for(auto it = vert_begin(); it != vert_end(); ++it)
 	{
@@ -445,11 +520,11 @@ void				THIS::mark_leaves_recursive(gr::LAYER_S layer)
 		};
 
 		for_each_leaf(f);
-		
+
 		C += c;
 		if(c == 0) break;
 	}
-	std::cout << "mark leaves " << C << std::endl;
+	log<0>() << "mark leaves " << C << std::endl;
 }
 gr::algo::SET_CYCLE		THIS::cycles0()
 {
@@ -458,19 +533,23 @@ gr::algo::SET_CYCLE		THIS::cycles0()
 	// preliminary
 	auto layer = create_layer(false);
 	mark_leaves_recursive(layer);
-	
+
 	mark_bridges(layer);
+
+	int nc = components();
+	for(int c = 0; c < nc; ++c)
+		std::cout << "    component " << c << " v: " << comp_vert_size(c) << std::endl;
 
 	std::cout << "cycles0 e: " << edge_size() << " v: " << vert_size() << std::endl;
 
 	// actual algorithm
 
-	gr::algo::ftor_dfs_cycle0 ftor;
+	gr::algo::ftor_dfs::ftor_dfs_edge_cycle0 ftor;
 
 	depth_first_search(&ftor);
 
 	printf("fail inserts = %i\n", ftor._M_count_insert_fail);
-	
+
 	// cleanup
 	layer->_M_enabled = true;
 
@@ -478,7 +557,36 @@ gr::algo::SET_CYCLE		THIS::cycles0()
 }
 gr::algo::SET_CYCLE		THIS::cycles1()
 {
-	gr::algo::ftor_dfs_cycle1 ftor;
+	std::cout << "cycles1 e: " << edge_size() << " v: " << vert_size() << std::endl;
+
+	// preliminary
+	auto layer = create_layer(false);
+	mark_leaves_recursive(layer);
+
+	mark_bridges(layer);
+
+	int nc = components();
+	for(int c = 0; c < nc; ++c)
+		std::cout << "    component " << c << " v: " << comp_vert_size(c) << std::endl;
+
+	std::cout << "cycles1 e: " << edge_size() << " v: " << vert_size() << std::endl;
+
+	// actual algorithm
+
+	gr::algo::ftor_dfs::ftor_dfs_edge_cycle0 ftor;
+
+	depth_first_search2(&ftor);
+
+	printf("fail inserts = %i\n", ftor._M_count_insert_fail);
+
+	// cleanup
+	layer->_M_enabled = true;
+
+	return ftor._M_cycles;
+}
+gr::algo::SET_CYCLE		THIS::cycles0_vert()
+{
+	gr::algo::ftor_dfs::ftor_dfs_vert_cycle0 ftor;
 
 	depth_first_search(&ftor);
 
@@ -486,9 +594,9 @@ gr::algo::SET_CYCLE		THIS::cycles1()
 
 	return ftor._M_cycles;
 }
-gr::algo::SET_QUEUE_EDGE	THIS::paths0()
+gr::algo::ftor_dfs::SET_QUEUE_EDGE	THIS::paths0()
 {
-	gr::algo::ftor_dfs_path0 ftor;
+	gr::algo::ftor_dfs::ftor_dfs_path0 ftor;
 
 	depth_first_search(&ftor);
 
@@ -496,9 +604,9 @@ gr::algo::SET_QUEUE_EDGE	THIS::paths0()
 
 	return ftor._M_paths;
 }
-gr::algo::SET_QUEUE_EDGE	THIS::paths1()
+gr::algo::ftor_dfs::SET_QUEUE_EDGE	THIS::paths1()
 {
-	gr::algo::ftor_dfs_path1 ftor;
+	gr::algo::ftor_dfs::ftor_dfs_path1 ftor;
 
 	depth_first_search(&ftor);
 
@@ -585,7 +693,7 @@ std::vector<gr::EDGE_S>		THIS::bridges()
 			bridges_sub(*i, t, ret);
 		}
 	}
-	
+
 	std::cout << "bridges: " << ret.size() << std::endl;
 
 	return ret;
@@ -658,7 +766,7 @@ void				THIS::components_util(gr::VERT_S const & u, int c)
 	for(auto i = u->edge_begin(); i != u->edge_end(); ++i)
 	{
 		auto e = *i;
-		
+
 		// what?
 		unsigned int d = std::distance(i, u->edge_end()); assert(d!=0);
 
@@ -821,7 +929,6 @@ bool check_path(std::deque<gr::EDGE_S> & stack)
 
 	return true;
 }
-
 gr::GRAPH_S	THIS::copy()
 {
 	auto g = std::make_shared<gr::graph>();
@@ -858,7 +965,7 @@ bool		THIS::add_virtual_edges(gr::LAYER_S layer)
 			auto v1 = e1->other(v);
 
 			add_virtual_edge(v0, v1, v);
-			
+
 			// remove middle vertex
 			v->_M_layer = layer;
 
@@ -873,12 +980,20 @@ void		THIS::simplify()
 	std::cout << "graph::simplify" << std::endl;
 
 	auto layer = create_layer(false);
-	
+
 	// remove leaves	
 	mark_leaves_recursive(layer);
 
 	// virtual edges
 	while(add_virtual_edges(layer));
+
+	// bridges
+	mark_bridges(layer);
+
+	int nc = components();
+	for(int c = 0; c < nc; ++c)
+		std::cout << "    component " << c << " v: " << comp_vert_size(c) << std::endl;
+
 }
 std::string			THIS::dot_edge_symbol() { return " -- "; }
 
@@ -932,7 +1047,101 @@ void				THIS::arrange()
 	auto c = cycles0();
 	gr::arrange_dot(c);
 }
+void				arrange_radially(
+		gr::VERT_S v, 
+		Eigen::Vector2f o, 
+		int i, int n, float a1, float a2, float r)
+{
+	float da = (a2 - a1) / (float)n;
 
+	float a = a1 + da * ((float)i + 0.5);
+	
+	printf("arrange radially %i %i %f %f a = %f\n", i, n, a1, a2, a);
+
+	Eigen::Vector2f d(cos(a), sin(a));
+	d *= r;
+	
+	Eigen::Vector2f p = d + o;
+
+	printf("    o %f %f\n", o[0], o[1]);
+	printf("    d %f %f\n", d[0], d[1]);
+	printf("    p %f %f\n", p[0], p[1]);
+	
+	v->_M_dot.p = p;
+
+	std::stringstream ss;
+	ss << v->_M_dot.p[0] << "," << v->_M_dot.p[1] << "!";
+	v->_M_dot.pos = ss.str();
+}
+void				arrange_tree(
+		gr::VERT_S prev,
+		gr::VERT_S v,
+		float a1,
+		float a2
+		)
+{
+	unsigned int n;
+	if(*v == *prev)
+	       	n = v->edge_size();
+	else
+	       	n = v->edge_size() - 1;
+
+	unsigned int i = 0;
+
+	float da = (a2 - a1) / (float)n;
+
+	for(auto it = v->edge_begin(); it != v->edge_end(); ++it)
+	{
+		auto e = *it;
+		auto v1 = e->other(v);
+		if(*v1 == *prev) continue;
+
+		arrange_radially(v1, v->_M_dot.p, i, n, a1, a2, 1);
+
+		arrange_tree(v, v1, a1 + i * da, a1 + (i+1) * da);
+
+		++i;
+	}
+}
+void				THIS::arrange2(gr::VERT_S root)
+{
+	//auto g = copy();
+	auto g = shared_from_this();
+
+	// g->spanning_tree();
+	auto layer = std::make_shared<gr::layer>(true);
+	{
+		auto f = new gr::algo::ftor_dfs::ftor_dfs_vert2_spanning_tree;
+		
+		f->_M_layer1 = layer;
+
+		f->initialize(g, root);
+
+		g->depth_first_search3(f, root);
+
+		f->finalize(g, root);
+	}
+
+	g->dot();
+	
+	arrange_tree(root, root, 0, 6.28);
+
+	layer->_M_enabled = true;
+
+	g->dot();
+
+	gr::repel(g);
+}
+void				THIS::spanning_tree(gr::VERT_S v)
+{
+	auto f = new gr::algo::ftor_dfs::ftor_dfs_vert2_spanning_tree;
+
+	f->initialize(shared_from_this(), v);
+
+	depth_first_search3(f, v);
+
+	f->finalize(shared_from_this(), v);
+}
 
 
 

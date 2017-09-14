@@ -1,3 +1,4 @@
+#include <cassert>
 #include <gr/vert.hpp>
 #include <gr/edge.hpp>
 
@@ -13,7 +14,6 @@ THIS::cycle()
 THIS::cycle(iterator b, iterator e, gr::VERT_S const & v):
 	_M_edges(b, e),
 	_M_v(v)
-	
 {
 }
 THIS::const_iterator	THIS::begin() const
@@ -43,16 +43,17 @@ void			THIS::shift()
 	 */
 
 	// find lowest edge
-	auto it0 = _M_edges.begin();
-	auto e0 = *it0;
+	auto it0 = _M_edges.begin(); assert(it0 != _M_edges.end());
+	auto e0 = *it0; assert(e0);
 
-	for(auto it = it0 + 1; it != _M_edges.end(); ++it)
+	for(auto it = std::next(it0); it != _M_edges.end(); ++it)
 	{
-		auto e = *it;
+		auto e = *it; assert(e);
+
 		if((*e) < (*e0))
 		{
 			it0 = it;
-			e0 = *it0;
+			e0 = *it0; assert(e0);
 		}
 	}
 

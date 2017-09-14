@@ -11,27 +11,29 @@
 
 class stack
 {
-public:
-	typedef std::deque<gr::EDGE_S> container;
-	typedef typename container::iterator iterator;
-	stack();
-	unsigned int			size() const;
-	void				push_back(gr::EDGE_S const &);
-	void				pop_back();
-	void				pop_front();
-	bool				empty() const;
-	gr::EDGE_S			front();
-	iterator			begin();
-	iterator			end();
-	int				counter(gr::VERT_S const &) const;
-private:
-	void				push(gr::VERT_S const &);
-	void				pop(gr::VERT_S const &);
+	public:
+		typedef std::deque<gr::EDGE_S> CONTAINER;
+		typedef typename CONTAINER::iterator ITERATOR;
 
-	container			_M_edges;
-	std::map<gr::VERT_S, int>	_M_counter;
-public:
-	int				_M_count_gt_2;
+		stack();
+		unsigned int			size() const;
+		void				push_back(gr::EDGE_S const &);
+		void				pop_back();
+		void				pop_front();
+		bool				empty() const;
+		gr::EDGE_S			front();
+		ITERATOR			begin();
+		ITERATOR			end();
+		int				counter(gr::VERT_S const &) const;
+		void				resize(typename CONTAINER::size_type);
+	private:
+		void				push(gr::VERT_S const &);
+		void				pop(gr::VERT_S const &);
+
+		CONTAINER			_M_edges;
+		std::map<gr::VERT_S, int>	_M_counter;
+	public:
+		int				_M_count_gt_2;
 };
 
 {{ namespace_close }}

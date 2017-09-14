@@ -1,0 +1,43 @@
+{{ include_block_open }}
+
+#include <gr/decl.hpp>
+#include <gr/algo/ftor_dfs/ftor_dfs_vert2.hpp> // gr/algo/ftor_dfs/ftor_dfs_vert2.hpp_in
+
+{{ namespace_open }}
+
+class ftor_dfs_vert2_spanning_tree_arrange: public ftor_dfs_vert2
+{
+public:
+	virtual void		initialize(
+			gr::GRAPH_S,
+			gr::VERT_S const & v0
+			);
+	virtual void		finalize(
+			gr::GRAPH_S,
+			gr::VERT_S const & v0
+			);
+	virtual void		yield(
+			gr::VERT_S const & v0,
+			gr::VERT_S const & v,
+			gr::VERT_S const & v1,
+			gr::EDGE_S const &
+			);
+	virtual bool		check(
+			gr::VERT_S const & v0,
+			gr::VERT_S const & v1);
+	virtual bool		descend(
+			gr::VERT_S const & v0,
+			gr::VERT_S const & v1);
+
+	struct
+	{
+		unsigned int	i;
+		float		a1;
+		float		a2;
+	} _M_data;	
+};
+
+{{ namespace_close }}
+
+{{ include_block_close }}
+

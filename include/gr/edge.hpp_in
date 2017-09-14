@@ -56,6 +56,11 @@ public:
 	/** temporary indicator for use by algorithms
 	 */
 	bool			_M_visited;
+
+	/**
+	 * temporary data for algorithms
+	 */
+	std::shared_ptr<gr::edge_algo_data>	_M_algo;
 };
 
 

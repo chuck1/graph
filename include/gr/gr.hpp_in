@@ -1,5 +1,6 @@
 {{ include_block_open }}
 
+#include <gr/algo/less_cycle.hpp>
 #include <gr/container/edge.hpp> // gr/container/edge.hpp_in
 #include <gr/container/vert.hpp> // gr/container/vert.hpp_in
 #include <gr/iterator/edge_graph.hpp> // gr/iterator/iterator.hpp_in

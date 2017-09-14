@@ -5,7 +5,7 @@
 #include <vector>
 #include <deque>
 
-#include <gr/algo/cycle.hpp>
+#include <gr/algo/cycle.hpp> // gr/algo/cycle.hpp_in
 #include <gr/algo/less_cycle.hpp>
 #include <gr/decl.hpp> // gr/decl.hpp_in
 /*
@@ -22,7 +22,6 @@ public:
 	bool operator()(QUEUE_EDGE const & c0, QUEUE_EDGE const & c1);
 };
 
-typedef std::set<QUEUE_EDGE, less_queue_edge>	SET_QUEUE_EDGE;
 
 class ftor_dfs_edge
 {
@@ -37,6 +36,10 @@ public:
 		gr::EDGE_S const & v0,
 		gr::EDGE_S const & v1,
 		algo::stack & stack) = 0;
+	virtual bool	check(
+		gr::EDGE_S const & v0,
+		gr::EDGE_S const & v1,
+		algo::stack & stack);
 
 	int			_M_count_insert_fail;
 };
@@ -57,10 +60,14 @@ public:
 	int			_M_count_insert_fail;
 };
 
-class ftor_dfs_cycle0: public ftor_dfs_edge
+class ftor_dfs_edge_cycle0: public ftor_dfs_edge
 {
 public:
 	virtual void	yield(
+		gr::EDGE_S const & v0,
+		gr::EDGE_S const & v1,
+		algo::stack & stack);
+	virtual bool	check(
 		gr::EDGE_S const & v0,
 		gr::EDGE_S const & v1,
 		algo::stack & stack);
@@ -71,7 +78,30 @@ public:
 
 	algo::SET_CYCLE		_M_cycles;
 };
-class ftor_dfs_cycle1: public ftor_dfs_vert
+/**
+ * no repeated vertices
+ */
+class ftor_dfs_edge_cycle1: public ftor_dfs_edge
+{
+public:
+	virtual void	yield(
+		gr::EDGE_S const & v0,
+		gr::EDGE_S const & v1,
+		algo::stack & stack);
+	virtual bool	check(
+		gr::EDGE_S const & v0,
+		gr::EDGE_S const & v1,
+		algo::stack & stack);
+	virtual bool	descend(
+		gr::EDGE_S const & v0,
+		gr::EDGE_S const & v1,
+		algo::stack & stack);
+
+	algo::SET_CYCLE		_M_cycles;
+
+	std::deque<gr::VERT_S>	_M_vert_stack;
+};
+class ftor_dfs_vert_cycle0: public ftor_dfs_vert
 {
 public:
 	virtual void	yield(

@@ -1,0 +1,28 @@
+{{ include_block_open }}
+
+#include <gr/algo/ftor_dfs/ftor_dfs.hpp>
+
+{{ namespace_open }}
+
+class ftor_dfs_vert
+{
+public:
+	ftor_dfs_vert(): _M_count_insert_fail(0) {}
+
+	virtual void	yield(
+		gr::VERT_S const & v0,
+		gr::VERT_S const & v1,
+		algo::stack & stack) = 0;
+	virtual bool	descend(
+		gr::VERT_S const & v0,
+		gr::VERT_S const & v1,
+		algo::stack & stack) = 0;
+
+	int			_M_count_insert_fail;
+};
+
+
+{{ namespace_close }}
+
+{{ include_block_close }}
+

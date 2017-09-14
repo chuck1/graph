@@ -4,6 +4,8 @@
 #include <set>
 #include <vector>
 
+#include <eigen3/Eigen/Core>
+
 #include <gr/decl.hpp> // gr/decl.hpp_in
 #include <gr/iterator/edge_vert.hpp> // gr/iterator/iterator.hpp.in
 
@@ -13,15 +15,13 @@ class vert_dot
 {
 public:
 	vert_dot():
-		x(0),
-		y(0),
+		p(0,0),
+		f(0,0),
 		pos(""),
 		shape("oval")
 	{}
-	float		x;
-	float		y;
-	float f_x;
-	float f_y;
+	Eigen::Vector2f		p;
+	Eigen::Vector2f		f;
 	std::string	pos;
 	std::string	shape;
 };
@@ -79,6 +79,16 @@ public:
 		bool		_M_visited;
 		VERT_W		_M_parent;
 	} bridge;
+	struct {
+		int		i;
+		float		a1;
+		float		a2;
+	} tree_arrange1;
+	struct {
+		int		i;
+		float		a1;
+		float		a2;
+	} tree_arrange2;
 
 	// for marking components
 	struct {

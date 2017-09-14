@@ -6,6 +6,7 @@
 #include <gr/edge_data.hpp> // gr/edge.hpp.in
 #include <gr/graph.hpp>
 #include <gr/layer.hpp>
+#include <gr/edge_algo_data.hpp>
 
 #include <gr/edge.hpp> // gr/edge.hpp_in
 
@@ -18,6 +19,7 @@ THIS::edge(gr::VERT_S const & v0, gr::VERT_S const & v1):
 {
 	assert(v0);
 	assert(v1);
+	_M_algo.reset(new gr::edge_algo_data);
 }
 std::string		THIS::name() const
 {

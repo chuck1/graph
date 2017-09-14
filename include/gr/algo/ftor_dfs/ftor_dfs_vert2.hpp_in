@@ -1,0 +1,32 @@
+{{ include_block_open }}
+
+//#include <gr/algo/ftor_dfs/ftor_dfs.hpp>
+#include <gr/decl.hpp>
+
+{{ namespace_open }}
+
+class ftor_dfs_vert2
+{
+public:
+	virtual void		initialize(
+			gr::GRAPH_S,
+			gr::VERT_S const &
+			) = 0;
+	virtual void		yield(
+			gr::VERT_S const & v0,
+			gr::VERT_S const & v,
+			gr::VERT_S const & v1,
+			gr::EDGE_S const &) = 0;
+	virtual bool		check(
+			gr::VERT_S const & v0,
+			gr::VERT_S const & v1) = 0;
+	virtual bool		descend(
+			gr::VERT_S const & v0,
+			gr::VERT_S const & v1) = 0;
+};
+
+
+{{ namespace_close }}
+
+{{ include_block_close }}
+

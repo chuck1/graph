@@ -8,6 +8,7 @@ class layer: public std::enable_shared_from_this<layer>
 {
 public:
 	layer();
+	layer(bool);
 	
 	bool	enabled() const;
 	

@@ -13,8 +13,13 @@ unsigned int		THIS::size() const
 {
 	return _M_edges.size();
 }
+void			THIS::resize(typename THIS::CONTAINER::size_type count)
+{
+	_M_edges.resize(count);
+}
 void			THIS::push_back(gr::EDGE_S const & e)
 {
+	assert(e);
 	_M_edges.push_back(e);
 
 	push(e->v0());
@@ -70,11 +75,11 @@ gr::EDGE_S		THIS::front()
 {
 	return _M_edges.front();
 }
-THIS::iterator		THIS::begin()
+THIS::ITERATOR		THIS::begin()
 {
 	return _M_edges.begin();
 }
-THIS::iterator		THIS::end()
+THIS::ITERATOR		THIS::end()
 {
 	return _M_edges.end();
 }

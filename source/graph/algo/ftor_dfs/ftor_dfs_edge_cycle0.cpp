@@ -2,10 +2,11 @@
 #include <gr/graph.hpp>
 #include <gr/vert.hpp>
 
-#include <gr/algo/ftor_dfs.hpp> // gr/algo/ftor_dfs.hpp_in
+#include <gr/algo/ftor_dfs/ftor_dfs.hpp> // gr/algo/ftor_dfs.hpp_in
 
-typedef gr::algo::ftor_dfs_cycle0 THIS;
+typedef gr::algo::ftor_dfs::ftor_dfs_edge_cycle0 THIS;
 
+#if 0
 void	THIS::yield(
 		gr::EDGE_S const & e0,
 		gr::EDGE_S const & e1,
@@ -38,12 +39,37 @@ void	THIS::yield(
 		}
 	}
 }
-bool	THIS::descend(
+#else
+void	THIS::yield(
+		gr::EDGE_S const & e0,
+		gr::EDGE_S const & e1,
+		algo::stack & stack)
+{
+	if(e1 < e0) return;
+
+	if(e0->v0() == e1->v1())
+	{
+		gr::algo::cycle c(stack.begin(), stack.end(), e1->v1());
+
+		c.shift();
+
+		_M_cycles.insert(c);
+	}
+}
+#endif
+bool	THIS::check(
 		gr::EDGE_S const & e0,
 		gr::EDGE_S const & e1,
 		algo::stack & stack)
 {
 	if(e1 < e0) return false;
+	return true;
+}
+bool	THIS::descend(
+		gr::EDGE_S const & e0,
+		gr::EDGE_S const & e1,
+		algo::stack & stack)
+{
 	return true;
 }
 

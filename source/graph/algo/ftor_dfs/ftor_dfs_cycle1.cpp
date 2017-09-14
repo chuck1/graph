@@ -2,9 +2,9 @@
 #include <gr/graph.hpp>
 #include <gr/vert.hpp>
 
-#include <gr/algo/ftor_dfs.hpp> // gr/algo/ftor_dfs.hpp_in
+#include <gr/algo/ftor_dfs/ftor_dfs.hpp> // gr/algo/ftor_dfs.hpp_in
 
-typedef gr::algo::ftor_dfs_cycle1 THIS;
+typedef gr::algo::ftor_dfs::ftor_dfs_vert_cycle0 THIS;
 
 void	THIS::yield(
 		gr::VERT_S const & v0,

@@ -6,6 +6,7 @@
 
 #include <gr/gr.hpp> // gr/gr.hpp_in
 #include <gr/plot/vert.hpp>
+#include <gr/algo/less_cycle.hpp>
 
 #include <test.hpp>
 
@@ -23,13 +24,22 @@ void print_cycle(T cycle)
 	std::cout << std::endl;
 }
 
-int Factorial(int x) {
-	return (x<=1 ? 1 : x * Factorial(x-1));
+int		factorial(int x) {
+	return (x<=1 ? 1 : x * factorial(x-1));
 }
-void construct(gr::GRAPH_S g, int n)
+int		combinations(int n, int k)
 {
-	// construct
-	std::vector<std::shared_ptr<gr::plot::vert>> verts;
+	return factorial(n) / factorial(k) / factorial(n-k);
+}
+typedef gr::plot::vert VERT;
+typedef std::shared_ptr<VERT> VERT_S;
+
+gr::GRAPH_S	complete(int n)
+{
+	auto g = std::make_shared<gr::graph>();
+	// construct a complete graph with n vertices
+	
+	std::vector<std::shared_ptr<VERT>> verts;
 	
 	for(int i = 0; i < n; ++i)
 	{
@@ -44,48 +54,105 @@ void construct(gr::GRAPH_S g, int n)
 			g->add_edge(std::make_shared<gr::edge>(verts[i], verts[j]));
 		}
 	}
+
+	return g;
 }
-int calc_cycles1(int n)
+gr::GRAPH_S	flower(int n)
+{
+	auto g = std::make_shared<gr::graph>();
+	
+	std::vector<VERT_S> verts;
+
+	int c = 0;
+	
+	auto root = std::make_shared<Vert>(g, std::to_string(c++));
+	
+	for(int i = 0; i < n; ++i)
+	{
+		verts.push_back(std::make_shared<Vert>(g, std::to_string(c++)));
+		verts.push_back(std::make_shared<Vert>(g, std::to_string(c++)));
+		
+		g->add_edge(root, verts[2*i]);
+		g->add_edge(root, verts[2*i+1]);
+		g->add_edge(verts[2*i], verts[2*i+1]);
+	}
+
+	return g;
+}
+int		calc_cycles1(int n)
 {
 	int c = 0;
 	for(int k = 3; k < n+1; ++k)
 	{
-		int m = Factorial(n) / Factorial(n-k) / k;
+		int m = factorial(n) / factorial(n-k) / k;
 		printf("N=%i k=%i res=%i\n",n,k,m);
 		c += m;
 	}
 	return c;
 }
-void test(int n)
+int		calc_flower(int n)
 {
-	printf("test n=%i\n", n);
-
-	auto g = std::make_shared<gr::graph>();
+	int c = 0;
+	for(int k = 1; k <= n; ++k)
+	{
+		c += combinations(n, k) * (1 << k) * factorial(k - 1);
+	}
+	return c;
+}
+void		test_flower(int n)
+{
+	auto g = flower(n);
 	
-	construct(g, n);	
+	g->dot();
+
+	unsigned int c = calc_flower(n);
+
+	auto cycles0 = g->cycles0();
+	auto cycles1 = g->cycles1();
+
+	printf("test flower n=%i\n", n);
+	printf("c = %i\n", c);
+	printf("cycles0 %lu\n", cycles0.size());
+	printf("cycles1 %lu\n", cycles1.size());
+}
+void		test(int n)
+{
+	auto g = complete(n);	
 
 	g->dot();
 
-	// cycles0
-
 	auto cycles0 = g->cycles0();
+	auto cycles1 = g->cycles1();
 
+	unsigned int c = calc_cycles1(n);
+
+	printf("test n=%i\n", n);
+	printf("c = %i\n", c);
 	printf("cycles0 %lu\n", cycles0.size());
+	printf("cycles1 %lu\n", cycles1.size());
 
-	// cycles1
+	//assert(cycles1.size() == c);
+}
+void		test1(int n)
+{
+	printf("test n=%i\n", n);
 
-	// analytical solution
 	unsigned int c = calc_cycles1(n);
 
 	printf("c = %i\n", c);
 
+	auto g = complete(n);	
+
+	g->dot();
+
 	auto cycles1 = g->cycles1();
+
 
 	printf("cycles1 %lu\n", cycles1.size());
 
-	assert(cycles1.size() == c);
+	//assert(cycles1.size() == c);
 }
-void test1(int n)
+void test2(int n)
 {
 	auto g = std::make_shared<gr::graph>();
 
@@ -112,6 +179,17 @@ void test1(int n)
 	printf("cycles0 %lu\n", cycles0.size());
 
 }
+void	test_arrange_tree(int n)
+{
+	//auto g = complete(n);
+	auto g = flower(n);
+
+	g->dot();
+
+	g->arrange2(*g->vert_begin());
+
+	g->dot();
+}
 int main()
 {
 	/**
@@ -123,7 +201,11 @@ int main()
 	
 	//return 0;
 
-	for(int i = 3; i < 6; ++i) test(i);
+	//for(int i = 3; i < 6; ++i) test(i);
+	//for(int i = 3; i < 8; ++i) test1(i);
+	//for(int i = 2; i < 6; ++i) test_flower(i);
+	
+	test_arrange_tree(6);
 
 	return 0;
 }

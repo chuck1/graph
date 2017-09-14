@@ -15,6 +15,8 @@ class vert_comp;
 
 class edge_data;
 
+class edge_algo_data;
+
 //class pair;
 
 class graph;
@@ -57,9 +59,18 @@ typedef std::set<gr::VERT_S, gr::vert_comp>	CONT_VERT;
 
 typedef std::function<bool(gr::VERT_S const &)>	VERT_FUNC;
 
+typedef std::deque<gr::EDGE_S>			QUEUE_EDGE;
 
 namespace algo {
-	class ftor_dfs;
+	namespace ftor_dfs {
+		class ftor_dfs_vert;
+		class ftor_dfs_vert2;
+		class ftor_dfs_edge;
+	
+		class less_queue_edge;
+
+		typedef std::set<QUEUE_EDGE, less_queue_edge>	SET_QUEUE_EDGE;
+	}
 	class less_queue_edge;
 	class less_cycle;
 	class cycle;
@@ -67,7 +78,6 @@ namespace algo {
 	//typedef std::set<cycle, less_cycle>	SET_CYCLE;
 }
 
-typedef std::deque<gr::EDGE_S>			QUEUE_EDGE;
 
 {{ namespace_close }}
 

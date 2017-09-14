@@ -81,13 +81,11 @@ void		gr::arrange_dot(gr::algo::SET_CYCLE & cycles)
 			e->_M_dot.color="red";
 
 			float a = (float)i / (float)s * 2.0 * M_PI;
-			float x = r * cos(a);
-			float y = r * sin(a);
+			Eigen::Vector2f p(r * cos(a), r * sin(a));
 
-			v0->_M_dot.x = x;
-			v0->_M_dot.y = y;
+			v0->_M_dot.p = p;
 
-			std::stringstream ss; ss << x << "," << y << "!";
+			std::stringstream ss; ss << p[0] << "," << p[1] << "!";
 			v0->_M_dot.pos = ss.str();
 
 			v0 = e->other(v0);
@@ -103,8 +101,7 @@ void		gr::zero_force(gr::GRAPH_S & g)
 	for(auto it = g->vert_begin(); it != g->vert_end(); ++it)
 	{
 		auto v1 = *it;
-		v1->_M_dot.f_x = 0;
-		v1->_M_dot.f_y = 0;
+		v1->_M_dot.f = Eigen::Vector2f(0,0);
 	}
 }
 float		force_repel(float d, float d0, float k)
@@ -117,24 +114,18 @@ float		force_spring(float d, float d0, float k)
 }
 void		apply_force(gr::VERT_S & v0, gr::VERT_S & v1, float d0, float k, float(*force)(float,float,float))
 {
-	float d_x = v1->_M_dot.x - v0->_M_dot.x;
-	float d_y = v1->_M_dot.y - v0->_M_dot.y;
+	Eigen::Vector2f D = v1->_M_dot.p - v0->_M_dot.p;
 
-	float d = sqrt(d_x*d_x + d_y*d_y);
+	float d = D.norm();
 
 	if(d < 0.0001) return;
 
 	float f = (*force)(d, d0, k);
 
-	float f_x = d_x / d * f;
-	float f_y = d_y / d * f;
+	Eigen::Vector2f F = D / d * f;
 
-
-	v0->_M_dot.f_x -= f_x;
-	v0->_M_dot.f_y -= f_y;
-
-	v1->_M_dot.f_x += f_x;
-	v1->_M_dot.f_y += f_y;
+	v0->_M_dot.f -= F;
+	v1->_M_dot.f += F;
 }
 void		record_pos(gr::GRAPH_S & g)
 {
@@ -142,7 +133,7 @@ void		record_pos(gr::GRAPH_S & g)
 	{
 		auto v = *it;
 		std::stringstream ss;
-		ss << v->_M_dot.x << "," << v->_M_dot.y << "!";
+		ss << v->_M_dot.p[0] << "," << v->_M_dot.p[1] << "!";
 		v->_M_dot.pos = ss.str();
 	}
 }
@@ -186,19 +177,16 @@ void		gr::repel(gr::GRAPH_S & g)
 		for(auto it = g->vert_begin(); it != g->vert_end(); ++it)
 		{
 			auto v = *it;
-			float x = v->_M_dot.f_x * 0.1;
-			float y = v->_M_dot.f_y * 0.1;
+			Eigen::Vector2f a = v->_M_dot.f * 0.1;
 
-			float d = sqrt(x*x + y*y);
+			float d = a.norm();
 
 			if(d > 1) {
-				x = x / d;
-				y = y / d;
+				a = a / d;
 				d = 1;
 			}
 
-			v->_M_dot.x += x;
-			v->_M_dot.y += y;
+			v->_M_dot.p += a;
 
 			m += d;
 			m_max = fmax(m_max, d);

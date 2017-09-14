@@ -19,6 +19,9 @@ l.doc_out_dir = "/media/sf_P_DRIVE/html/graph"
 
 l.add_dep('logs')
 
+#l.args.append('--no-pie')
+#l.args.append('-fPIC')
+
 self.parts.append(l)
 
 self.execfile(os.path.join(__dir__, "tests/config.py"))

@@ -8,7 +8,7 @@
 #include <logs/logger.hpp> // logs/logger.hpp_in
 
 #include <gr/decl.hpp> // gr/decl.hpp_in
-#include <gr/algo/ftor_dfs.hpp> // gr/algo/ftor_dfs.hpp_in
+//#include <gr/algo/ftor_dfs/ftor_dfs.hpp> // gr/algo/ftor_dfs/ftor_dfs.hpp_in
 #include <gr/algo/cycle.hpp> // gr/algo/cycle.hpp_in
 #include <gr/iterator/vert_comp.hpp> // gr/iterator/iterator.hpp.in
 #include <gr/iterator/vert_graph.hpp> // gr/iterator/vert_graph.hpp.in
@@ -17,16 +17,21 @@
 
 {{ namespace_open }}
 
-class graph: public std::enable_shared_from_this<graph>, public logs::logger<graph, {{ logs_mode }}, {{ logs_level }}>
+class graph: 
+	public std::enable_shared_from_this<graph>,
+	public logs::logger<graph, {{ logs_mode }}, {{ logs_level }}>
 {
 public:
 	typedef logs::logger<graph, {{ logs_mode }}, {{ logs_level }}> LOGGER;
 	//Graph(Graph const & g);
 
+	typedef std::deque<gr::VERT_S> STACK_VERT;
+
 	graph();
 	virtual ~graph() {}
 	void				clear();
 	GRAPH_S				copy();
+	void				spanning_tree(VERT_S v);
 
 	EDGE_S				add_edge(VERT_S v0, VERT_S v1);
 	/*
@@ -91,28 +96,58 @@ public:
 			gr::EDGE_S const & v0,
 			gr::EDGE_S const & v,
 			algo::stack & stack,
-			algo::ftor_dfs_edge *);
+			algo::ftor_dfs::ftor_dfs_edge *);
 	void				depth_first_search(
-			algo::ftor_dfs_edge *,
+			algo::ftor_dfs::ftor_dfs_edge *,
 			gr::EDGE_S const & v);
 	void				depth_first_search(
-			algo::ftor_dfs_edge *);
+			algo::ftor_dfs::ftor_dfs_edge *);
+
+	/** 
+	 * no repeated verts
+	 */
+	void				depth_first_search2(
+			gr::EDGE_S const & v0,
+			gr::EDGE_S const & v,
+			algo::stack & stack,
+			STACK_VERT & stack_vert,
+			algo::ftor_dfs::ftor_dfs_edge *);
+	void				depth_first_search2(
+			algo::ftor_dfs::ftor_dfs_edge *,
+			gr::EDGE_S const & v);
+	void				depth_first_search2(
+			algo::ftor_dfs::ftor_dfs_edge *);
 
 	void				depth_first_search(
 			gr::VERT_S const & v0,
 			gr::VERT_S const & v,
 			algo::stack & stack,
-			algo::ftor_dfs_vert *);
+			algo::ftor_dfs::ftor_dfs_vert *);
 	void				depth_first_search(
-			algo::ftor_dfs_vert *,
+			algo::ftor_dfs::ftor_dfs_vert *,
 			gr::VERT_S const & v);
 	void				depth_first_search(
-			algo::ftor_dfs_vert *);
+			algo::ftor_dfs::ftor_dfs_vert *);
+
+	/**
+	 */
+	void				depth_first_search3(
+			gr::VERT_S const & v0,
+			gr::VERT_S const & v,
+			algo::ftor_dfs::ftor_dfs_vert2 *);
+	void				depth_first_search3(
+			algo::ftor_dfs::ftor_dfs_vert2 *,
+			gr::VERT_S const & v);
+	void				depth_first_search3(
+			algo::ftor_dfs::ftor_dfs_vert2 *);
 
 	algo::SET_CYCLE			cycles0();
 	algo::SET_CYCLE			cycles1();
-	algo::SET_QUEUE_EDGE		paths0();
-	algo::SET_QUEUE_EDGE		paths1();
+	
+	algo::SET_CYCLE			cycles0_vert();
+
+	algo::ftor_dfs::SET_QUEUE_EDGE	paths0();
+	algo::ftor_dfs::SET_QUEUE_EDGE	paths1();
 	
 	/**
 	 * check is there exists a cycle with edge e
@@ -130,6 +165,7 @@ public:
 	void				mark_leaves_recursive(gr::LAYER_S layer);
 
 	void				arrange();
+	void				arrange2(gr::VERT_S);
 
 	virtual void			dot_sub0(std::ostream & of);
 	virtual void			dot_sub1(std::ostream & of);
