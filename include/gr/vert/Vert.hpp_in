@@ -27,13 +27,14 @@ public:
 	std::string	shape;
 };
 
-class vert: public std::enable_shared_from_this<vert>
+class Vert: public std::enable_shared_from_this<Vert>
 {
 public:
+	friend class gr::graph;
 	friend class gr::iterator::edge_graph;
 
-	vert(GRAPH_S);
-	virtual ~vert();
+	Vert(GRAPH_S);
+	virtual ~Vert();
 	virtual gr::VERT_S	copy(GRAPH_S) const;
 	bool			enabled() const;
 	GRAPH_S			get_graph() const;
@@ -56,9 +57,9 @@ public:
 
       	void			edge_erase_util(gr::VERT_S & v0, gr::VERT_S & v1);
 
-	virtual bool		operator==(vert const &);
-	virtual bool		operator!=(vert const &);
-	virtual bool		operator<(vert const &);
+	virtual bool		operator==(Vert const &);
+	virtual bool		operator!=(Vert const &);
+	virtual bool		operator<(Vert const &);
 
 	virtual std::string	dot();
 	virtual std::string	name();
@@ -105,6 +106,14 @@ public:
 		int		counter;
 	} algo;
 
+	// the virtual vertex that has replaced this one
+	
+public:
+	gr::VERT_S		virt();
+	
+private:
+	gr::VERT_W		_M_virt;
+public:
 // private
 
 	GRAPH_W			_M_graph;

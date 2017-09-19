@@ -25,7 +25,7 @@
 #include <gr/io.hpp> // gr/vert.hpp_in
 #include <gr/pair.hpp> // gr/pair.hpp.in
 #include <gr/pair_comp.hpp> // gr/pair_comp.hpp.in
-#include <gr/vert.hpp> // gr/vert.hpp_in
+#include <gr/vert/Vert.hpp> // gr/vert.hpp_in
 #include <gr/edge.hpp> // gr/edge.hpp_in
 #include <gr/edge_virt.hpp> // gr/edge_virt.hpp_in
 #include <gr/layer.hpp>

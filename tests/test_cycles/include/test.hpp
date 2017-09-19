@@ -7,7 +7,9 @@
 class Vert: public gr::plot::vert
 {
 public:
-	Vert(gr::GRAPH_S g, std::string nid): gr::plot::vert(g, nid)
+	Vert(gr::GRAPH_S g, std::string nid): 
+		gr::vert::Vert(g),
+		gr::plot::vert(g, nid)
 	{
 	}
 	virtual std::string	name()

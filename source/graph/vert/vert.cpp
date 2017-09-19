@@ -10,29 +10,29 @@
 #include <gr/graph.hpp> // gr/vert.hpp.in
 #include <gr/layer.hpp>
 
-#include <gr/vert.hpp> // gr/vert.hpp_in
+#include <gr/vert/Vert.hpp> // gr/vert/Vert.hpp_in
 
-typedef gr::vert THIS;
+typedef gr::vert::Vert THIS;
 
-THIS::vert(gr::GRAPH_S g):
+THIS::Vert(gr::GRAPH_S g):
 	dist{0},
 	_M_graph(g),
 	_M_edges(new gr::container::edge)
 {
 }
-THIS::~vert()
+THIS::~Vert()
 {
 //	std::cout << "vert destroyed" << std::endl;
 }
-bool				THIS::operator==(gr::vert const & v)
+bool				THIS::operator==(THIS const & v)
 {
 	return this == &v;
 }
-bool				THIS::operator<(gr::vert const & v)
+bool				THIS::operator<(THIS const & v)
 {
 	return this < &v;
 }
-bool				THIS::operator!=(gr::vert const & v)
+bool				THIS::operator!=(THIS const & v)
 {
 	return !operator==(v);
 }
@@ -127,8 +127,19 @@ std::string			THIS::name()
 }
 gr::VERT_S			THIS::copy(GRAPH_S g) const
 {
-	return std::make_shared<gr::vert>(g);
+	return std::make_shared<THIS>(g);
 }
+gr::VERT_S			THIS::virt()
+{
+	auto v = _M_virt.lock();
+	if(v)
+	{
+		auto w = v->virt();
+		if(w) return w;
+	}
+	return v;
+}
+
 
 
 

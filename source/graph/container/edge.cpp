@@ -1,4 +1,4 @@
-#include <gr/vert.hpp>
+#include <gr/vert/Vert.hpp>
 #include <gr/edge.hpp> // gr/edge.hpp.in
 
 #include <gr/container/edge.hpp> // gr/container/edge.hpp_in

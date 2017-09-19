@@ -1,5 +1,5 @@
 #include <cassert>
-#include <gr/vert.hpp>
+#include <gr/vert/Vert.hpp>
 #include <gr/edge.hpp>
 
 #include <gr/algo/cycle.hpp> // gr/algo/cycle.hpp_in

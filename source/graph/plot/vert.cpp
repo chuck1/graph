@@ -3,7 +3,9 @@
 
 typedef gr::plot::vert THIS;
 
-THIS::vert(gr::GRAPH_S g, std::string name): gr::vert(g), _M_name(name)
+THIS::vert(gr::GRAPH_S g, std::string name): 
+	gr::vert::Vert(g),
+	_M_name(name)
 {
 }
 std::string	THIS::name()

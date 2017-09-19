@@ -1,12 +1,12 @@
 {% extends "CHeader.hpp" %}
 {% block header %}
 
-#include <gr/vert.hpp> // gr/vert.hpp_in
+#include <gr/vert/Vert.hpp> // gr/vert.hpp_in
 
 {% endblock %}
 {% block body %}
 
-class vert: public gr::vert
+class vert: virtual public gr::vert::Vert
 {
 public:
 	vert(gr::GRAPH_S g, std::string nid);

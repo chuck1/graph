@@ -4,7 +4,7 @@
 #include <gr/decl.hpp> // gr/decl.hpp_in
 #include <gr/container/vert.hpp> // gr/container/vert.hpp.in
 #include <gr/container/edge.hpp> // gr/container/edge.hpp.in
-#include <gr/vert.hpp> // gr/edge.hpp.in
+#include <gr/vert/Vert.hpp> // gr/edge.hpp.in
 #include <gr/edge.hpp> // gr/edge.hpp.in
 #include <gr/edge_data.hpp> // gr/edge_data.hpp.in
 

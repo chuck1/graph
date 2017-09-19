@@ -3,7 +3,7 @@
 #include <iterator>
 
 #include <gr/decl.hpp> // gr/decl.hpp_in
-#include <gr/vert.hpp> // gr/vert.hpp_in
+#include <gr/vert/Vert.hpp> // gr/vert.hpp_in
 #include <gr/vert_comp.hpp> // gr/VertComp.hpp_in
 //#include <gr/edge.hpp> // gr/edge.hpp.in
 

@@ -1,4 +1,4 @@
-#include <gr/vert.hpp>
+#include <gr/vert/Vert.hpp>
 
 #include <gr/iterator/edge/EdgeGraphPlot.hpp> // gr/iterator/edge/EdgeGraphPlot.hpp_in
 

@@ -2,7 +2,7 @@
 #include <cassert>
 #include <sstream>
 
-#include <gr/vert.hpp> // gr/vert.hpp.in
+#include <gr/vert/Vert.hpp> // gr/vert.hpp.in
 #include <gr/edge_data.hpp> // gr/edge.hpp.in
 #include <gr/graph.hpp>
 #include <gr/layer.hpp>

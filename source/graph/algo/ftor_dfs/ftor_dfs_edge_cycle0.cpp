@@ -1,6 +1,6 @@
 #include <gr/algo/stack.hpp>
 #include <gr/graph.hpp>
-#include <gr/vert.hpp>
+#include <gr/vert/Vert.hpp>
 
 #include <gr/algo/ftor_dfs/ftor_dfs.hpp> // gr/algo/ftor_dfs.hpp_in
 

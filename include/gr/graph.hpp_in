@@ -12,9 +12,9 @@
 #include <gr/algo/cycle.hpp> // gr/algo/cycle.hpp_in
 #include <gr/iterator/edge/EdgeGraphPlot.hpp> // gr/iterator/iterator.hpp_in
 #include <gr/iterator/vert/VertGraphPlot.hpp> // gr/iterator/iterator.hpp_in
-#include <gr/iterator/vert/vert_comp.hpp> // gr/iterator/iterator.hpp_in
+#include <gr/iterator/vert/VertComp.hpp> // gr/iterator/iterator.hpp_in
 #include <gr/iterator/vert/VertGraph.hpp> // gr/iterator/vert/VertGraph.hpp_in
-#include <gr/iterator/vert/vert_graph_all.hpp> // gr/iterator/vert_graph_all.hpp.in
+#include <gr/iterator/vert/VertGraphAll.hpp> // gr/iterator/vert_graph_all.hpp.in
 #include <gr/container/vert.hpp> // gr/container/vert.hpp_in
 
 {{ namespace_open }}
@@ -176,6 +176,7 @@ public:
 	void				component(int c);
 
 	void				mark_leaves_recursive(gr::LAYER_S layer);
+	void				identify_leaves_recursive(gr::LAYER_S layer);
 
 	void				arrange();
 	void				arrange2(gr::VERT_S);
@@ -197,7 +198,7 @@ public:
 	 *  - remove verticies that are adjacent to exactly one edge
 	 */
 	gr::GRAPH_S			simplify() const;
-	void				simplify();
+	void				simplify_self();
 
 	//void				layer_move(unsigned int, unsigned int);
 	

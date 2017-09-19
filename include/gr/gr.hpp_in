@@ -13,7 +13,7 @@
 #include <gr/layer.hpp> // gr/layer.hpp_in
 #include <gr/pair.hpp> // gr/pair.hpp_in
 #include <gr/pair_comp.hpp> // gr/pair_comp.hpp_in
-#include <gr/vert.hpp> // gr/vert.hpp_in
+#include <gr/vert/Vert.hpp> // gr/vert.hpp_in
 #include <gr/util.hpp> // gr/util.hpp_in
 
 

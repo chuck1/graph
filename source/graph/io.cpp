@@ -1,6 +1,6 @@
 
 #include <gr/edge.hpp>
-#include <gr/vert.hpp>
+#include <gr/vert/Vert.hpp>
 
 #include <gr/io.hpp> // gr/io.hpp_in
 

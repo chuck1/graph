@@ -7,17 +7,13 @@
 
 {{ namespace_open }}
 
-class vert;
 class edge;
 
 class vert_comp;
-//class pair_comp;
 
 class edge_data;
 
 class edge_algo_data;
-
-//class pair;
 
 class graph;
 
@@ -55,16 +51,21 @@ namespace iterator {
 typedef std::shared_ptr<graph>			GRAPH_S;
 typedef std::weak_ptr<graph>			GRAPH_W;
 
-typedef vert					VERT;
+namespace vert {
+	class Vert;
+	class VertVirt;
+}
+
 typedef edge					EDGE;
 typedef edge_data				EDGE_DATA;
 
 typedef std::shared_ptr<EDGE>			EDGE_S;
 typedef std::shared_ptr<EDGE>			S_Edge;
+typedef std::weak_ptr<EDGE>			W_Edge;
 
-typedef std::shared_ptr<VERT>			VERT_S;
-typedef std::weak_ptr<VERT>			VERT_W;
-typedef std::shared_ptr<VERT>			S_Vert;
+typedef std::shared_ptr<vert::Vert>		VERT_S;
+typedef std::weak_ptr<vert::Vert>		VERT_W;
+typedef std::shared_ptr<vert::Vert>		S_Vert;
 
 typedef std::shared_ptr<EDGE_DATA>		EDGE_DATA_S;
 

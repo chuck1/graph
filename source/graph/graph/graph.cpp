@@ -23,7 +23,8 @@
 #include <gr/io.hpp> // gr/vert.hpp_in
 #include <gr/pair.hpp> // gr/pair.hpp.in
 #include <gr/pair_comp.hpp> // gr/pair_comp.hpp.in
-#include <gr/vert.hpp> // gr/vert.hpp_in
+#include <gr/vert/Vert.hpp> // gr/vert.hpp_in
+#include <gr/vert/VertVirt.hpp> // gr/vert.hpp_in
 #include <gr/edge.hpp> // gr/edge.hpp_in
 #include <gr/edge_virt.hpp> // gr/edge_virt.hpp_in
 #include <gr/layer.hpp>
@@ -400,6 +401,43 @@ void				THIS::depth_first_search(
 
 		//ftor->_M_verts_completed.insert(*it);
 	}
+}
+void				THIS::identify_leaves_recursive(gr::LAYER_S layer)
+{
+	unsigned int C = 0;
+	while(true)
+	{
+		unsigned int c = 0;
+
+		auto f = [&](gr::VERT_S const & leaf, gr::EDGE_S const & e)
+		{
+			auto other = e->other(leaf);
+
+			leaf->_M_layer.push_front(layer);
+			other->_M_layer.push_front(layer);
+			e->_M_layer.push_front(layer);
+
+			auto virt = std::make_shared<gr::vert::VertVirt>(shared_from_this(), leaf, other, e);
+
+			leaf->_M_virt = virt;
+			other->_M_virt = virt;
+
+			for(auto it = other->edge_begin(); it != other->edge_end(); ++it)
+			{
+				if(*it == e) continue;
+				
+				add_edge(e->other(other), virt);
+			}
+
+			++c;
+		};
+
+		for_each_leaf(f);
+
+		C += c;
+		if(c == 0) break;
+	}
+	log<0>() << "mark leaves " << C << std::endl;
 }
 void				THIS::mark_leaves_recursive(gr::LAYER_S layer)
 {
@@ -828,11 +866,13 @@ bool			THIS::add_virtual_edges(gr::LAYER_S layer)
 
 	return b;
 }
-void		THIS::simplify()
+void		THIS::simplify_self()
 {
 	std::cout << "graph::simplify" << std::endl;
 
-	auto layer = create_layer(false);
+	auto layer = std::make_shared<gr::layer>();
+	layer->_M_enabled.set(false);
+	layer->_M_plot.set(false);
 
 	// remove leaves	
 	mark_leaves_recursive(layer);
@@ -850,7 +890,7 @@ void		THIS::simplify()
 gr::GRAPH_S			THIS::simplify() const
 {
 	auto g = copy();
-	g->simplify();
+	g->simplify_self();
 	return g;
 }
 std::string			THIS::dot_edge_symbol() { return " -- "; }
@@ -963,12 +1003,16 @@ void				arrange_tree(
 }
 void				THIS::arrange2(gr::VERT_S root)
 {
+	assert(vert_find(root) != vert_end());
+
 	//auto g = copy();
 	auto g = shared_from_this();
 
 	// g->spanning_tree();
 	auto layer = std::make_shared<gr::layer>();
-	layer->_M_enabled = true;
+	
+	std::cout << "edges: " << edge_size() << std::endl;
+
 	{
 		auto f = new gr::algo::ftor_dfs::ftor_dfs_vert2_spanning_tree;
 		
@@ -976,16 +1020,22 @@ void				THIS::arrange2(gr::VERT_S root)
 
 		f->initialize(g, root);
 
+		g->dot();
+
 		g->depth_first_search3(f, root);
 
 		f->finalize(g, root);
 	}
 
+	std::cout << "edges: " << edge_size() << std::endl;
+
 	g->dot();
+	return;
 	
 	arrange_tree(root, root, 0, 6.28);
 
 	layer->_M_enabled.set(true);
+	layer->_M_plot.set(true);
 
 	g->dot();
 

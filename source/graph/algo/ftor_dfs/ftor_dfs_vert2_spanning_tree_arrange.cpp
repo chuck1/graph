@@ -1,4 +1,4 @@
-#include <gr/vert.hpp> // gr/vert.hpp_in
+#include <gr/vert/Vert.hpp> // gr/vert.hpp_in
 #include <gr/graph.hpp>
 #include <gr/layer.hpp> // gr/layer.hpp_in
 #include <gr/edge_algo_data.hpp> // gr/edge.hpp_in

@@ -2,8 +2,7 @@
 #include <cassert>
 
 #include <gr/container/vert.hpp>
-#include <gr/vert.hpp> // gr/vert.hpp.in
-#include <gr/pair.hpp> // gr/pair.hpp.in
+#include <gr/vert/Vert.hpp> // gr/vert.hpp.in
 
 #include <gr/iterator/vert/VertGraphAll.hpp> // gr/iterator/VertGraphAll.hpp.in
 

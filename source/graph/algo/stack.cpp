@@ -1,7 +1,7 @@
 #include <cassert>
 
 #include <gr/edge.hpp>
-#include <gr/vert.hpp>
+#include <gr/vert/Vert.hpp>
 
 #include <gr/algo/stack.hpp> // gr/algo/stack.hpp_in
 

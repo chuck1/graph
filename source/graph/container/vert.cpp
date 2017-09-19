@@ -3,7 +3,7 @@
 
 // gr/decl.hpp.in
 #include <gr/iterator/vert/VertGraph.hpp>
-#include <gr/vert.hpp>
+#include <gr/vert/Vert.hpp>
 
 
 #include <gr/container/vert.hpp> // gr/container/vert.hpp_in

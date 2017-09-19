@@ -27,3 +27,7 @@ png: $(png_files)
 dotclean:
 	rm -rf build/dot/pdf
 
+clean:
+	rm -rf build/object/*
+	rm -rf build/process/*
+

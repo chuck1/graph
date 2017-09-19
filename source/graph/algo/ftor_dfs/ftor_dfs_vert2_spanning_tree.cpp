@@ -1,4 +1,4 @@
-#include <gr/vert.hpp> // gr/vert.hpp_in
+#include <gr/vert/Vert.hpp> // gr/vert.hpp_in
 #include <gr/graph.hpp>
 #include <gr/layer.hpp> // gr/layer.hpp_in
 #include <gr/iterator/edge/EdgeGraph.hpp>
@@ -17,8 +17,8 @@ void			THIS::initialize(
 	}
 	_M_layer2 = std::make_shared<gr::layer>();
 
-	_M_layer1->_M_enabled = true;
-	_M_layer2->_M_enabled = true;
+	_M_layer1->_M_enabled.set(true);
+	_M_layer2->_M_enabled.set(true);
 
 	for(auto it = g->vert_begin(); it != g->vert_end(); ++it)
 		(*it)->dfs._M_visited = false;
@@ -39,11 +39,11 @@ bool			THIS::check(
 		gr::VERT_S const & v0,
 		gr::VERT_S const & v1)
 {
-		if(v1->dfs._M_visited) return false;
-		
-		v1->dfs._M_visited = true;
+	if(v1->dfs._M_visited) return false;
 
-		return true;
+	v1->dfs._M_visited = true;
+
+	return true;
 }
 void			THIS::yield(
 		gr::VERT_S const & v0,
@@ -52,6 +52,8 @@ void			THIS::yield(
 		gr::EDGE_S const & e
 		)
 {
+	static int i = 0;
+	std::cout << "ftor spanning tree mark edge to keep " << (i++) << std::endl;
 	e->_M_layer.push_front(_M_layer2);
 }
 bool			THIS::descend(
