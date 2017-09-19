@@ -38,11 +38,7 @@ bool				THIS::operator!=(gr::vert const & v)
 }
 bool				THIS::enabled() const
 {
-	//if(!_M_enabled) return false;
-
-	if(!_M_layer.expired()) {
-		if(!_M_layer.lock()->_M_enabled) return false;
-	}
+	if(!_M_layer.enabled()) return false;
 
 	return true;
 }
@@ -66,20 +62,22 @@ gr::iterator::edge_vert		THIS::edge_erase(gr::iterator::edge_vert & i)
 
 	return gr::iterator::edge_vert(*_M_edges, j);
 }
-
 void				THIS::edge_erase_disconnected()
 {
-	for(auto it = edge_begin(); it != edge_end();)
+	//for(auto it = edge_begin(); it != edge_end();)
+	for(auto it = _M_edges->begin(); it != _M_edges->end();)
 	{
 		auto e = *it;
 		if(e->_M_v0.expired()) throw std::exception();
 
-		if(e->_M_v1.expired()) {
-			//std::cout << "gr::vert erase edge" << std::endl;
-			it = edge_erase(it);
-		} else {
-			++it;
+		if(e->_M_v1.expired())
+		{
+			//it = edge_erase(it);
+			it = _M_edges->erase(it);
+			continue;
 		}
+		
+		++it;
 	}
 }
 unsigned int			THIS::edge_size()
@@ -109,12 +107,15 @@ void				THIS::edge_erase_util(gr::VERT_S & v0, gr::VERT_S & v1)
 }
 std::string			THIS::dot()
 {
+	std::string c = _M_layer.plot_color();
+
 	std::stringstream ss;
 	ss << "node" << this;
 	ss << "[";
 	ss << "label=\"" << name() <<"\",";
 	ss << "pos=\"" << _M_dot.pos <<"\"";
 	ss << "shape=\"" << _M_dot.shape <<"\"";
+	if(!c.empty()) ss << "color=\"" << c <<"\"";
 	ss << "]";
 	return ss.str();
 }

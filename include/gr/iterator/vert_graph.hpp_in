@@ -2,10 +2,9 @@
 
 #include <iterator>
 
-#include <gr/decl.hpp> // gr/decl.hpp.in
-#include <gr/vert.hpp> // gr/vert.hpp.in
-#include <gr/vert_comp.hpp> // gr/vert_comp.hpp.in
-//#include <gr/edge.hpp> // gr/edge.hpp.in
+#include <gr/decl.hpp> // gr/decl.hpp_in
+#include <gr/vert.hpp> // gr/vert.hpp_in
+#include <gr/vert_comp.hpp> // gr/vert_comp.hpp_in
 
 {{ namespace_open }}
 
@@ -26,6 +25,7 @@ public:
 	vert_graph(gr::container::vert &, iterator);
 	vert_graph			operator=(vert_graph const &);
 
+	virtual bool			check(gr::S_Vert const &) const;
 	void				next();
 
 	gr::iterator::vert_graph	operator++();

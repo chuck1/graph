@@ -1,0 +1,43 @@
+{{ include_block_open }}
+#include <deque>
+#include <memory>
+#include <gr/decl.hpp> // gr/decl.hpp_in
+
+{{ namespace_open }}
+
+class LayerStack
+{
+	public:
+		/* accessors
+		 */
+		bool			enabled() const;
+		bool			plot() const;
+		std::string		plot_color() const;
+		
+		
+		template<typename T, Property<T> layer::*member>
+		T const &		get(T const & def) const
+		{
+			for(auto p : _M_stack)
+			{
+				gr::layer & l = *p;
+				Property<T> & prop = l.*member;
+				if(!!prop) return prop.get();
+			}
+			return def;
+		}
+
+		/* modify stack
+		 */
+		void			push_front(LAYER_S);
+		void			pop_front();
+
+		LAYER_S &		front();
+	private:
+		std::deque<LAYER_S>	_M_stack;
+};
+
+{{ namespace_close }}
+
+{{ include_block_close }}
+

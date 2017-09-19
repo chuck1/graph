@@ -12,8 +12,13 @@ void			THIS::initialize(
 		gr::VERT_S const & v0
 		)
 {
-	if(!_M_layer1) _M_layer1 = std::make_shared<gr::layer>(true);
-	_M_layer2 = std::make_shared<gr::layer>(true);
+	if(!_M_layer1) {
+		_M_layer1 = std::make_shared<gr::layer>();
+	}
+	_M_layer2 = std::make_shared<gr::layer>();
+
+	_M_layer1->_M_enabled = true;
+	_M_layer2->_M_enabled = true;
 
 	for(auto it = g->vert_begin(); it != g->vert_end(); ++it)
 		(*it)->dfs._M_visited = false;
@@ -21,14 +26,14 @@ void			THIS::initialize(
 	v0->dfs._M_visited = true;
 
 	for(auto it = g->edge_begin(); it != g->edge_end(); ++it)
-		(*it)->_M_layer = _M_layer1;
+		(*it)->_M_layer.push_front(_M_layer1);
 }
 void			THIS::finalize(
 		gr::GRAPH_S g,
 		gr::VERT_S const & v0
 		)
 {
-	_M_layer1->_M_enabled = false;
+	_M_layer1->_M_enabled.set(false);
 }
 bool			THIS::check(
 		gr::VERT_S const & v0,
@@ -47,7 +52,7 @@ void			THIS::yield(
 		gr::EDGE_S const & e
 		)
 {
-	e->_M_layer = _M_layer2;
+	e->_M_layer.push_front(_M_layer2);
 }
 bool			THIS::descend(
 		gr::VERT_S const & v0,

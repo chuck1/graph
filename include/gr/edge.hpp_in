@@ -3,7 +3,7 @@
 #include <memory>
 #include <set>
 #include <vector>
-
+#include <gr/LayerStack.hpp>
 #include <gr/edge_data.hpp> // gr/edge_data.hpp_in
 
 #include <gr/decl.hpp> // gr/decl.hpp_in
@@ -27,6 +27,7 @@ public:
 	
 	virtual std::string	name() const;
 	gr::VERT_S		other(gr::VERT_S) const;
+	bool			valid() const;
 	bool			enabled() const;
 	/**
 	 * swap verticies
@@ -51,7 +52,7 @@ public:
 	gr::VERT_W		_M_v0;
 	gr::VERT_W		_M_v1;
 
-	gr::LAYER_W		_M_layer;
+	gr::LayerStack		_M_layer;
 	//bool			_M_enabled;
 	/** temporary indicator for use by algorithms
 	 */

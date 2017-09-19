@@ -1,18 +1,46 @@
 {{ include_block_open }}
-
+#include <deque>
 #include <memory>
+#include <gr/decl.hpp> // gr/decl.hpp_in
 
 {{ namespace_open }}
 
+template<typename T>
+class Property
+{
+	public:
+		Property()
+		{
+		}
+		T const &	get()
+		{
+			return *_M_t;
+		}
+		void		set(T const & t)
+		{
+			T * p = new T;
+			*p = t;
+			_M_t.reset(p);
+		}
+		void		operator=(T const & t)
+		{
+			set(t);
+		}
+		bool		operator!() const
+		{
+			return !((bool)_M_t);
+		}
+	private:
+		std::shared_ptr<T>	_M_t;
+};
 class layer: public std::enable_shared_from_this<layer>
 {
-public:
-	layer();
-	layer(bool);
-	
-	bool	enabled() const;
-	
-	bool	_M_enabled;
+	public:
+		layer();
+		
+		Property<bool>		_M_enabled;
+		Property<bool>		_M_plot;
+		Property<std::string>	_M_plot_color;
 };
 
 {{ namespace_close }}

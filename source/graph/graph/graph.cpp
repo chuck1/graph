@@ -73,113 +73,6 @@ gr::iterator::vert_graph	THIS::iter(gr::VERT_S v)
 
 	return it;
 }
-gr::iterator::vert_graph		THIS::vert_begin()
-{
-	return gr::iterator::vert_graph(_M_verts, _M_verts.begin());
-}
-gr::iterator::vert_graph		THIS::vert_end()
-{
-	return gr::iterator::vert_graph(_M_verts, _M_verts.end());
-}
-gr::iterator::vert_graph_all		THIS::vert_begin_all()
-{
-	return gr::iterator::vert_graph_all(_M_verts, _M_verts.begin());
-}
-gr::iterator::vert_graph_all		THIS::vert_end_all()
-{
-	return gr::iterator::vert_graph_all(_M_verts, _M_verts.end());
-}
-gr::iterator::vert_graph_all		THIS::vert_begin_all(gr::VERT_FUNC func)
-{
-	return gr::iterator::vert_graph_all(_M_verts, _M_verts.begin(), func);
-}
-gr::iterator::vert_graph_all		THIS::vert_end_all(gr::VERT_FUNC func)
-{
-	return gr::iterator::vert_graph_all(_M_verts, _M_verts.end(), func);
-}
-
-
-gr::iterator::vert_graph		THIS::vert_erase(gr::iterator::vert_graph & i)
-{
-	gr::VERT_W w = *i;
-	assert(!w.expired());
-
-	auto ret = _M_verts.erase(i._M_j);
-
-	// is this really necessary?
-	//assert(w.expired());
-
-	edge_erase();
-
-	return gr::iterator::vert_graph(_M_verts, ret);
-}
-gr::iterator::vert_graph		THIS::vert_find(gr::VERT_S v)
-{
-	return gr::iterator::vert_graph(_M_verts, _M_verts.find(v));
-}
-void					THIS::edge_erase()
-{
-	//std::cout << "edge erase" << std::endl;
-	for(auto j = vert_begin(); j != vert_end(); ++j) {
-		assert(*j);
-		(*j)->edge_erase_disconnected();
-	}
-}
-gr::iterator::edge_graph		THIS::edge_begin()
-{
-	return gr::iterator::edge_graph(_M_verts, _M_verts.begin());
-}
-gr::iterator::edge_graph		THIS::edge_end()
-{
-	return gr::iterator::edge_graph(_M_verts, _M_verts.end());
-}
-gr::iterator::vert_comp			THIS::comp_vert_begin(int c)
-{
-	return gr::iterator::vert_comp(_M_verts, _M_verts.begin(), c);
-}
-gr::iterator::vert_comp			THIS::comp_vert_end(int c)
-{
-	return gr::iterator::vert_comp(_M_verts, _M_verts.end(), c);
-}
-void					THIS::edge_erase_util(gr::VERT_S & v0, gr::VERT_S & v1)
-{
-	auto i = vert_find(v0);
-
-	if(i == vert_end()) throw std::exception();
-
-	(*i)->edge_erase_util(v0, v1);
-
-	/*
-	gr::container::EDGE_S const & edges = (*i)->_M_edges;
-
-	auto j = edges->find(v1);
-	//auto j = std::find(edges.begin(), edges.end(), v1);
-
-	if(j == edges->end()) throw std::exception();
-
-	edges->erase(j);
-	*/
-	//for(auto j = edges.begin(); j != edges.end(); ++j) {
-	//	gr::VERT_S w = j->first.lock();
-	//}
-}
-void				THIS::edge_erase(gr::VERT_S & v0, gr::VERT_S & v1)
-{
-	edge_erase_util(v0, v1);
-	edge_erase_util(v1, v0);
-}
-gr::iterator::edge_graph	THIS::edge_erase(gr::iterator::edge_graph i)
-{
-	gr::iterator::edge_graph ret(i);
-
-	gr::container::edge & container = *((*i._M_i)->_M_edges);
-
-	ret._M_j = container.erase(i._M_j);
-
-	ret.next();
-
-	return ret;
-}
 void				THIS::distance_util(gr::VERT_S u)
 {
 	int d = u->dist._M_distance + 1.0f;
@@ -515,7 +408,7 @@ void				THIS::mark_leaves_recursive(gr::LAYER_S layer)
 
 		auto f = [&](gr::VERT_S const & v, gr::EDGE_S const &)
 		{
-			v->_M_layer = layer;
+			v->_M_layer.push_front(layer);
 			++c;
 		};
 
@@ -551,7 +444,7 @@ gr::algo::SET_CYCLE		THIS::cycles0()
 	printf("fail inserts = %i\n", ftor._M_count_insert_fail);
 
 	// cleanup
-	layer->_M_enabled = true;
+	layer->_M_enabled.set(true);
 
 	return ftor._M_cycles;
 }
@@ -580,7 +473,7 @@ gr::algo::SET_CYCLE		THIS::cycles1()
 	printf("fail inserts = %i\n", ftor._M_count_insert_fail);
 
 	// cleanup
-	layer->_M_enabled = true;
+	layer->_M_enabled.set(true);
 
 	return ftor._M_cycles;
 }
@@ -614,6 +507,7 @@ gr::algo::ftor_dfs::SET_QUEUE_EDGE	THIS::paths1()
 
 	return ftor._M_paths;
 }
+/*
 void				THIS::vert_erase_layer(unsigned int l)
 {
 	if(l > _M_layers.size()) throw std::exception();
@@ -635,6 +529,7 @@ void				THIS::vert_erase_layer(unsigned int l)
 		++i;
 	}
 }
+*/
 void				THIS::bridges_sub(gr::VERT_S const & n, int & t, std::vector<gr::EDGE_S> & ret)
 {
 	n->bridge._M_visited = true;
@@ -672,7 +567,7 @@ void				THIS::mark_bridges(gr::LAYER_S layer)
 	auto l = bridges();
 	for(auto e : l)
 	{
-		e->_M_layer = layer;
+		e->_M_layer.push_front(layer);
 	}
 }
 std::vector<gr::EDGE_S>		THIS::bridges()
@@ -725,13 +620,16 @@ void				THIS::dot(std::string filename, gr::VERT_S const & v)
 }
 void				THIS::dot_sub1(std::ostream & of)
 {
-	for(auto i = edge_begin(); i != edge_end(); ++i)
+	for(auto i = edge_begin_plot(); i != edge_end_plot(); ++i)
 	{
 		auto e = *i;
 		of << e->dot() << std::endl;
+
+		// should i make sure each adjacent vertex is begin plotted too?
 	}
 
-	for(auto i = vert_begin(); i != vert_end(); ++i) {
+	for(auto i = vert_begin_plot(); i != vert_end_plot(); ++i)
+	{
 		of << (*i)->dot() << std::endl;
 	}
 }
@@ -742,7 +640,6 @@ void				THIS::dot_sub0(std::ostream & of)
 
 	// overlap=false overrides manual node positions
 	//of << "overlap=false" << std::endl;
-
 	of << "splines=false" << std::endl;
 
 	dot_sub1(of);
@@ -788,14 +685,16 @@ int				THIS::components()
 	edge_erase();
 
 	// initialize
-	for(auto i = vert_begin(); i != vert_end(); ++i) {
+	for(auto i = vert_begin(); i != vert_end(); ++i)
+	{
 		(*i)->comp._M_visited = false;
 		(*i)->comp._M_c = -1;
 	}
 
 	int c = 0;
 
-	for(auto i = vert_begin(); i != vert_end(); ++i) {
+	for(auto i = vert_begin(); i != vert_end(); ++i)
+	{
 		gr::VERT_S const & u = *i;
 
 		assert(u);
@@ -806,17 +705,6 @@ int				THIS::components()
 		}
 	}
 
-	if(0) {
-		std::cout << "verts" << std::endl;
-		for(auto i = vert_begin(); i != vert_end(); ++i) {
-			std::cout << "  " << (*i)->comp._M_c << " " << (*i)->comp._M_c << std::endl;
-		}
-		std::cout << "comps" << std::endl;
-		for(int i = 0; i < c; ++i) {
-			auto s = std::distance(comp_vert_begin(i), comp_vert_end(i));
-			std::cout << "  " << i << " " << s << std::endl;
-		}
-	}
 	return c;
 }
 void				THIS::component(int c)
@@ -841,46 +729,8 @@ void				THIS::edge_enable()
 	for(auto i = edge_begin(); i != edge_end(); ++i) 
 	{
 		auto e = *i;
-		e->_M_layer.reset();
+		e->_M_layer.front()->_M_enabled.set(true);
 	}
-}
-void				THIS::layer_move(unsigned int i0, unsigned int i1)
-{
-	// move all verts in i0 to i1
-
-	if(i0 < _M_layers.size()) throw std::exception();
-	if(i1 < _M_layers.size()) throw std::exception();
-
-	auto const & l0 = _M_layers[i0];
-	auto const & l1 = _M_layers[i1];
-
-	assert(l0);
-	assert(l1);
-
-	for(auto i = vert_begin_all(); i != vert_end_all(); ++i) {
-		auto const & u = *i;
-
-		if(!u->_M_layer.expired()) {
-			if(u->_M_layer.lock() == l0) {
-				u->_M_layer = l1;
-			}
-		}
-	}
-}
-unsigned int			THIS::vert_size()
-{
-	auto s2 = std::distance(vert_begin(), vert_end());
-	return s2;
-}
-unsigned int			THIS::comp_vert_size(int c)
-{
-	auto s2 = std::distance(comp_vert_begin(c), comp_vert_end(c));
-	return s2;
-}
-unsigned int			THIS::edge_size()
-{
-	auto s = std::distance(edge_begin(), edge_end());
-	return s;
 }
 void				THIS::for_each_leaf(std::function<void(gr::VERT_S const &, gr::EDGE_S const &)> func)
 {
@@ -896,7 +746,7 @@ void				THIS::for_each_leaf(std::function<void(gr::VERT_S const &, gr::EDGE_S co
 gr::LAYER_S			THIS::create_layer(bool e)
 {
 	auto layer = std::make_shared<gr::layer>();
-	layer->_M_enabled = e;
+	layer->_M_enabled.set(e);
 	_M_layers.push_back(layer);
 	return layer;
 }
@@ -967,7 +817,7 @@ bool		THIS::add_virtual_edges(gr::LAYER_S layer)
 			add_virtual_edge(v0, v1, v);
 
 			// remove middle vertex
-			v->_M_layer = layer;
+			v->_M_layer.push_front(layer);
 
 			b = true;
 		}
@@ -1109,7 +959,8 @@ void				THIS::arrange2(gr::VERT_S root)
 	auto g = shared_from_this();
 
 	// g->spanning_tree();
-	auto layer = std::make_shared<gr::layer>(true);
+	auto layer = std::make_shared<gr::layer>();
+	layer->_M_enabled = true;
 	{
 		auto f = new gr::algo::ftor_dfs::ftor_dfs_vert2_spanning_tree;
 		
@@ -1126,7 +977,7 @@ void				THIS::arrange2(gr::VERT_S root)
 	
 	arrange_tree(root, root, 0, 6.28);
 
-	layer->_M_enabled = true;
+	layer->_M_enabled.set(true);
 
 	g->dot();
 

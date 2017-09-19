@@ -21,6 +21,9 @@ class edge_algo_data;
 
 class graph;
 
+template<typename T>
+class Property;
+
 class layer;
 
 typedef std::shared_ptr<layer>	LAYER_S;
@@ -45,11 +48,12 @@ typedef vert					VERT;
 typedef edge					EDGE;
 typedef edge_data				EDGE_DATA;
 
-
 typedef std::shared_ptr<EDGE>			EDGE_S;
+typedef std::shared_ptr<EDGE>			S_Edge;
 
 typedef std::shared_ptr<VERT>			VERT_S;
 typedef std::weak_ptr<VERT>			VERT_W;
+typedef std::shared_ptr<VERT>			S_Vert;
 
 typedef std::shared_ptr<EDGE_DATA>		EDGE_DATA_S;
 

@@ -36,7 +36,8 @@ public:
 	gr::iterator::edge_graph	operator++();
 	/** postfix */
 	gr::iterator::edge_graph	operator++(int);
-
+	
+	virtual bool			check(gr::S_Edge const &);
 	void				next();
 
 	reference			operator*();

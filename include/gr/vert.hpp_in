@@ -7,6 +7,7 @@
 #include <eigen3/Eigen/Core>
 
 #include <gr/decl.hpp> // gr/decl.hpp_in
+#include <gr/LayerStack.hpp>
 #include <gr/iterator/edge_vert.hpp> // gr/iterator/iterator.hpp.in
 
 {{ namespace_open }}
@@ -110,7 +111,7 @@ public:
 //private:	
 	gr::container::EDGE_S	_M_edges;
 public:
-	LAYER_W			_M_layer;
+	LayerStack		_M_layer;
 };
 
 {{ namespace_close }}

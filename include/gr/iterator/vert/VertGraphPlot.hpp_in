@@ -1,0 +1,23 @@
+{{ include_block_open }}
+
+#include <iterator>
+#include <set>
+
+#include <gr/decl.hpp> // gr/decl.hpp_in
+#include <gr/iterator/vert_graph.hpp> // gr/iterator/vert_graph.hpp_in
+
+{{ namespace_open }}
+
+class VertGraphPlot: public gr::iterator::vert_graph
+{
+public:
+	VertGraphPlot(gr::container::vert &, iterator const &);
+
+	virtual bool			check(gr::S_Vert const &) const;
+};
+
+
+{{ namespace_close }}
+
+{{ include_block_close }}
+

@@ -10,6 +10,8 @@
 #include <gr/decl.hpp> // gr/decl.hpp_in
 //#include <gr/algo/ftor_dfs/ftor_dfs.hpp> // gr/algo/ftor_dfs/ftor_dfs.hpp_in
 #include <gr/algo/cycle.hpp> // gr/algo/cycle.hpp_in
+#include <gr/iterator/edge/EdgeGraphPlot.hpp> // gr/iterator/iterator.hpp.in
+#include <gr/iterator/vert/VertGraphPlot.hpp> // gr/iterator/iterator.hpp.in
 #include <gr/iterator/vert_comp.hpp> // gr/iterator/iterator.hpp.in
 #include <gr/iterator/vert_graph.hpp> // gr/iterator/vert_graph.hpp.in
 #include <gr/iterator/vert_graph_all.hpp> // gr/iterator/vert_graph_all.hpp.in
@@ -49,7 +51,7 @@ public:
 
 	gr::iterator::vert_graph	vert_find(gr::VERT_S v);
 	gr::iterator::vert_graph	vert_erase(gr::iterator::vert_graph &);
-	void				vert_erase_layer(unsigned int l);
+	//void				vert_erase_layer(unsigned int l);
 	
 	gr::LAYER_S			create_layer(bool);
 
@@ -72,6 +74,12 @@ public:
 	gr::iterator::edge_graph	edge_begin();
 	gr::iterator::edge_graph	edge_end();
 	unsigned int			edge_size();
+
+	gr::iterator::edge::EdgeGraphPlot	edge_begin_plot();
+	gr::iterator::edge::EdgeGraphPlot	edge_end_plot();
+
+	gr::iterator::vert::VertGraphPlot	vert_begin_plot();
+	gr::iterator::vert::VertGraphPlot	vert_end_plot();
 
 	void				edge_erase();
 
@@ -185,7 +193,7 @@ public:
 	 */
 	void				simplify();
 
-	void				layer_move(unsigned int, unsigned int);
+	//void				layer_move(unsigned int, unsigned int);
 	
 	void				for_each_leaf(std::function<void(gr::VERT_S const &, gr::EDGE_S const &)> func);
 

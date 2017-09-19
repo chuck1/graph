@@ -1,21 +1,10 @@
 
 
-
-#include <gr/layer.hpp> // gr/layer.hpp.in
+#include <gr/layer.hpp> // gr/layer.hpp_in
 
 typedef gr::layer THIS;
 
-THIS::layer():
-	_M_enabled(true)
+THIS::layer()
 {
 }
-THIS::layer(bool e):
-	_M_enabled(e)
-{
-}
-bool		THIS::enabled() const
-{
-	return _M_enabled;
-}
-
 

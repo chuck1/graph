@@ -5,7 +5,7 @@
 #include <gr/vert.hpp> // gr/vert.hpp.in
 #include <gr/pair.hpp> // gr/pair.hpp.in
 
-#include <gr/iterator/vert_graph.hpp> // gr/iterator/vert_graph.hpp.in
+#include <gr/iterator/vert_graph.hpp> // gr/iterator/vert_graph.hpp_in
 
 typedef gr::iterator::vert_graph THIS;
 
@@ -21,17 +21,22 @@ THIS				THIS::operator=(THIS const & i)
 	_M_j = i._M_j;
 	return *this;
 }
-
+bool				THIS::check(gr::S_Vert const & v) const
+{
+	return v->enabled();
+}
 void				THIS::next()
 {
-	while(true) {
+	while(true)
+	{
 		if(_M_j == _M_container.end()) break;
 		
 		gr::VERT_S const & v = *_M_j;
 
 		assert(v);
 
-		if(!v->enabled()) {
+		if(!check(v))
+		{
 			++_M_j;
 			continue;
 		}

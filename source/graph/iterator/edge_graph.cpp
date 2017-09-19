@@ -1,6 +1,7 @@
 #include <cassert>
 #include <iostream>
 
+#include <gr/decl.hpp> // gr/decl.hpp_in
 #include <gr/container/vert.hpp> // gr/container/vert.hpp.in
 #include <gr/container/edge.hpp> // gr/container/edge.hpp.in
 #include <gr/vert.hpp> // gr/edge.hpp.in
@@ -15,7 +16,8 @@ THIS::edge_graph(gr::container::vert & container, THIS::iterator0 const & i):
 	_M_container(container),
 	_M_i(i)
 {
-	if(_M_i != _M_container.end()) {
+	if(_M_i != _M_container.end())
+	{
 		_M_j = (*_M_i)->_M_edges->begin();
 		next();
 	}
@@ -27,7 +29,6 @@ THIS::edge_graph(gr::container::vert & container, THIS::iterator0 const & i, THI
 {
 	next();
 }
-
 THIS				THIS::operator=(THIS const & i)
 {
 	_M_container = i._M_container;
@@ -35,31 +36,38 @@ THIS				THIS::operator=(THIS const & i)
 	_M_j = i._M_j;
 	return *this;
 }
-
+bool				THIS::check(gr::S_Edge const & e)
+{
+	return e->enabled();
+}
 void				THIS::next()
 {
-	while(true) {
-		//std::cout << "iterator edge_graph i " << std::distance(_M_i, _M_container.end()) << std::endl;
-
+	while(true)
+	{
 		if(_M_i == _M_container.end()) break;
 
 		gr::VERT_S const & u = *_M_i;
-	
-		//std::cout << "iterator edge_graph j " << std::distance(_M_j, u._M_edges->end()) << std::endl;
 
-		if(_M_j == u->_M_edges->end()) {
+		if(_M_j == u->_M_edges->end())
+		{
 			++_M_i;
 
 			if(_M_i == _M_container.end()) break;
 
 			_M_j = (*_M_i)->_M_edges->begin();
 
+			*_M_j;
+
 			continue;
 		}
 
 		auto e = *_M_j;
 		
-		if(!e->enabled()) {
+		if(e->_M_v0.expired()) { ++_M_j; continue; }
+		if(e->_M_v1.expired()) { ++_M_j; continue; }
+
+		if(!check(e))
+		{
 			++_M_j;
 			continue;
 		}
@@ -68,6 +76,7 @@ void				THIS::next()
 
 		if((*u) < (*v)) break;
 		
+		// handle loop edges
 		if((*u) == (*v))
 		{
 			auto it = _M_edges.find(e);
@@ -94,7 +103,6 @@ gr::iterator::edge_graph	THIS::operator++(int)
 	operator++();
 	return ret;
 }
-
 THIS::reference			THIS::operator*()
 {
 	return *_M_j;

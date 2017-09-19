@@ -15,7 +15,6 @@ typedef gr::edge THIS;
 THIS::edge(gr::VERT_S const & v0, gr::VERT_S const & v1):
 	_M_v0(v0),
 	_M_v1(v1)
-	//_M_enabled(true)
 {
 	assert(v0);
 	assert(v1);
@@ -36,23 +35,23 @@ gr::VERT_S		THIS::other(gr::VERT_S v) const
 	if((*v1_) == (*v)) return v0_;
 	throw std::exception();
 }
-bool			THIS::enabled() const
+bool			THIS::valid() const
 {
-	//assert(!_M_v0.expired());
 	if(_M_v0.expired()) return false;
 
 	if(_M_v1.expired()) return false;
 
-	auto const & v0 = _M_v0.lock();
-	auto const & v1 = _M_v1.lock();
-	
-	if(!v0->enabled()) return false;
+	return true;
+}
+bool			THIS::enabled() const
+{
+	if(!valid()) return false;
 
-	if(!v1->enabled()) return false;
+	if(!v0()->enabled()) return false;
+
+	if(!v1()->enabled()) return false;
 	
-	if(!_M_layer.expired()) {
-		if(!_M_layer.lock()->enabled()) return false;
-	}
+	if(!_M_layer.enabled()) return false;
 
 	return true;
 }
@@ -118,7 +117,10 @@ bool			THIS::contains(gr::VERT_S v) const
 std::string		THIS::dot()
 {
 	std::stringstream ss;
-	ss << "node" << v0().get() << v0()->get_graph()->dot_edge_symbol() << "node" << v1().get() << " [color=\"" << _M_dot.color << "\"];";
+	ss << "node" << v0().get();
+	ss << v0()->get_graph()->dot_edge_symbol();
+        ss << "node" << v1().get();
+	ss << " [color=\"" << _M_dot.color << "\"];";
 	return ss.str();
 }
 void			THIS::orient_start(gr::VERT_S const & v)
