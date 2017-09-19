@@ -15,8 +15,10 @@
 
 #include <gr/container/edge.hpp> // gr/container/edge.hpp.in
 #include <gr/container/vert.hpp> // gr/container/vert.hpp.in
-#include <gr/iterator/edge_graph.hpp> // gr/iterator/edge_graph.hpp_in
+#include <gr/iterator/edge/EdgeGraph.hpp> // gr/iterator/edge_graph.hpp_in
 #include <gr/iterator/edge_vert.hpp> // gr/iterator/edge_vert.hpp_in
+#include <gr/iterator/edge/EdgeGraphConst.hpp> // gr/iterator/edge_vert.hpp_in
+#include <gr/iterator/vert/VertGraphConst.hpp> // gr/iterator/edge_vert.hpp_in
 #include <gr/plot/vert.hpp>
 #include <gr/io.hpp> // gr/vert.hpp_in
 #include <gr/pair.hpp> // gr/pair.hpp.in
@@ -60,7 +62,7 @@ void				THIS::add_edge(gr::EDGE_S e)
 	(*iter(e->v0()))->add_edge(e);
 	(*iter(e->v1()))->add_edge(e);
 }
-gr::iterator::vert_graph	THIS::iter(gr::VERT_S v)
+gr::iterator::vert::VertGraph	THIS::iter(gr::VERT_S v)
 {
 	auto it = vert_find(v);
 
@@ -68,7 +70,7 @@ gr::iterator::vert_graph	THIS::iter(gr::VERT_S v)
 	{
 		CONT_VERT::value_type p(v);
 
-		return gr::iterator::vert_graph(_M_verts, _M_verts.insert(_M_verts.begin(), p));
+		return gr::iterator::vert::VertGraph(_M_verts, _M_verts.insert(_M_verts.begin(), p));
 	}
 
 	return it;
@@ -779,15 +781,16 @@ bool check_path(std::deque<gr::EDGE_S> & stack)
 
 	return true;
 }
-gr::GRAPH_S	THIS::copy()
+gr::GRAPH_S		THIS::copy() const
 {
 	auto g = std::make_shared<gr::graph>();
 
 	std::map<gr::VERT_S, gr::VERT_S> m;
 
+	int c = 0;
 	for(auto it = vert_begin(); it != vert_end(); ++it)
 	{
-		m[*it] = std::make_shared<gr::vert>(g);
+		m[*it] = std::make_shared<gr::plot::vert>(g, std::to_string(c++));
 	}
 
 	for(auto it = edge_begin(); it != edge_end(); ++it)
@@ -797,7 +800,7 @@ gr::GRAPH_S	THIS::copy()
 
 	return g;
 }
-bool		THIS::add_virtual_edges(gr::LAYER_S layer)
+bool			THIS::add_virtual_edges(gr::LAYER_S layer)
 {
 	bool b = false;
 
@@ -843,7 +846,12 @@ void		THIS::simplify()
 	int nc = components();
 	for(int c = 0; c < nc; ++c)
 		std::cout << "    component " << c << " v: " << comp_vert_size(c) << std::endl;
-
+}
+gr::GRAPH_S			THIS::simplify() const
+{
+	auto g = copy();
+	g->simplify();
+	return g;
 }
 std::string			THIS::dot_edge_symbol() { return " -- "; }
 

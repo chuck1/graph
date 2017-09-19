@@ -8,34 +8,40 @@
 #include <gr/edge.hpp> // gr/edge.hpp.in
 #include <gr/edge_data.hpp> // gr/edge_data.hpp.in
 
-#include <gr/iterator/edge_graph.hpp> // gr/iterator/edge_graph.hpp_in
+#include <gr/iterator/edge/EdgeGraphConst.hpp> // gr/iterator/edge/EdgeGraphConst.hpp_in
 
-typedef gr::iterator::edge_graph THIS;
+typedef gr::iterator::edge::EdgeGraphConst THIS;
 
-THIS::edge_graph(gr::container::vert & container, THIS::iterator0 const & i):
+THIS::EdgeGraphConst(
+		gr::container::vert const & container, 
+		THIS::iterator0 const & i):
 	_M_container(container),
 	_M_i(i)
 {
-	if(_M_i != _M_container.end())
+	if(_M_i != _M_container.cend())
 	{
 		_M_j = (*_M_i)->_M_edges->begin();
 		next();
 	}
 }
-THIS::edge_graph(gr::container::vert & container, THIS::iterator0 const & i, THIS::iterator1 const & j):
+THIS::EdgeGraphConst(
+		gr::container::vert const & container, 
+		THIS::iterator0 const & i, 
+		THIS::iterator1 const & j):
 	_M_container(container),
 	_M_i(i),
 	_M_j(j)
 {
 	next();
 }
+/*
 THIS				THIS::operator=(THIS const & i)
 {
 	_M_container = i._M_container;
 	_M_i = i._M_i;
 	_M_j = i._M_j;
 	return *this;
-}
+}*/
 bool				THIS::check(gr::S_Edge const & e)
 {
 	return e->enabled();
@@ -44,7 +50,7 @@ void				THIS::next()
 {
 	while(true)
 	{
-		if(_M_i == _M_container.end()) break;
+		if(_M_i == _M_container.cend()) break;
 
 		gr::VERT_S const & u = *_M_i;
 
@@ -52,7 +58,7 @@ void				THIS::next()
 		{
 			++_M_i;
 
-			if(_M_i == _M_container.end()) break;
+			if(_M_i == _M_container.cend()) break;
 
 			_M_j = (*_M_i)->_M_edges->begin();
 
@@ -90,14 +96,14 @@ void				THIS::next()
 		++_M_j;
 	}
 }
-gr::iterator::edge_graph	THIS::operator++()
+THIS				THIS::operator++()
 {
 	++_M_j;
 	next();
 	return THIS(_M_container, _M_i, _M_j);
 	//return *this;
 }
-gr::iterator::edge_graph	THIS::operator++(int)
+THIS				THIS::operator++(int)
 {
 	THIS ret(_M_container, _M_i, _M_j);
 	operator++();
@@ -114,17 +120,18 @@ THIS::value_type const *	THIS::operator->()
 	//return &_M_value;
 }
 
-bool				THIS::operator==(gr::iterator::edge_graph const & i)
+bool				THIS::operator==(THIS const & i)
 {
-	if(_M_i == i._M_i) {
-		if(_M_i == _M_container.end()) return true;
+	if(_M_i == i._M_i)
+	{
+		if(_M_i == _M_container.cend()) return true;
 
 		return _M_j == i._M_j;
-	} else {
-		return false;
 	}
+		
+	return false;
 }
-bool				THIS::operator!=(gr::iterator::edge_graph const & i)
+bool				THIS::operator!=(THIS const & i)
 {
 	return !(operator==(i));
 }

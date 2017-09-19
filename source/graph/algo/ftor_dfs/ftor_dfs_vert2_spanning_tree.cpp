@@ -1,7 +1,7 @@
 #include <gr/vert.hpp> // gr/vert.hpp_in
 #include <gr/graph.hpp>
 #include <gr/layer.hpp> // gr/layer.hpp_in
-#include <gr/iterator/edge_graph.hpp>
+#include <gr/iterator/edge/EdgeGraph.hpp>
 
 #include <gr/algo/ftor_dfs/ftor_dfs_vert2_spanning_tree.hpp> // gr/algo/ftor_dfs/ftor_dfs_vert2_spanning_tree.hpp_in
 

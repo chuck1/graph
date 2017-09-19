@@ -2,9 +2,9 @@
 
 #include <iterator>
 
-#include <gr/decl.hpp> // gr/decl.hpp.in
-#include <gr/vert.hpp> // gr/vert.hpp.in
-#include <gr/vert_comp.hpp> // gr/vert_comp.hpp.in
+#include <gr/decl.hpp> // gr/decl.hpp_in
+#include <gr/vert.hpp> // gr/vert.hpp_in
+#include <gr/vert_comp.hpp> // gr/VertComp.hpp_in
 //#include <gr/edge.hpp> // gr/edge.hpp.in
 
 {{ namespace_open }}
@@ -14,7 +14,7 @@ typedef std::iterator<std::input_iterator_tag, gr::VERT_S> ITERATOR_VERT;
 /**
  * iterates on each edge in a vert's edge container
  */
-class vert_graph_all:
+class VertComp:
 	public ITERATOR_VERT
 {
 public:
@@ -23,27 +23,24 @@ public:
 	typedef gr::VERT_S const &	reference;
 	typedef gr::VERT_S		value_type;
 
-	vert_graph_all(gr::container::vert &, iterator);
-	vert_graph_all(gr::container::vert &, iterator, gr::VERT_FUNC);
-
-	vert_graph_all			operator=(vert_graph_all const &);
+	VertComp(gr::container::vert &, iterator, int);
 
 	void				next();
 
-	gr::iterator::vert_graph_all	operator++();
+	VertComp			operator++();
 	/** postfix */
-	gr::iterator::vert_graph_all	operator++(int);
+	VertComp			operator++(int);
 	
 	reference			operator*();
 	value_type const *		operator->();
 
-	bool				operator==(gr::iterator::vert_graph_all const &);
-	bool				operator!=(gr::iterator::vert_graph_all const &);
+	bool				operator==(VertComp const &);
+	bool				operator!=(VertComp const &);
 
-//private:
+private:
 	gr::container::vert &		_M_container;
 	iterator			_M_j;
-	gr::VERT_FUNC			_M_func;
+	int				_M_c;
 };
 
 

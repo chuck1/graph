@@ -5,11 +5,11 @@
 typedef gr::iterator::edge::EdgeGraphPlot THIS;
 
 THIS::EdgeGraphPlot(gr::container::vert & c, iterator0 const & i):
-	gr::iterator::edge_graph(c, i)
+	gr::iterator::edge::EdgeGraph(c, i)
 {
 }
 THIS::EdgeGraphPlot(gr::container::vert & c, iterator0 const & i, iterator1 const & j):
-	gr::iterator::edge_graph(c, i, j)
+	gr::iterator::edge::EdgeGraph(c, i, j)
 {
 }
 bool		THIS::check(gr::S_Edge const & e)

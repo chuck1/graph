@@ -4,11 +4,11 @@
 #include <set>
 
 #include <gr/decl.hpp> // gr/decl.hpp_in
-#include <gr/iterator/edge_graph.hpp> // gr/iterator/edge_graph.hpp_in
+#include <gr/iterator/edge/EdgeGraph.hpp> // gr/iterator/edge/EdgeGraph.hpp_in
 
 {{ namespace_open }}
 
-class EdgeGraphPlot: public gr::iterator::edge_graph
+class EdgeGraphPlot: public gr::iterator::edge::EdgeGraph
 {
 public:
 	EdgeGraphPlot(gr::container::vert &, iterator0 const &);

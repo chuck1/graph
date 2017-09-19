@@ -4,11 +4,11 @@
 #include <set>
 
 #include <gr/decl.hpp> // gr/decl.hpp_in
-#include <gr/iterator/vert_graph.hpp> // gr/iterator/vert_graph.hpp_in
+#include <gr/iterator/vert/VertGraph.hpp> // gr/iterator/vert/VertGraph.hpp_in
 
 {{ namespace_open }}
 
-class VertGraphPlot: public gr::iterator::vert_graph
+class VertGraphPlot: public gr::iterator::vert::VertGraph
 {
 public:
 	VertGraphPlot(gr::container::vert &, iterator const &);

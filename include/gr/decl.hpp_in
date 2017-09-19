@@ -37,6 +37,17 @@ namespace container {
 }
 
 namespace iterator {
+	class vert_comp;
+	namespace vert {
+		class VertComp;
+		class VertGraph;
+		class VertGraphConst;
+		class VertGraphAll;
+	}
+	namespace edge {
+		class EdgeGraph;
+		class EdgeGraphConst;
+	}
 	class edge_graph;
 	class edge_vert;
 }

@@ -3,7 +3,7 @@
 typedef gr::iterator::vert::VertGraphPlot THIS;
 
 THIS::VertGraphPlot(gr::container::vert & c, iterator const & i):
-	gr::iterator::vert_graph(c, i)
+	gr::iterator::vert::VertGraph(c, i)
 {
 }
 bool		THIS::check(gr::S_Vert const & v) const

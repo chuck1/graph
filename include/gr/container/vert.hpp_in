@@ -15,11 +15,14 @@ class vert
 public:
 	virtual ~vert();
 
-	typedef typename CONT_VERT::iterator	iterator;
-	typedef typename CONT_VERT::value_type	value_type;
+	typedef typename CONT_VERT::iterator iterator;
+	typedef typename CONT_VERT::const_iterator citerator;
+	typedef typename CONT_VERT::value_type value_type;
 	
 	iterator	begin();
 	iterator	end();
+	citerator	cbegin() const;
+	citerator	cend() const;
 
 	void		clear();
 

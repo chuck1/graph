@@ -5,10 +5,10 @@
 
 #include <gr/algo/less_cycle.hpp>
 #include <gr/edge.hpp> // gr/edge.hpp_in
-#include <gr/graph.hpp>
+#include <gr/graph.hpp> // gr/graph.hpp_in
 #include <gr/io.hpp> // gr/io.hpp_in
 #include <gr/vert.hpp> // gr/vert.hpp_in
-#include <gr/iterator/edge_graph.hpp>
+#include <gr/iterator/edge/EdgeGraph.hpp>
 
 #include <gr/util.hpp> // gr/util.hpp_in
 

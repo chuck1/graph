@@ -2,7 +2,7 @@
 #include <iostream>
 
 // gr/decl.hpp.in
-#include <gr/iterator/vert_graph.hpp>
+#include <gr/iterator/vert/VertGraph.hpp>
 #include <gr/vert.hpp>
 
 
@@ -16,6 +16,14 @@ THIS::~vert()
 void			THIS::clear()
 {
 	_M_container.clear();
+}
+THIS::citerator		THIS::cbegin() const
+{
+	return _M_container.cbegin();
+}
+THIS::citerator		THIS::cend() const
+{
+	return _M_container.cend();
 }
 THIS::iterator		THIS::begin()
 {

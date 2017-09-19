@@ -3,8 +3,8 @@
 #include <gr/algo/less_cycle.hpp>
 #include <gr/container/edge.hpp> // gr/container/edge.hpp_in
 #include <gr/container/vert.hpp> // gr/container/vert.hpp_in
-#include <gr/iterator/edge_graph.hpp> // gr/iterator/iterator.hpp_in
-#include <gr/iterator/vert_comp.hpp> // gr/iterator/vert_comp.hpp_in
+#include <gr/iterator/edge/EdgeGraph.hpp> // gr/iterator/iterator.hpp_in
+#include <gr/iterator/vert/VertComp.hpp> // gr/iterator/vert_comp.hpp_in
 #include <gr/decl.hpp> // gr/decl.hpp_in
 #include <gr/edge.hpp> // gr/edge.hpp_in
 #include <gr/edge_data.hpp> // gr/edge_data.hpp_in

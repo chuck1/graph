@@ -5,11 +5,11 @@
 #include <gr/vert.hpp> // gr/vert.hpp.in
 #include <gr/pair.hpp> // gr/pair.hpp.in
 
-#include <gr/iterator/vert_graph.hpp> // gr/iterator/vert_graph.hpp_in
+#include <gr/iterator/vert/VertGraph.hpp> // gr/iterator/VertGraph.hpp_in
 
-typedef gr::iterator::vert_graph THIS;
+typedef gr::iterator::vert::VertGraph THIS;
 
-THIS::vert_graph(gr::container::vert & container, THIS::iterator j):
+THIS::VertGraph(gr::container::vert & container, THIS::iterator j):
 	_M_container(container),
 	_M_j(j)
 {
@@ -44,15 +44,15 @@ void				THIS::next()
 		break;
 	}
 }
-gr::iterator::vert_graph		THIS::operator++()
+THIS				THIS::operator++()
 {
 	++_M_j;
 	next();
-	return gr::iterator::vert_graph(_M_container, _M_j);
+	return THIS(_M_container, _M_j);
 }
-gr::iterator::vert_graph		THIS::operator++(int)
+THIS				THIS::operator++(int)
 {
-	gr::iterator::vert_graph ret(_M_container, _M_j);
+	THIS ret(_M_container, _M_j);
 	operator++();
 	return ret;
 }
@@ -66,11 +66,11 @@ THIS::value_type const *	THIS::operator->()
 	return _M_j.operator->();
 }
 
-bool				THIS::operator==(gr::iterator::vert_graph const & i)
+bool				THIS::operator==(THIS const & i)
 {
 	return (_M_j == i._M_j);
 }
-bool				THIS::operator!=(gr::iterator::vert_graph const & i)
+bool				THIS::operator!=(THIS const & i)
 {
 	return !(_M_j == i._M_j);
 }

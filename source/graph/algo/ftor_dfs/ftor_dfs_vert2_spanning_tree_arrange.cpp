@@ -3,17 +3,11 @@
 #include <gr/layer.hpp> // gr/layer.hpp_in
 #include <gr/edge_algo_data.hpp> // gr/edge.hpp_in
 #include <gr/edge.hpp> // gr/edge.hpp_in
-#include <gr/iterator/edge_graph.hpp>
+#include <gr/iterator/edge/EdgeGraph.hpp>
 
 #include <gr/algo/ftor_dfs/ftor_dfs_vert2_spanning_tree_arrange.hpp> // gr/algo/ftor_dfs/ftor_dfs_vert2_spanning_tree.hpp_in
 
 typedef gr::algo::ftor_dfs::ftor_dfs_vert2_spanning_tree_arrange THIS;
-
-
-
-
-
-
 
 void			THIS::initialize(
 		gr::GRAPH_S g,

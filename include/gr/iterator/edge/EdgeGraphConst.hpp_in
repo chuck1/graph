@@ -17,25 +17,25 @@ typedef std::iterator<std::input_iterator_tag, gr::edge> ITERATOR_EDGE;
  * iterates on each edge of the vert's edge container if the opposite vert evaluates to
  * less than the first vert
  */
-class edge_graph:
+class EdgeGraphConst:
 	public ITERATOR_EDGE
 {
 public:
 	typedef gr::EDGE_S const &	reference;
 	typedef gr::EDGE_S		value_type;
 
-	typedef typename gr::CONT_VERT::iterator iterator0;
-	typedef typename gr::CONT_EDGE::iterator iterator1;
+	typedef typename gr::CONT_VERT::const_iterator iterator0;
+	typedef typename gr::CONT_EDGE::const_iterator iterator1;
 
-	edge_graph(gr::container::vert &, iterator0 const &);
-	edge_graph(gr::container::vert &, iterator0 const &, iterator1 const &);
+	EdgeGraphConst(gr::container::vert const &, iterator0 const &);
+	EdgeGraphConst(gr::container::vert const &, iterator0 const &, iterator1 const &);
 	
-	edge_graph			operator=(edge_graph const &);
+	//EdgeGraphConst			operator=(EdgeGraphConst const &);
 
 	/** prefix */
-	gr::iterator::edge_graph	operator++();
+	EdgeGraphConst			operator++();
 	/** postfix */
-	gr::iterator::edge_graph	operator++(int);
+	EdgeGraphConst			operator++(int);
 	
 	virtual bool			check(gr::S_Edge const &);
 	void				next();
@@ -43,11 +43,11 @@ public:
 	reference			operator*();
 	value_type const *		operator->();
 
-	bool				operator==(gr::iterator::edge_graph const &);
-	bool				operator!=(gr::iterator::edge_graph const &);
+	bool				operator==(EdgeGraphConst const &);
+	bool				operator!=(EdgeGraphConst const &);
 
-//private:
-	gr::container::vert &		_M_container;
+private:
+	gr::container::vert const &	_M_container;
 	gr::CONT_VERT::iterator		_M_i;
 	gr::CONT_EDGE::iterator		_M_j;
 	//value_type			_M_value;

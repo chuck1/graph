@@ -5,11 +5,11 @@
 #include <gr/vert.hpp> // gr/vert.hpp.in
 #include <gr/pair.hpp> // gr/pair.hpp.in
 
-#include <gr/iterator/vert_comp.hpp> // gr/iterator/vert_comp.hpp.in
+#include <gr/iterator/vert/VertComp.hpp> // gr/iterator/vert/VertComp.hpp_in
 
-typedef gr::iterator::vert_comp THIS;
+typedef gr::iterator::vert::VertComp THIS;
 
-THIS::vert_comp(gr::container::vert & container, THIS::iterator j, int c):
+THIS::VertComp(gr::container::vert & container, THIS::iterator j, int c):
 	_M_container(container),
 	_M_j(j),
 	_M_c(c)
@@ -37,15 +37,15 @@ void				THIS::next()
 		++_M_j;
 	}
 }
-gr::iterator::vert_comp		THIS::operator++()
+THIS				THIS::operator++()
 {
 	++_M_j;
 	next();
-	return gr::iterator::vert_comp(_M_container, _M_j, _M_c);
+	return gr::iterator::vert::VertComp(_M_container, _M_j, _M_c);
 }
-gr::iterator::vert_comp		THIS::operator++(int)
+THIS				THIS::operator++(int)
 {
-	gr::iterator::vert_comp ret(_M_container, _M_j, _M_c);
+	gr::iterator::vert::VertComp ret(_M_container, _M_j, _M_c);
 	operator++();
 	return ret;
 }
@@ -59,11 +59,11 @@ THIS::value_type const *	THIS::operator->()
 	return _M_j.operator->();
 }
 
-bool				THIS::operator==(gr::iterator::vert_comp const & i)
+bool				THIS::operator==(THIS const & i)
 {
 	return (_M_j == i._M_j);
 }
-bool				THIS::operator!=(gr::iterator::vert_comp const & i)
+bool				THIS::operator!=(THIS const & i)
 {
 	return !(_M_j == i._M_j);
 }
