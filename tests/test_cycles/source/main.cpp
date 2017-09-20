@@ -7,6 +7,7 @@
 #include <gr/gr.hpp> // gr/gr.hpp_in
 #include <gr/plot/vert.hpp>
 #include <gr/algo/less_cycle.hpp>
+#include <gr/construct.hpp>
 
 #include <test.hpp>
 
@@ -34,51 +35,6 @@ int		combinations(int n, int k)
 typedef gr::plot::vert VERT;
 typedef std::shared_ptr<VERT> VERT_S;
 
-gr::GRAPH_S	complete(int n)
-{
-	auto g = std::make_shared<gr::graph>();
-	// construct a complete graph with n vertices
-	
-	std::vector<std::shared_ptr<VERT>> verts;
-	
-	for(int i = 0; i < n; ++i)
-	{
-		std::stringstream ss; ss << i;
-		verts.push_back(std::make_shared<Vert>(g, ss.str()));
-	}
-
-	for(int i = 0; i < n; ++i)
-	{
-		for(int j = i+1; j < n; ++j)
-		{
-			g->add_edge(std::make_shared<gr::edge>(verts[i], verts[j]));
-		}
-	}
-
-	return g;
-}
-gr::GRAPH_S	flower(int n)
-{
-	auto g = std::make_shared<gr::graph>();
-	
-	std::vector<VERT_S> verts;
-
-	int c = 0;
-	
-	auto root = std::make_shared<Vert>(g, std::to_string(c++));
-	
-	for(int i = 0; i < n; ++i)
-	{
-		verts.push_back(std::make_shared<Vert>(g, std::to_string(c++)));
-		verts.push_back(std::make_shared<Vert>(g, std::to_string(c++)));
-		
-		g->add_edge(root, verts[2*i]);
-		g->add_edge(root, verts[2*i+1]);
-		g->add_edge(verts[2*i], verts[2*i+1]);
-	}
-
-	return g;
-}
 int		calc_cycles1(int n)
 {
 	int c = 0;
@@ -101,7 +57,7 @@ int		calc_flower(int n)
 }
 void		test_flower(int n)
 {
-	auto g = flower(n);
+	auto g = gr::flower(n);
 	
 	g->dot();
 
@@ -117,7 +73,7 @@ void		test_flower(int n)
 }
 void		test(int n)
 {
-	auto g = complete(n);	
+	auto g = gr::complete(n);	
 
 	g->dot();
 
@@ -141,7 +97,7 @@ void		test1(int n)
 
 	printf("c = %i\n", c);
 
-	auto g = complete(n);	
+	auto g = gr::complete(n);	
 
 	g->dot();
 
@@ -182,7 +138,7 @@ void test2(int n)
 void	test_arrange_tree(int n)
 {
 	//auto g = complete(n);
-	auto g = flower(n);
+	auto g = gr::flower(n);
 
 	g->dot();
 

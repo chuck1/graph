@@ -1,0 +1,30 @@
+{% extends "CHeader.hpp" %}
+{% block header %}
+#include <gr/decl.hpp>
+{% endblock %}
+{% block body %}
+class BFS
+{
+	public:
+		BFS(
+				gr::GRAPH_S const & g,
+				gr::S_Vert const & root);
+		
+		void			run();
+		void			run(gr::VERT_S const &);
+		virtual void		run_pre(gr::VERT_S const &);
+		virtual void		initialize();
+		virtual void		finalize();
+		/**
+		 * do not decend form here
+		 */
+		virtual void		visit(
+				gr::S_Vert const &,
+				gr::S_Edge const &,
+				gr::S_Vert const &
+				) = 0;
+
+		gr::GRAPH_S		_M_g;
+		gr::S_Vert		_M_root;
+};
+{% endblock %}

@@ -3,6 +3,7 @@
 #include <cassert>
 #include <sstream>
 
+#include <gr/decl.hpp> // gr/decl.hpp_in
 #include <gr/container/edge.hpp> // gr/container/edge.hpp.in
 #include <gr/iterator/edge_vert.hpp> // gr/iterator/edge_vert.hpp_in
 #include <gr/pair.hpp> // gr/pair.hpp.in
@@ -139,6 +140,26 @@ gr::VERT_S			THIS::virt()
 	}
 	return v;
 }
+void				THIS::set_pos()
+{
+	std::stringstream ss;
+	ss << _M_dot.p[0] << "," << _M_dot.p[1] << "!";
+	_M_dot.pos = ss.str();
+}
+void				THIS::shortest_path(gr::PATH & path)
+{
+	if(_M_shortest_path.e)
+	{
+		path.push_back(_M_shortest_path.e);
+		_M_shortest_path.e->other(shared_from_this())->shortest_path(path);
+	}
+}
+
+
+
+
+
+
 
 
 

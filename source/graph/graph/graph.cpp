@@ -12,7 +12,7 @@
 #include <gr/algo/ftor_dfs/ftor_dfs.hpp> // gr/algo/ftor_dfs.hpp_in
 #include <gr/algo/ftor_dfs/ftor_dfs_vert2_spanning_tree.hpp> // gr/algo/ftor_dfs/ftor_dfs_vert2_spanning_tree.hpp_in
 #include <gr/algo/ftor_dfs/ftor_dfs_vert2_spanning_tree_arrange.hpp> // gr/algo/ftor_dfs/ftor_dfs_vert2_spanning_tree_arrange.hpp_in
-
+#include <gr/algo/bfs/SpanningTree.hpp>
 #include <gr/container/edge.hpp> // gr/container/edge.hpp.in
 #include <gr/container/vert.hpp> // gr/container/vert.hpp.in
 #include <gr/iterator/edge/EdgeGraph.hpp> // gr/iterator/edge_graph.hpp_in
@@ -31,6 +31,10 @@
 #include <gr/util.hpp> // gr/util.hpp_in
 
 #include <gr/graph.hpp> // gr/graph.hpp_in
+
+#ifndef max
+    #define max(a,b) ((a) > (b) ? (a) : (b))
+#endif
 
 typedef gr::graph THIS;
 
@@ -966,10 +970,8 @@ void				arrange_radially(
 	printf("    p %f %f\n", p[0], p[1]);
 	
 	v->_M_dot.p = p;
-
-	std::stringstream ss;
-	ss << v->_M_dot.p[0] << "," << v->_M_dot.p[1] << "!";
-	v->_M_dot.pos = ss.str();
+	
+	v->set_pos();
 }
 void				arrange_tree(
 		gr::VERT_S prev,
@@ -979,10 +981,17 @@ void				arrange_tree(
 		)
 {
 	unsigned int n;
+
+	bool is_root = false;
 	if(*v == *prev)
+	{
+		is_root = true;
 	       	n = v->edge_size();
+	}
 	else
+	{
 	       	n = v->edge_size() - 1;
+	}
 
 	unsigned int i = 0;
 
@@ -995,8 +1004,23 @@ void				arrange_tree(
 		if(*v1 == *prev) continue;
 
 		arrange_radially(v1, v->_M_dot.p, i, n, a1, a2, 1);
+		
+		float b1 = a1 + i * da;
+		float b2 = b1 + da;
+		
+		// if root has only one child, limit the angle allocated to the child
+		// or else it could draw nodes on top of parent
+		if(is_root && (n == 1))
+		{
+			float k = 3.1415;
+			float c2 = (b1 + b2 + k) / 2.0;
+			float c1 = c2 - k;
 
-		arrange_tree(v, v1, a1 + i * da, a1 + (i+1) * da);
+			b1 = c1;
+			b2 = c2;
+		}
+
+		arrange_tree(v, v1, b1, b2);
 
 		++i;
 	}
@@ -1005,33 +1029,36 @@ void				THIS::arrange2(gr::VERT_S root)
 {
 	assert(vert_find(root) != vert_end());
 
+	auto highlight = std::make_shared<gr::layer>();
+	highlight->_M_plot_color.set("blue");
+
+	root->_M_layer.push_front(highlight);
+
 	//auto g = copy();
 	auto g = shared_from_this();
 
 	// g->spanning_tree();
 	auto layer = std::make_shared<gr::layer>();
-	
+
 	std::cout << "edges: " << edge_size() << std::endl;
 
 	{
-		auto f = new gr::algo::ftor_dfs::ftor_dfs_vert2_spanning_tree;
-		
-		f->_M_layer1 = layer;
+		gr::algo::bfs::SpanningTree f(shared_from_this(), root);
 
-		f->initialize(g, root);
+		f._M_layer1 = layer;
 
-		g->dot();
-
-		g->depth_first_search3(f, root);
-
-		f->finalize(g, root);
+		f.run();
 	}
 
 	std::cout << "edges: " << edge_size() << std::endl;
 
 	g->dot();
 	
+	root->set_pos();
+
 	arrange_tree(root, root, 0, 6.28);
+	
+	g->dot();
 
 	layer->_M_enabled.set(true);
 	layer->_M_plot.set(true);
@@ -1042,15 +1069,31 @@ void				THIS::arrange2(gr::VERT_S root)
 }
 void				THIS::spanning_tree(gr::VERT_S v)
 {
-	auto f = new gr::algo::ftor_dfs::ftor_dfs_vert2_spanning_tree;
+	gr::algo::bfs::SpanningTree f(shared_from_this(), v);
 
-	f->initialize(shared_from_this(), v);
-
-	depth_first_search3(f, v);
-
-	f->finalize(shared_from_this(), v);
+	f.run();
 }
+gr::S_Vert			THIS::furthest(gr::S_Vert const & v0)
+{
+	distance(v0);
+	
+	gr::S_Vert ret;
 
+	float m = 0;
+
+	for(auto it = vert_begin(); it != vert_end(); ++it)
+	{
+		m = max(m, (*it)->dist._M_distance);
+	}
+	
+	for(auto it = vert_begin(); it != vert_end(); ++it)
+	{
+		if((*it)->dist._M_distance == m) ret = *it;
+	}
+
+	assert(ret);
+	return ret;
+}
 
 
 

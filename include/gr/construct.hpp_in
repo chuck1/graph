@@ -1,0 +1,10 @@
+{% extends "CHeader.hpp" %}
+{% block header %}
+#include <gr/decl.hpp>
+{% endblock %}
+{% block body %}
+gr::GRAPH_S		complete(int);
+gr::GRAPH_S		flower(int);
+gr::GRAPH_S		random(int nverts, int nedges);
+{% endblock %}
+

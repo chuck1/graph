@@ -104,6 +104,7 @@ public:
 
 	bool				add_virtual_edges(gr::LAYER_S layer);
 
+	gr::S_Vert			furthest(gr::S_Vert const & v0);
 
 	void				depth_first_search(
 			gr::EDGE_S const & v0,

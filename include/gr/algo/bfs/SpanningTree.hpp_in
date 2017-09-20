@@ -1,0 +1,24 @@
+{% extends "CHeader.hpp" %}
+{% block header %}
+#include <gr/algo/bfs/BFS.hpp> // gr/algo/bfs/BFS.hpp_in
+{% endblock %}
+{% block body %}
+class SpanningTree: virtual public gr::algo::bfs::BFS
+{
+	public:
+		SpanningTree(
+				gr::GRAPH_S const & g,
+				gr::S_Vert const &);
+
+		virtual void		initialize();
+		virtual void		finalize();
+		virtual void		visit(
+				gr::S_Vert const &,
+				gr::S_Edge const &,
+				gr::S_Vert const &
+				);
+		
+		gr::LAYER_S		_M_layer1;
+		gr::LAYER_S		_M_layer2;
+};
+{% endblock %}

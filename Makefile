@@ -12,9 +12,6 @@ doc:
 build/dot/pdf/%.pdf: build/dot/%.dot
 	@mkdir -p $(dir $@)
 	@bash build_dot.bash $< '-Tpdf -o$@ $^'
-	#neato -Tpdf -o$@ $^
-	#dot -Tpdf -o$@ $^
-	#fdp -Tpdf -o$@ $^
 
 build/dot/png/%.png: build/dot/%.dot
 	@mkdir -p $(dir $@)

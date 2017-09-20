@@ -106,7 +106,7 @@ void		gr::zero_force(gr::GRAPH_S & g)
 }
 float		force_repel(float d, float d0, float k)
 {
-	return k / d;
+	return k / d / d;
 }
 float		force_spring(float d, float d0, float k)
 {
@@ -119,6 +119,7 @@ void		apply_force(gr::VERT_S & v0, gr::VERT_S & v1, float d0, float k, float(*fo
 	float d = D.norm();
 
 	if(d < 0.0001) return;
+	if(d > 10) return;
 
 	float f = (*force)(d, d0, k);
 
@@ -130,12 +131,7 @@ void		apply_force(gr::VERT_S & v0, gr::VERT_S & v1, float d0, float k, float(*fo
 void		record_pos(gr::GRAPH_S & g)
 {
 	for(auto it = g->vert_begin(); it != g->vert_end(); ++it)
-	{
-		auto v = *it;
-		std::stringstream ss;
-		ss << v->_M_dot.p[0] << "," << v->_M_dot.p[1] << "!";
-		v->_M_dot.pos = ss.str();
-	}
+		(*it)->set_pos();
 }
 void		gr::repel(gr::GRAPH_S & g)
 {

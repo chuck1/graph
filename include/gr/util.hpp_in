@@ -11,6 +11,26 @@ void	arrange_dot(gr::algo::SET_CYCLE & cycles);
 void	zero_force(gr::GRAPH_S & g);
 void	repel(gr::GRAPH_S & g);
 
+template<typename I>
+class Range
+{
+	public:
+		Range(I b, I e):
+			_M_b(b),
+			_M_e(e)
+	{}
+		I	begin() { return _M_b; }
+		I	end() { return _M_e; }
+		I	_M_b;
+		I	_M_e;
+};
+
+template<typename I>
+Range<I>	range(I b, I e)
+{
+	return Range<I>(b, e);
+}
+
 {{ namespace_close }}
 
 {{ include_block_close }}

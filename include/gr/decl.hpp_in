@@ -77,6 +77,8 @@ typedef std::function<bool(gr::VERT_S const &)>	VERT_FUNC;
 
 typedef std::deque<gr::EDGE_S>			QUEUE_EDGE;
 
+typedef std::deque<gr::S_Edge>			PATH;
+
 namespace algo {
 	namespace ftor_dfs {
 		class ftor_dfs_vert;

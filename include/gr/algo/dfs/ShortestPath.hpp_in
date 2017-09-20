@@ -1,0 +1,26 @@
+{% extends "CHeader.hpp" %}
+{% block header %}
+#include <gr/algo/dfs/DFS.hpp> // gr/algo/bfs/BFS.hpp_in
+{% endblock %}
+{% block body %}
+class ShortestPath: virtual public gr::algo::dfs::DFS
+{
+	public:
+		ShortestPath(
+				gr::GRAPH_S const & g,
+				gr::S_Vert const &);
+
+		virtual void		initialize();
+		virtual void		finalize();
+		virtual void		run_pre(
+				gr::S_Vert const &
+				);
+		virtual void		visit(
+				gr::S_Vert const &,
+				gr::S_Edge const &,
+				gr::S_Vert const &
+				);
+		
+		std::vector<gr::S_Edge>		_M_edges;
+};
+{% endblock %}

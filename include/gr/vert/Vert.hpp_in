@@ -44,6 +44,8 @@ public:
 	SET_Node		get_adjacent_verts();
 	VEC_PAIR		get_adjacent();
 	*/
+	
+	void			shortest_path(gr::PATH & path);
 
 	gr::iterator::edge_vert	edge_begin();
 	gr::iterator::edge_vert	edge_end();
@@ -63,6 +65,8 @@ public:
 
 	virtual std::string	dot();
 	virtual std::string	name();
+
+	void			set_pos();
 
 	// data
 	//bool			_M_enabled;
@@ -91,6 +95,10 @@ public:
 		float		a1;
 		float		a2;
 	} tree_arrange2;
+	struct {
+		float		d;
+		gr::S_Edge	e;
+	} _M_shortest_path;
 
 	// for marking components
 	struct {
@@ -105,7 +113,8 @@ public:
 	struct {
 		int		counter;
 	} algo;
-
+	bool			_M_visited;
+	bool			_M_visited2;
 	// the virtual vertex that has replaced this one
 	
 public:
