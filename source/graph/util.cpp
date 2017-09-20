@@ -191,7 +191,8 @@ void		gr::repel(gr::GRAPH_S & g)
 			m += d;
 			m_max = fmax(m_max, d);
 		}
-		//printf("m = %8.3e m_max = %8.3e\n", m, m_max);
+		
+		printf("i = %4i m = %8.3e m_max = %8.3e\n", i, m, m_max);
 
 		//record_pos(g);
 		//g->dot();

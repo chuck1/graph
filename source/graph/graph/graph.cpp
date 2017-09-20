@@ -1030,7 +1030,6 @@ void				THIS::arrange2(gr::VERT_S root)
 	std::cout << "edges: " << edge_size() << std::endl;
 
 	g->dot();
-	return;
 	
 	arrange_tree(root, root, 0, 6.28);
 

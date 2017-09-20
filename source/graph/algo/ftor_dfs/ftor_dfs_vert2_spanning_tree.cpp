@@ -18,7 +18,9 @@ void			THIS::initialize(
 	_M_layer2 = std::make_shared<gr::layer>();
 
 	_M_layer1->_M_enabled.set(true);
+	
 	_M_layer2->_M_enabled.set(true);
+	_M_layer2->_M_plot.set(true);
 
 	for(auto it = g->vert_begin(); it != g->vert_end(); ++it)
 		(*it)->dfs._M_visited = false;
@@ -34,6 +36,7 @@ void			THIS::finalize(
 		)
 {
 	_M_layer1->_M_enabled.set(false);
+	_M_layer1->_M_plot.set(false);
 }
 bool			THIS::check(
 		gr::VERT_S const & v0,
