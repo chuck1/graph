@@ -22,7 +22,7 @@ dot: $(pdf_files)
 png: $(png_files)
 
 dotclean:
-	rm -rf build/dot/pdf
+	rm -rf build/dot/*
 
 clean:
 	rm -rf build/object/*

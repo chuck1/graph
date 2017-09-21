@@ -31,54 +31,59 @@ public:
 
 	graph();
 	virtual ~graph() {}
-	void					clear();
-	GRAPH_S					copy() const;
-	void					spanning_tree(VERT_S v);
+	void						clear();
+	GRAPH_S						copy() const;
+	void						spanning_tree(VERT_S v);
 
-	EDGE_S					add_edge(VERT_S v0, VERT_S v1);
+	EDGE_S						add_edge(VERT_S v0, VERT_S v1);
 	/*
 	 * v should be a vertex with exactly two neighbors, v0 and v1
 	 */
-	EDGE_S					add_virtual_edge(VERT_S v0, VERT_S v1, VERT_S v);
-	void					add_edge(EDGE_S e);
+	EDGE_S						add_virtual_edge(VERT_S v0, VERT_S v1, VERT_S v);
+	void						add_edge(EDGE_S e);
 
-	void					edge_enable();
-	//void					vert_enable();
+	void						edge_enable();
+	//void						vert_enable();
+	
+	Eigen::MatrixXd					connectivity_matrix();
 
 	/** vert functions */
 
-	gr::iterator::vert::VertGraph		iter(gr::VERT_S v);
+	gr::iterator::vert::VertGraph			iter(gr::VERT_S v);
 
-	gr::iterator::vert::VertGraph		vert_find(gr::VERT_S v);
-	gr::iterator::vert::VertGraph		vert_erase(gr::iterator::vert::VertGraph &);
-	//void					vert_erase_layer(unsigned int l);
+	gr::iterator::vert::VertGraph			vert_find(gr::VERT_S v);
+	gr::iterator::vert::VertGraph			vert_erase(gr::iterator::vert::VertGraph &);
+	//void						vert_erase_layer(unsigned int l);
 	
-	gr::LAYER_S				create_layer(bool);
+	gr::LAYER_S					create_layer(bool);
 
-	gr::iterator::vert::VertGraphAll	vert_begin_all(VERT_FUNC);
-	gr::iterator::vert::VertGraphAll	vert_end_all(VERT_FUNC);
-	gr::iterator::vert::VertGraphAll	vert_begin_all();
-	gr::iterator::vert::VertGraphAll	vert_end_all();
+	gr::iterator::vert::VertGraphAll		vert_begin_all(VERT_FUNC);
+	gr::iterator::vert::VertGraphAll		vert_end_all(VERT_FUNC);
+	gr::iterator::vert::VertGraphAll		vert_begin_all();
+	gr::iterator::vert::VertGraphAll		vert_end_all();
 
-	gr::iterator::vert::VertGraphConst	vert_begin() const;
-	gr::iterator::vert::VertGraphConst	vert_end() const;
+	gr::iterator::vert::VertGraphConst		vert_begin() const;
+	gr::iterator::vert::VertGraphConst		vert_end() const;
 
-	gr::iterator::vert::VertGraph		vert_begin();
-	gr::iterator::vert::VertGraph		vert_end();
-	
-	unsigned int				vert_size();
+	gr::iterator::vert::VertGraph			vert_begin();
+	gr::iterator::vert::VertGraph			vert_end();
+	gr::Range<gr::iterator::vert::VertGraph>	vert_range();
+	unsigned int					vert_size();
 
-	gr::iterator::vert::VertComp		comp_vert_begin(int);
-	gr::iterator::vert::VertComp		comp_vert_end(int);
-	unsigned int				comp_vert_size(int);
+	gr::iterator::vert::VertComp			comp_vert_begin(int);
+	gr::iterator::vert::VertComp			comp_vert_end(int);
+	unsigned int					comp_vert_size(int);
+
+	void						longest_cycle_1();
 
 	/** edge functions */
 	gr::iterator::edge::EdgeGraphConst	edge_begin() const;
 	gr::iterator::edge::EdgeGraphConst	edge_end() const;
 
-	gr::iterator::edge::EdgeGraph		edge_begin();
-	gr::iterator::edge::EdgeGraph		edge_end();
-	unsigned int				edge_size();
+	gr::iterator::edge::EdgeGraph			edge_begin();
+	gr::iterator::edge::EdgeGraph			edge_end();
+	unsigned int					edge_size();
+	gr::Range<gr::iterator::edge::EdgeGraph>	edge_range();
 
 	gr::iterator::edge::EdgeGraphPlot	edge_begin_plot();
 	gr::iterator::edge::EdgeGraphPlot	edge_end_plot();
@@ -93,6 +98,9 @@ public:
 
 	gr::iterator::edge::EdgeGraph		edge_erase(gr::iterator::edge::EdgeGraph);
 
+	bool					identify_connected_by_one_once(gr::LAYER_S const &);
+	void					identify_connected_by_one(gr::LAYER_S const &);
+
 	/** algorithms */
 
 	void				distance_util(gr::VERT_S);
@@ -101,6 +109,11 @@ public:
 	void				bridges_sub(VERT_S const & n, int & t, std::vector<gr::EDGE_S> & ret);
 	std::vector<gr::EDGE_S>		bridges();
 	void				mark_bridges(gr::LAYER_S layer);
+
+	void				identify_vertices(
+		gr::S_Vert const & v0,
+		gr::S_Vert const & v1,
+		gr::LAYER_S const &);
 
 	bool				add_virtual_edges(gr::LAYER_S layer);
 

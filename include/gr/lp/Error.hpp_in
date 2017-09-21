@@ -1,0 +1,23 @@
+{{ include_block_open }}
+
+#include <glpk.h>
+#include <eigen3/Eigen/Core>
+
+
+{{ namespace_open }}
+
+class Error: public std::exception
+{
+	public:
+		Error(int rc);
+		const char *    what() const noexcept;
+		char *  	_M_s;
+		int		_M_rc;
+};
+
+{{ namespace_close }}
+
+{{ include_block_close }}
+
+
+

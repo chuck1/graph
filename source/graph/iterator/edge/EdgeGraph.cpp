@@ -95,12 +95,17 @@ THIS				THIS::operator++()
 	++_M_j;
 	next();
 	return THIS(_M_container, _M_i, _M_j);
-	//return *this;
 }
 THIS				THIS::operator++(int)
 {
 	THIS ret(_M_container, _M_i, _M_j);
 	operator++();
+	return ret;
+}
+THIS				THIS::operator+(unsigned int n)
+{
+	THIS ret(_M_container, _M_i, _M_j);
+	for(unsigned int i = 0; i < n; ++i) ++ret;
 	return ret;
 }
 THIS::reference			THIS::operator*()

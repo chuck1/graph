@@ -35,23 +35,26 @@
 
 typedef gr::graph THIS;
 
-gr::iterator::vert::VertGraphConst	THIS::vert_begin() const
+gr::iterator::vert::VertGraphConst		THIS::vert_begin() const
 {
 	return gr::iterator::vert::VertGraphConst(_M_verts, _M_verts.cbegin());
 }
-gr::iterator::vert::VertGraphConst	THIS::vert_end() const
+gr::iterator::vert::VertGraphConst		THIS::vert_end() const
 {
 	return gr::iterator::vert::VertGraphConst(_M_verts, _M_verts.cend());
 }
-gr::iterator::vert::VertGraph		THIS::vert_begin()
+gr::iterator::vert::VertGraph			THIS::vert_begin()
 {
 	return gr::iterator::vert::VertGraph(_M_verts, _M_verts.begin());
 }
-gr::iterator::vert::VertGraph		THIS::vert_end()
+gr::iterator::vert::VertGraph			THIS::vert_end()
 {
 	return gr::iterator::vert::VertGraph(_M_verts, _M_verts.end());
 }
-
+gr::Range<gr::iterator::vert::VertGraph>	THIS::vert_range()
+{
+	return gr::Range<gr::iterator::vert::VertGraph>(vert_begin(), vert_end());
+}
 gr::iterator::vert::VertGraphAll		THIS::vert_begin_all()
 {
 	return gr::iterator::vert::VertGraphAll(_M_verts, _M_verts.begin());
@@ -127,6 +130,10 @@ gr::iterator::edge::EdgeGraph		THIS::edge_begin()
 gr::iterator::edge::EdgeGraph		THIS::edge_end()
 {
 	return gr::iterator::edge::EdgeGraph(_M_verts, _M_verts.end());
+}
+gr::Range<gr::iterator::edge::EdgeGraph>	THIS::edge_range()
+{
+	return gr::Range<gr::iterator::edge::EdgeGraph>(edge_begin(), edge_end());
 }
 gr::iterator::vert::VertComp		THIS::comp_vert_begin(int c)
 {

@@ -7,6 +7,7 @@
 #include <eigen3/Eigen/Core>
 
 #include <gr/decl.hpp> // gr/decl.hpp_in
+#include <gr/Range.hpp> // gr/Range.hpp_in
 #include <gr/LayerStack.hpp>
 #include <gr/iterator/edge_vert.hpp> // gr/iterator/iterator.hpp.in
 
@@ -47,29 +48,27 @@ public:
 	
 	void			shortest_path(gr::PATH & path);
 
-	gr::iterator::edge_vert	edge_begin();
-	gr::iterator::edge_vert	edge_end();
-	gr::iterator::edge_vert	edge_erase(gr::iterator::edge_vert &);
+	gr::iterator::edge_vert			edge_begin();
+	gr::iterator::edge_vert			edge_end();
+	gr::iterator::edge_vert			edge_erase(gr::iterator::edge_vert &);
+	gr::Range<gr::iterator::edge_vert>	edge_range();
 
-	unsigned int		edge_size();
+	unsigned int			edge_size();
 
-	void			edge_erase_disconnected();
+	void				edge_erase_disconnected();
 
-	void			add_edge(gr::EDGE_S);
+	void				add_edge(gr::EDGE_S);
 
-      	void			edge_erase_util(gr::VERT_S & v0, gr::VERT_S & v1);
+      	void				edge_erase_util(gr::VERT_S & v0, gr::VERT_S & v1);
 
-	virtual bool		operator==(Vert const &);
-	virtual bool		operator!=(Vert const &);
-	virtual bool		operator<(Vert const &);
+	virtual bool			operator==(Vert const &);
+	virtual bool			operator!=(Vert const &);
+	virtual bool			operator<(Vert const &);
 
-	virtual std::string	dot();
-	virtual std::string	name();
+	virtual std::string		dot();
+	virtual std::string		name();
 
-	void			set_pos();
-
-	// data
-	//bool			_M_enabled;
+	void				set_pos();
 
 	vert_dot		_M_dot;
 
@@ -77,7 +76,9 @@ public:
 	struct {
 		double		_M_distance;
 	} dist;
-
+	
+	// for creating connectivity matrix
+	unsigned int			_M_i;
 	// for bridge-finding algorithm
 	struct {
 		int		_M_disc;

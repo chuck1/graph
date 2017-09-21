@@ -63,6 +63,10 @@ gr::iterator::edge_vert		THIS::edge_erase(gr::iterator::edge_vert & i)
 
 	return gr::iterator::edge_vert(*_M_edges, j);
 }
+gr::Range<gr::iterator::edge_vert>	THIS::edge_range()
+{
+	return gr::Range<gr::iterator::edge_vert>(edge_begin(), edge_end());
+}
 void				THIS::edge_erase_disconnected()
 {
 	//for(auto it = edge_begin(); it != edge_end();)

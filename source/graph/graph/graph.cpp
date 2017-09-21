@@ -5,6 +5,7 @@
 #include <deque>
 #include <set>
 #include <map>
+#include <cfloat>
 
 #include <gr/algo/stack.hpp> // gr/algo/stack.hpp_in
 #include <gr/algo/cycle.hpp> // gr/algo/cycle.hpp_in
@@ -23,12 +24,13 @@
 #include <gr/io.hpp> // gr/vert.hpp_in
 #include <gr/pair.hpp> // gr/pair.hpp.in
 #include <gr/pair_comp.hpp> // gr/pair_comp.hpp.in
-#include <gr/vert/Vert.hpp> // gr/vert.hpp_in
-#include <gr/vert/VertVirt.hpp> // gr/vert.hpp_in
+#include <gr/vert/Vert.hpp> // gr/vert/Vert.hpp_in
+#include <gr/vert/VertVirt.hpp> // gr/vert/VertVirt.hpp_in
 #include <gr/edge.hpp> // gr/edge.hpp_in
 #include <gr/edge_virt.hpp> // gr/edge_virt.hpp_in
 #include <gr/layer.hpp>
 #include <gr/util.hpp> // gr/util.hpp_in
+#include <gr/lp/LP.hpp> // gr/lp/LP.hpp_in
 
 #include <gr/graph.hpp> // gr/graph.hpp_in
 
@@ -406,6 +408,73 @@ void				THIS::depth_first_search(
 		//ftor->_M_verts_completed.insert(*it);
 	}
 }
+void				THIS::identify_vertices(
+		gr::S_Vert const & v0,
+		gr::S_Vert const & v1,
+		gr::LAYER_S const & layer)
+{
+	std::cout << "identify " << v0->name() << " " << v1->name() << std::endl;
+
+	assert(vert_find(v0) != vert_end());
+	assert(vert_find(v1) != vert_end());
+	
+	auto virt = std::make_shared<gr::vert::VertVirt>(shared_from_this(), v0, v1);
+	
+	for(auto e0 : v0->edge_range())
+	{
+		auto other = e0->other(v0);
+		if(other == v1) continue;
+		add_edge(other, virt);
+	}
+	for(auto e1 : v1->edge_range())
+	{
+		auto other = e1->other(v1);
+		if(other == v0) continue;
+		add_edge(other, virt);
+	}
+
+	v0->_M_layer.push_front(layer);
+	v1->_M_layer.push_front(layer);
+}
+bool				connected_by_one(
+		gr::S_Vert const & v0,
+		gr::S_Vert const & v1)
+{
+	bool found = false;
+	for(auto e0 : v0->edge_range())
+	{
+		for(auto e1 : v1->edge_range())
+		{
+			if(e0 == e1)
+			{
+				if(found)
+					return false;
+				else
+					found = true;
+				break;
+			}
+		}
+	}
+	return found;
+}
+bool				THIS::identify_connected_by_one_once(
+		gr::LAYER_S const & layer)
+{
+	for(auto e : edge_range())
+	{
+		if(connected_by_one(e->v0(), e->v1()))
+		{
+			identify_vertices(e->v0(), e->v1(), layer);
+			return true;
+		}
+	}
+	return false;
+}
+void				THIS::identify_connected_by_one(
+		gr::LAYER_S const & layer)
+{
+	while(identify_connected_by_one_once(layer));
+}
 void				THIS::identify_leaves_recursive(gr::LAYER_S layer)
 {
 	unsigned int C = 0;
@@ -421,7 +490,7 @@ void				THIS::identify_leaves_recursive(gr::LAYER_S layer)
 			other->_M_layer.push_front(layer);
 			e->_M_layer.push_front(layer);
 
-			auto virt = std::make_shared<gr::vert::VertVirt>(shared_from_this(), leaf, other, e);
+			auto virt = std::make_shared<gr::vert::VertVirt>(shared_from_this(), leaf, other);
 
 			leaf->_M_virt = virt;
 			other->_M_virt = virt;
@@ -429,7 +498,7 @@ void				THIS::identify_leaves_recursive(gr::LAYER_S layer)
 			for(auto it = other->edge_begin(); it != other->edge_end(); ++it)
 			{
 				if(*it == e) continue;
-				
+
 				add_edge(e->other(other), virt);
 			}
 
@@ -552,28 +621,28 @@ gr::algo::ftor_dfs::SET_QUEUE_EDGE	THIS::paths1()
 	return ftor._M_paths;
 }
 /*
-void				THIS::vert_erase_layer(unsigned int l)
-{
-	if(l > _M_layers.size()) throw std::exception();
+   void				THIS::vert_erase_layer(unsigned int l)
+   {
+   if(l > _M_layers.size()) throw std::exception();
 
-	auto const & layer = _M_layers[l];
+   auto const & layer = _M_layers[l];
 
-	for(auto i = vert_begin(); i != vert_end();)
-	{
-		auto v = *i;
-		if(!v->_M_layer.expired())
-		{
-			if(v->_M_layer.lock() == layer)
-			{
-				i = vert_erase(i);
-				continue;
-			}
-		}
+   for(auto i = vert_begin(); i != vert_end();)
+   {
+   auto v = *i;
+   if(!v->_M_layer.expired())
+   {
+   if(v->_M_layer.lock() == layer)
+   {
+   i = vert_erase(i);
+   continue;
+   }
+   }
 
-		++i;
-	}
-}
-*/
+   ++i;
+   }
+   }
+   */
 void				THIS::bridges_sub(gr::VERT_S const & n, int & t, std::vector<gr::EDGE_S> & ret)
 {
 	n->bridge._M_visited = true;
@@ -684,6 +753,7 @@ void				THIS::dot_sub0(std::ostream & of)
 
 	// overlap=false overrides manual node positions
 	//of << "overlap=false" << std::endl;
+	of << "overlap=scalexy;" << std::endl;
 	of << "splines=false" << std::endl;
 
 	dot_sub1(of);
@@ -878,18 +948,26 @@ void		THIS::simplify_self()
 	layer->_M_enabled.set(false);
 	layer->_M_plot.set(false);
 
-	// remove leaves	
-	mark_leaves_recursive(layer);
+	if(true) {
+		// remove leaves	
+		mark_leaves_recursive(layer);
 
-	// virtual edges
-	while(add_virtual_edges(layer));
+		// virtual edges
+		while(add_virtual_edges(layer));
 
-	// bridges
-	mark_bridges(layer);
-
-	int nc = components();
-	for(int c = 0; c < nc; ++c)
-		std::cout << "    component " << c << " v: " << comp_vert_size(c) << std::endl;
+		// bridges
+		mark_bridges(layer);
+		
+		/*
+		int nc = components();
+		for(int c = 0; c < nc; ++c)
+			std::cout << "    component " << c << " v: " << comp_vert_size(c) << std::endl;
+			*/
+	}
+	else
+	{
+		identify_connected_by_one(layer);
+	}
 }
 gr::GRAPH_S			THIS::simplify() const
 {
@@ -957,20 +1035,20 @@ void				arrange_radially(
 	float da = (a2 - a1) / (float)n;
 
 	float a = a1 + da * ((float)i + 0.5);
-	
+
 	printf("arrange radially %i %i %f %f a = %f\n", i, n, a1, a2, a);
 
 	Eigen::Vector2f d(cos(a), sin(a));
 	d *= r;
-	
+
 	Eigen::Vector2f p = d + o;
 
 	printf("    o %f %f\n", o[0], o[1]);
 	printf("    d %f %f\n", d[0], d[1]);
 	printf("    p %f %f\n", p[0], p[1]);
-	
+
 	v->_M_dot.p = p;
-	
+
 	v->set_pos();
 }
 void				arrange_tree(
@@ -986,11 +1064,11 @@ void				arrange_tree(
 	if(*v == *prev)
 	{
 		is_root = true;
-	       	n = v->edge_size();
+		n = v->edge_size();
 	}
 	else
 	{
-	       	n = v->edge_size() - 1;
+		n = v->edge_size() - 1;
 	}
 
 	unsigned int i = 0;
@@ -1004,10 +1082,10 @@ void				arrange_tree(
 		if(*v1 == *prev) continue;
 
 		arrange_radially(v1, v->_M_dot.p, i, n, a1, a2, 1);
-		
+
 		float b1 = a1 + i * da;
 		float b2 = b1 + da;
-		
+
 		// if root has only one child, limit the angle allocated to the child
 		// or else it could draw nodes on top of parent
 		if(is_root && (n == 1))
@@ -1053,11 +1131,11 @@ void				THIS::arrange2(gr::VERT_S root)
 	std::cout << "edges: " << edge_size() << std::endl;
 
 	g->dot();
-	
+
 	root->set_pos();
 
 	arrange_tree(root, root, 0, 6.28);
-	
+
 	g->dot();
 
 	layer->_M_enabled.set(true);
@@ -1076,7 +1154,7 @@ void				THIS::spanning_tree(gr::VERT_S v)
 gr::S_Vert			THIS::furthest(gr::S_Vert const & v0)
 {
 	distance(v0);
-	
+
 	gr::S_Vert ret;
 
 	float m = 0;
@@ -1085,7 +1163,7 @@ gr::S_Vert			THIS::furthest(gr::S_Vert const & v0)
 	{
 		m = max(m, (*it)->dist._M_distance);
 	}
-	
+
 	for(auto it = vert_begin(); it != vert_end(); ++it)
 	{
 		if((*it)->dist._M_distance == m) ret = *it;
@@ -1094,7 +1172,96 @@ gr::S_Vert			THIS::furthest(gr::S_Vert const & v0)
 	assert(ret);
 	return ret;
 }
+Eigen::MatrixXd			THIS::connectivity_matrix()
+{
+	unsigned int i = 0;
+	for(auto v : vert_range())
+	{
+		v->_M_i = i++;
+	}
 
+	Eigen::MatrixXd D(vert_size(), edge_size());
+	
+	i = 0;
+	for(auto e : edge_range())
+	{
+		D(e->v0()->_M_i, i) += 1;
+		D(e->v1()->_M_i, i) += 1;
+		++i;
+	}
+
+	return D;
+}
+std::string			blue(float x)
+{
+	int r = 0;
+	int g = 0;
+	int b = std::min(255, (int)(255 * x));
+	
+	char c[7];
+	sprintf(c, "#%02x%02x%02x", r, g, b);
+	
+	return std::string(c);
+}
+void				THIS::longest_cycle_1()
+{
+	unsigned int e = edge_size();
+	unsigned int v = vert_size();
+
+	auto I = Eigen::MatrixXd::Identity(e, e);
+
+	auto D = connectivity_matrix();
+
+	auto b1 = Eigen::VectorXd::Ones(e);
+	auto b2 = Eigen::VectorXd::Ones(v) * 2;
+
+	Eigen::MatrixXd A(I.rows() + D.rows(), I.cols());
+	A << I, D;
+
+	Eigen::VectorXd b(b1.size() + b2.size());
+	b << b1, b2;
+	
+	auto c = Eigen::VectorXd::Ones(e);
+	
+	// solve lp
+	gr::lp::LP p;
+	p.reset(A, b, c);
+	p.set_col_kind(GLP_BV);
+
+	glp_prob * lp = p._M_lp;
+
+	//double z;
+
+	//glp_simplex(lp, NULL);
+	glp_iocp param;
+	glp_init_iocp(&param);
+	param.presolve = GLP_ON;
+	
+	p.intopt(&param);
+	
+	//z = glp_get_obj_val(lp);
+	
+	for(unsigned int i = 0; i < e; ++i)
+	{
+		//float x = glp_get_col_prim(lp, i+1);
+		float x = glp_mip_col_val(lp, i+1);
+		
+		printf("x[%2i] = %8.4f\n", i, x);
+		
+		bool bool0 = abs(x-0) < 2 * FLT_EPSILON;
+		bool bool1 = abs(x-1) < 2 * FLT_EPSILON;
+		printf("%i %i %i\n", bool0, bool1, bool0 || bool1);
+
+		auto l = std::make_shared<gr::layer>();
+		std::string color = blue(x);
+		printf("%s\n", color.c_str());
+		l->_M_plot_color = color;
+
+		(*(edge_begin() + i))->_M_layer.push_front(l);
+	}
+
+	glp_delete_prob(lp);
+}
 
 
 

@@ -1,0 +1,30 @@
+{{ include_block_open }}
+
+#include <glpk.h>
+#include <eigen3/Eigen/Core>
+
+
+{{ namespace_open }}
+
+class LP
+{
+	public:
+		LP();
+		void	 		reset(
+				Eigen::MatrixXd const & A, 
+				Eigen::VectorXd const & B, 
+				Eigen::VectorXd const & C);
+		void			set_col_kind(int kind);
+		void			intopt(glp_iocp const * param);
+
+		glp_prob *		_M_lp;
+		unsigned int		_M_r;
+		unsigned int		_M_c;
+};
+
+{{ namespace_close }}
+
+{{ include_block_close }}
+
+
+

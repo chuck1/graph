@@ -116,11 +116,15 @@ bool			THIS::contains(gr::VERT_S v) const
 }
 std::string		THIS::dot()
 {
+	std::string c = _M_layer.plot_color();
+
 	std::stringstream ss;
 	ss << "node" << v0().get();
 	ss << v0()->get_graph()->dot_edge_symbol();
         ss << "node" << v1().get();
-	ss << " [color=\"" << _M_dot.color << "\"];";
+	ss << " [";
+	if(!c.empty()) ss << "color=\"" << c << "\"";
+	ss << "];";
 	return ss.str();
 }
 void			THIS::orient_start(gr::VERT_S const & v)

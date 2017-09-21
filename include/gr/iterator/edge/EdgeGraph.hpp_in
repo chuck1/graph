@@ -37,6 +37,8 @@ public:
 	/** postfix */
 	EdgeGraph			operator++(int);
 	
+	EdgeGraph			operator+(unsigned int);
+
 	virtual bool			check(gr::S_Edge const &);
 	void				next();
 

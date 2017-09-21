@@ -11,13 +11,11 @@ class VertVirt:
 public:
 	VertVirt(
 			gr::GRAPH_S g, 
-			gr::VERT_S const & leaf, 
-			gr::VERT_S const & other, 
-			gr::S_Edge const & e);
+			gr::VERT_S const & v0, 
+			gr::VERT_S const & v1);
 	
-	gr::VERT_W		_M_leaf_replaced;
-	gr::VERT_W		_M_other_replaced;
-	gr::W_Edge		_M_edge_replaced;
+	gr::VERT_W		_M_v0;
+	gr::VERT_W		_M_v1;
 };
 
 {{ namespace_close }}
