@@ -32,31 +32,31 @@ void			THIS::reset(
 	_M_r = A.rows();
 	_M_c = A.cols();
 
-	int ia[1+1000];
-	int ja[1+1000];
-	double ar[1+1000];
+	int * ia = new int[1 + _M_r * _M_c];
+	int * ja = new int[1 + _M_r * _M_c];
+	double * ar = new double[1 + _M_r * _M_c];
 
-	_M_lp = glp_create_prob();
+	_M_lp = glp_create_prob(); assert(_M_lp);
 	
-	glp_set_prob_name(_M_lp, "sample");
+	glp_set_prob_name(_M_lp, "sample"); assert(_M_lp);
 	
-	glp_set_obj_dir(_M_lp, GLP_MAX);
+	glp_set_obj_dir(_M_lp, GLP_MAX); assert(_M_lp);
 	
-	glp_add_rows(_M_lp, _M_r);
+	glp_add_rows(_M_lp, _M_r); assert(_M_lp);
 
 	for(unsigned int i = 0; i < _M_r; ++i)
 	{
 		//glp_set_row_name(lp, i, "p");
-		glp_set_row_bnds(_M_lp, i+1, GLP_UP, 0.0, B[i]);
+		glp_set_row_bnds(_M_lp, i+1, GLP_UP, 0.0, B[i]); assert(_M_lp);
 	}
 	
-	glp_add_cols(_M_lp, _M_c);
+	glp_add_cols(_M_lp, _M_c); assert(_M_lp);
 	
 	for(unsigned int i = 0; i < _M_c; ++i)
 	{
 		//glp_set_col_name(lp, 1, "x1");
-		glp_set_col_bnds(_M_lp, i+1, GLP_LO, 0.0, 0.0);
-		glp_set_obj_coef(_M_lp, i+1, C[i]);
+		glp_set_col_bnds(_M_lp, i+1, GLP_LO, 0.0, 0.0); assert(_M_lp);
+		glp_set_obj_coef(_M_lp, i+1, C[i]); assert(_M_lp);
 	}
 	
 	int k = 1;

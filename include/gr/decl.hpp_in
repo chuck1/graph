@@ -23,6 +23,7 @@ class Property;
 class layer;
 
 typedef std::shared_ptr<layer>	LAYER_S;
+typedef std::shared_ptr<layer>	S_Layer;
 typedef std::weak_ptr<layer>	LAYER_W;
 
 namespace container {

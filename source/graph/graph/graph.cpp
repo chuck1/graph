@@ -436,10 +436,17 @@ void				THIS::identify_vertices(
 	v0->_M_layer.push_front(layer);
 	v1->_M_layer.push_front(layer);
 }
-bool				connected_by_one(
+bool				THIS::connected_by_one(
 		gr::S_Vert const & v0,
-		gr::S_Vert const & v1)
+		gr::S_Vert const & v1,
+		bool allow_common_neighbors)
 {
+	// return true if connected by exactly one edge and
+	// no neighbors in common
+
+	assert(vert_find(v0) != vert_end());
+	assert(vert_find(v1) != vert_end());
+
 	bool found = false;
 	for(auto e0 : v0->edge_range())
 	{
@@ -455,14 +462,30 @@ bool				connected_by_one(
 			}
 		}
 	}
+	
+	// no connecting edge
+	if(!found) return false;
+
+	if(allow_common_neighbors) return true;
+
+	// look for common neighbor
+	for(auto e0 : v0->edge_range())
+	{
+		for(auto e1 : v1->edge_range())
+		{
+			if(e0->other(v0) == e1->other(v1)) return false;
+		}
+	}
+
 	return found;
 }
 bool				THIS::identify_connected_by_one_once(
-		gr::LAYER_S const & layer)
+		gr::LAYER_S const & layer,
+		bool allow_common_neighbors)
 {
 	for(auto e : edge_range())
 	{
-		if(connected_by_one(e->v0(), e->v1()))
+		if(connected_by_one(e->v0(), e->v1(), allow_common_neighbors))
 		{
 			identify_vertices(e->v0(), e->v1(), layer);
 			return true;
@@ -471,9 +494,10 @@ bool				THIS::identify_connected_by_one_once(
 	return false;
 }
 void				THIS::identify_connected_by_one(
-		gr::LAYER_S const & layer)
+		gr::LAYER_S const & layer,
+		bool allow_common_neighbors)
 {
-	while(identify_connected_by_one_once(layer));
+	while(identify_connected_by_one_once(layer, allow_common_neighbors));
 }
 void				THIS::identify_leaves_recursive(gr::LAYER_S layer)
 {
@@ -948,7 +972,8 @@ void		THIS::simplify_self()
 	layer->_M_enabled.set(false);
 	layer->_M_plot.set(false);
 
-	if(true) {
+	if(0)
+	{
 		// remove leaves	
 		mark_leaves_recursive(layer);
 
@@ -966,7 +991,7 @@ void		THIS::simplify_self()
 	}
 	else
 	{
-		identify_connected_by_one(layer);
+		identify_connected_by_one(layer, true);
 	}
 }
 gr::GRAPH_S			THIS::simplify() const
@@ -1180,7 +1205,7 @@ Eigen::MatrixXd			THIS::connectivity_matrix()
 		v->_M_i = i++;
 	}
 
-	Eigen::MatrixXd D(vert_size(), edge_size());
+	Eigen::MatrixXd D = Eigen::MatrixXd::Zero(vert_size(), edge_size());
 	
 	i = 0;
 	for(auto e : edge_range())
@@ -1203,7 +1228,7 @@ std::string			blue(float x)
 	
 	return std::string(c);
 }
-void				THIS::longest_cycle_1()
+void				THIS::longest_cycle_1(gr::S_Layer layer)
 {
 	unsigned int e = edge_size();
 	unsigned int v = vert_size();
@@ -1226,21 +1251,28 @@ void				THIS::longest_cycle_1()
 	// solve lp
 	gr::lp::LP p;
 	p.reset(A, b, c);
-	p.set_col_kind(GLP_BV);
-
 	glp_prob * lp = p._M_lp;
+	
+
+	glp_smcp smcp;
+	glp_init_smcp(&smcp);
+	//smcp.meth = GLP_DUALP;
+	glp_simplex(lp, &smcp);
+
+	p.set_col_kind(GLP_BV);
 
 	//double z;
 
-	//glp_simplex(lp, NULL);
 	glp_iocp param;
 	glp_init_iocp(&param);
-	param.presolve = GLP_ON;
+	//param.presolve = GLP_ON;
 	
 	p.intopt(&param);
 	
 	//z = glp_get_obj_val(lp);
 	
+	layer->_M_plot_color = "blue";
+
 	for(unsigned int i = 0; i < e; ++i)
 	{
 		//float x = glp_get_col_prim(lp, i+1);
@@ -1248,16 +1280,10 @@ void				THIS::longest_cycle_1()
 		
 		printf("x[%2i] = %8.4f\n", i, x);
 		
-		bool bool0 = abs(x-0) < 2 * FLT_EPSILON;
-		bool bool1 = abs(x-1) < 2 * FLT_EPSILON;
-		printf("%i %i %i\n", bool0, bool1, bool0 || bool1);
-
-		auto l = std::make_shared<gr::layer>();
-		std::string color = blue(x);
-		printf("%s\n", color.c_str());
-		l->_M_plot_color = color;
-
-		(*(edge_begin() + i))->_M_layer.push_front(l);
+		assert((x == 0)||(x == 1));
+		
+		if(x == 1)
+			(*(edge_begin() + i))->_M_layer.push_front(layer);
 	}
 
 	glp_delete_prob(lp);

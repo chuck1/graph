@@ -73,6 +73,8 @@ void		test_flower(int n)
 }
 void		test(int n)
 {
+	printf("test %2i\n", n);
+
 	auto g = gr::complete(n);	
 
 	g->dot();
@@ -81,7 +83,8 @@ void		test(int n)
 
 	g->dot();
 
-	g->longest_cycle_1();
+	auto l = std::make_shared<gr::layer>();
+	g->longest_cycle_1(l);
 
 	g->dot();
 }

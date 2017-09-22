@@ -74,7 +74,12 @@ public:
 	gr::iterator::vert::VertComp			comp_vert_end(int);
 	unsigned int					comp_vert_size(int);
 
-	void						longest_cycle_1();
+	void						longest_cycle_1(gr::S_Layer);
+
+	bool						connected_by_one(
+			gr::S_Vert const & v0,
+			gr::S_Vert const & v1,
+			bool allow_common_neighbors);
 
 	/** edge functions */
 	gr::iterator::edge::EdgeGraphConst	edge_begin() const;
@@ -98,8 +103,10 @@ public:
 
 	gr::iterator::edge::EdgeGraph		edge_erase(gr::iterator::edge::EdgeGraph);
 
-	bool					identify_connected_by_one_once(gr::LAYER_S const &);
-	void					identify_connected_by_one(gr::LAYER_S const &);
+	bool					identify_connected_by_one_once(gr::LAYER_S const &,
+			bool allow_common_neighbors);
+	void					identify_connected_by_one(gr::LAYER_S const &,
+			bool allow_common_neighbors);
 
 	/** algorithms */
 
