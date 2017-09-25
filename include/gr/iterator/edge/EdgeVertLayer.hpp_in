@@ -1,0 +1,25 @@
+{{ include_block_open }}
+
+#include <gr/iterator/edge/EdgeVert.hpp> // gr/iterator/edge/EdgeVert.hpp_in
+
+{{ namespace_open }}
+
+/**
+ */
+class EdgeVertLayer:
+	public gr::iterator::edge::EdgeVert
+{
+public:
+	EdgeVertLayer(gr::container::edge &, iterator);
+
+	virtual bool			check(gr::S_Edge const &);
+
+	gr::S_Layer			_M_layer;
+};
+
+
+
+{{ namespace_close }}
+
+{{ include_block_close }}
+

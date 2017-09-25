@@ -16,7 +16,7 @@ THIS::ShortestPath(
 	gr::algo::dfs::DFS(g, root)
 {
 }
-void			THIS::run_pre(
+void			THIS::visit(
 		gr::S_Vert const & v0)
 {
 	auto d0 = v0->_M_shortest_path.d;
@@ -26,7 +26,6 @@ void			THIS::run_pre(
 	for(auto e : gr::range(v0->edge_begin(), v0->edge_end()))
 	{
 		auto v1 = e->other(v0);
-		//if(v1->_M_visited) continue;
 
 		auto & d1 = v1->_M_shortest_path.d;
 
@@ -42,7 +41,7 @@ void			THIS::visit(
 		gr::S_Edge const & e,
 		gr::S_Vert const & v1)
 {
-
+	visit(v0);
 }
 void			THIS::initialize()
 {
@@ -55,9 +54,4 @@ void			THIS::initialize()
 
 	_M_root->_M_shortest_path.d = 0;
 }
-void			THIS::finalize()
-{
-	
-}
-
 

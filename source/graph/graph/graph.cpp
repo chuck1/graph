@@ -14,10 +14,11 @@
 #include <gr/algo/ftor_dfs/ftor_dfs_vert2_spanning_tree.hpp> // gr/algo/ftor_dfs/ftor_dfs_vert2_spanning_tree.hpp_in
 #include <gr/algo/ftor_dfs/ftor_dfs_vert2_spanning_tree_arrange.hpp> // gr/algo/ftor_dfs/ftor_dfs_vert2_spanning_tree_arrange.hpp_in
 #include <gr/algo/bfs/SpanningTree.hpp>
+#include <gr/algo/dfs/ShortestPath.hpp>
 #include <gr/container/edge.hpp> // gr/container/edge.hpp.in
 #include <gr/container/vert.hpp> // gr/container/vert.hpp.in
 #include <gr/iterator/edge/EdgeGraph.hpp> // gr/iterator/edge_graph.hpp_in
-#include <gr/iterator/edge_vert.hpp> // gr/iterator/edge_vert.hpp_in
+#include <gr/iterator/edge/EdgeVert.hpp> // gr/iterator/edge/EdgeVert.hpp_in
 #include <gr/iterator/edge/EdgeGraphConst.hpp> // gr/iterator/edge_vert.hpp_in
 #include <gr/iterator/vert/VertGraphConst.hpp> // gr/iterator/edge_vert.hpp_in
 #include <gr/plot/vert.hpp>
@@ -33,10 +34,6 @@
 #include <gr/lp/LP.hpp> // gr/lp/LP.hpp_in
 
 #include <gr/graph.hpp> // gr/graph.hpp_in
-
-#ifndef max
-    #define max(a,b) ((a) > (b) ? (a) : (b))
-#endif
 
 typedef gr::graph THIS;
 
@@ -82,65 +79,6 @@ gr::iterator::vert::VertGraph	THIS::iter(gr::VERT_S v)
 
 	return it;
 }
-void				THIS::distance_util(gr::VERT_S u)
-{
-	int d = u->dist._M_distance + 1.0f;
-
-	for(auto it = u->edge_begin(); it != u->edge_end();)
-	{	
-		auto e = *it;
-		gr::VERT_S const & v = e->other(u);
-
-		if(!v)
-		{
-			// clean up
-			it = u->edge_erase(it);
-		}
-		else
-		{
-			if((v->dist._M_distance < 0) || (v->dist._M_distance > d))
-			{
-				v->dist._M_distance = d;
-
-				distance_util(v);
-			}
-			++it;
-		}
-	}
-}
-void				THIS::distance(gr::VERT_S const & v0)
-{
-	for(auto it = vert_begin(); it != vert_end(); ++it)
-	{
-		(*it)->dist._M_distance = -1.0;
-	}
-
-	auto it = vert_find(v0);
-
-	if(it == vert_end()) {
-		std::cout << "graph::distance v0 not found" << std::endl;
-		return;
-	}
-
-	gr::VERT_S const & v = *it;
-
-	v->dist._M_distance = 0.0;
-
-	distance_util(v);
-}
-/*
-std::ostream & operator<<(std::ostream & os, gr::algo::cycle const & cycle)
-{
-	for(auto it = cycle.begin(); it != cycle.end(); ++it)
-	{
-		char buffer[128];
-		auto e = (*it);
-		sprintf(buffer, "(%s)%s(%s) - ", (*it)->v0()->name().c_str(), e->name().c_str(), (*it)->v1()->name().c_str());
-		std::cout << buffer;
-	}
-	std::cout << std::endl;
-}
-*/
 template<typename T>
 void print_cycle(T cycle)
 {
@@ -745,13 +683,11 @@ void				THIS::dot()
 }
 void				THIS::dot(gr::VERT_S const & v)
 {
-	distance(v);
-
-	dot(next_graph_filename());
+	dot(next_graph_filename(), v);
 }
 void				THIS::dot(std::string filename, gr::VERT_S const & v)
 {
-	distance(v);
+	shortest_path(v);
 
 	dot(filename);
 }
@@ -1178,7 +1114,7 @@ void				THIS::spanning_tree(gr::VERT_S v)
 }
 gr::S_Vert			THIS::furthest(gr::S_Vert const & v0)
 {
-	distance(v0);
+	shortest_path(v0);
 
 	gr::S_Vert ret;
 
@@ -1186,12 +1122,12 @@ gr::S_Vert			THIS::furthest(gr::S_Vert const & v0)
 
 	for(auto it = vert_begin(); it != vert_end(); ++it)
 	{
-		m = max(m, (*it)->dist._M_distance);
+		m = std::max(m, (*it)->_M_shortest_path.d);
 	}
 
 	for(auto it = vert_begin(); it != vert_end(); ++it)
 	{
-		if((*it)->dist._M_distance == m) ret = *it;
+		if((*it)->_M_shortest_path.d == m) ret = *it;
 	}
 
 	assert(ret);
@@ -1227,6 +1163,12 @@ std::string			blue(float x)
 	sprintf(c, "#%02x%02x%02x", r, g, b);
 	
 	return std::string(c);
+}
+void				THIS::shortest_path(
+		gr::S_Vert const & v)
+{
+	gr::algo::dfs::ShortestPath a(shared_from_this(), v);
+	a.run();
 }
 void				THIS::longest_cycle_1(gr::S_Layer layer)
 {
@@ -1282,12 +1224,25 @@ void				THIS::longest_cycle_1(gr::S_Layer layer)
 		
 		assert((x == 0)||(x == 1));
 		
-		if(x == 1)
-			(*(edge_begin() + i))->_M_layer.push_front(layer);
+		if(x == 1) (*(edge_begin() + i))->_M_layer.push_front(layer);
 	}
 
 	glp_delete_prob(lp);
 }
+void				THIS::longest_cycle_2()
+{
+	auto layer = std::make_shared<gr::layer>();
+	
+	longest_cycle_1(layer);
+}
+
+
+
+
+
+
+
+
 
 
 

@@ -44,9 +44,9 @@ namespace iterator {
 	namespace edge {
 		class EdgeGraph;
 		class EdgeGraphConst;
+		class EdgeVert;
+		class EdgeVertLayer;
 	}
-	class edge_graph;
-	class edge_vert;
 }
 
 typedef std::shared_ptr<graph>			GRAPH_S;

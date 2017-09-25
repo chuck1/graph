@@ -9,7 +9,7 @@
 #include <gr/decl.hpp> // gr/decl.hpp_in
 #include <gr/Range.hpp> // gr/Range.hpp_in
 #include <gr/LayerStack.hpp>
-#include <gr/iterator/edge_vert.hpp> // gr/iterator/iterator.hpp.in
+#include <gr/iterator/edge/EdgeVert.hpp> // gr/iterator/iterator.hpp.in
 
 {{ namespace_open }}
 
@@ -32,7 +32,7 @@ class Vert: public std::enable_shared_from_this<Vert>
 {
 public:
 	friend class gr::graph;
-	friend class gr::iterator::edge_graph;
+	friend class gr::iterator::edge::EdgeGraph;
 
 	Vert(GRAPH_S);
 	virtual ~Vert();
@@ -48,10 +48,10 @@ public:
 	
 	void			shortest_path(gr::PATH & path);
 
-	gr::iterator::edge_vert			edge_begin();
-	gr::iterator::edge_vert			edge_end();
-	gr::iterator::edge_vert			edge_erase(gr::iterator::edge_vert &);
-	gr::Range<gr::iterator::edge_vert>	edge_range();
+	gr::iterator::edge::EdgeVert			edge_begin();
+	gr::iterator::edge::EdgeVert			edge_end();
+	gr::iterator::edge::EdgeVert			edge_erase(gr::iterator::edge::EdgeVert &);
+	gr::Range<gr::iterator::edge::EdgeVert>		edge_range();
 
 	unsigned int			edge_size();
 
@@ -72,11 +72,6 @@ public:
 
 	vert_dot		_M_dot;
 
-	// for ditance algorithm
-	struct {
-		double		_M_distance;
-	} dist;
-	
 	// for creating connectivity matrix
 	unsigned int			_M_i;
 	// for bridge-finding algorithm

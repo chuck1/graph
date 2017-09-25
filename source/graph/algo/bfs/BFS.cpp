@@ -30,9 +30,6 @@ void		THIS::run()
 	run(_M_root);
 	finalize();
 }
-void		THIS::run_pre(gr::S_Vert const & v)
-{
-}
 void		THIS::run(gr::S_Vert const & v)
 {
 	std::cout << "run v0: " << v->name() << std::endl;

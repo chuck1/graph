@@ -3,13 +3,11 @@
 #include <gr/algo/dfs/DFS.hpp> // gr/algo/bfs/BFS.hpp_in
 {% endblock %}
 {% block body %}
-class ShortestPath: virtual public gr::algo::dfs::DFS
+class Bridges: virtual public gr::algo::dfs::DFS
 {
 	public:
-		ShortestPath(
-				gr::GRAPH_S const & g,
-				gr::S_Vert const &);
-		virtual void		initialize();
+		Bridges(
+				gr::GRAPH_S const & g);
 		virtual void		visit(
 				gr::S_Vert const &
 				);
@@ -18,6 +16,18 @@ class ShortestPath: virtual public gr::algo::dfs::DFS
 				gr::S_Edge const &,
 				gr::S_Vert const &
 				);
+		virtual void		visit_post(
+				gr::S_Vert const &,
+				gr::S_Edge const &,
+				gr::S_Vert const &
+				);
+		virtual void		revisit(
+				gr::S_Vert const &,
+				gr::S_Edge const &,
+				gr::S_Vert const &
+				);
+
 		std::vector<gr::S_Edge>		_M_edges;
+		int				_M_t;
 };
 {% endblock %}

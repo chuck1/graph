@@ -14,7 +14,6 @@ class LayerStack
 		bool			plot() const;
 		std::string		plot_color() const;
 		
-		
 		template<typename T, Property<T> layer::*member>
 		T const &		get(T const & def) const
 		{
@@ -31,8 +30,10 @@ class LayerStack
 		 */
 		void			push_front(LAYER_S);
 		void			pop_front();
-
+		
 		LAYER_S &		front();
+
+		bool			contains(gr::S_Layer const &) const;
 	private:
 		std::deque<LAYER_S>	_M_stack;
 };

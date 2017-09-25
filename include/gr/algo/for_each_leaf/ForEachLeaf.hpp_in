@@ -1,0 +1,24 @@
+{% extends "CHeader.hpp" %}
+{% block header %}
+#include <logs/logger.hpp>
+#include <gr/decl.hpp>
+{% endblock %}
+{% block body %}
+class ForEachLeaf:
+	virtual public logs::logger<ForEachLeaf, {{ logs_mode }}, {{ logs_level }}>
+
+{
+	public:
+		ForEachLeaf(gr::GRAPH_S const & g);
+		
+		void			run();
+		void			run_recursive();
+		virtual void		do_leaf(
+				gr::VERT_S const &,
+				gr::S_Edge const &
+				) = 0;
+
+		gr::GRAPH_S		_M_g;
+		unsigned int		_M_count;
+};
+{% endblock %}

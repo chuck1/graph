@@ -1,6 +1,7 @@
 import os
 
 #self.execfile(os.path.join(__dir__, "test_graph_0/config.py"))
+self.execfile(os.path.join(__dir__, "test_bridges/config.py"))
 self.execfile(os.path.join(__dir__, "test_simplify/config.py"))
 self.execfile(os.path.join(__dir__, "test_cycle_arrange/config.py"))
 self.execfile(os.path.join(__dir__, "test_cycles/config.py"))

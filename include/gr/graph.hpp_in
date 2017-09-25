@@ -14,6 +14,7 @@
 #include <gr/iterator/vert/VertGraphPlot.hpp> // gr/iterator/iterator.hpp_in
 #include <gr/iterator/vert/VertComp.hpp> // gr/iterator/iterator.hpp_in
 #include <gr/iterator/vert/VertGraph.hpp> // gr/iterator/vert/VertGraph.hpp_in
+#include <gr/iterator/vert/VertGraphLayer.hpp> // gr/iterator/vert/VertGraphLayer.hpp_in
 #include <gr/iterator/vert/VertGraphAll.hpp> // gr/iterator/vert_graph_all.hpp.in
 #include <gr/container/vert.hpp> // gr/container/vert.hpp_in
 
@@ -70,11 +71,16 @@ public:
 	gr::Range<gr::iterator::vert::VertGraph>	vert_range();
 	unsigned int					vert_size();
 
+	gr::iterator::vert::VertGraphLayer		vert_layer_begin();
+	gr::iterator::vert::VertGraphLayer		vert_layer_end();
+	gr::Range<gr::iterator::vert::VertGraphLayer>	vert_layer_range();
+
 	gr::iterator::vert::VertComp			comp_vert_begin(int);
 	gr::iterator::vert::VertComp			comp_vert_end(int);
 	unsigned int					comp_vert_size(int);
 
 	void						longest_cycle_1(gr::S_Layer);
+	void						longest_cycle_2();
 
 	bool						connected_by_one(
 			gr::S_Vert const & v0,
@@ -82,36 +88,35 @@ public:
 			bool allow_common_neighbors);
 
 	/** edge functions */
-	gr::iterator::edge::EdgeGraphConst	edge_begin() const;
-	gr::iterator::edge::EdgeGraphConst	edge_end() const;
+	gr::iterator::edge::EdgeGraphConst		edge_begin() const;
+	gr::iterator::edge::EdgeGraphConst		edge_end() const;
 
 	gr::iterator::edge::EdgeGraph			edge_begin();
 	gr::iterator::edge::EdgeGraph			edge_end();
 	unsigned int					edge_size();
 	gr::Range<gr::iterator::edge::EdgeGraph>	edge_range();
 
-	gr::iterator::edge::EdgeGraphPlot	edge_begin_plot();
-	gr::iterator::edge::EdgeGraphPlot	edge_end_plot();
+	gr::iterator::edge::EdgeGraphPlot		edge_begin_plot();
+	gr::iterator::edge::EdgeGraphPlot		edge_end_plot();
 
-	gr::iterator::vert::VertGraphPlot	vert_begin_plot();
-	gr::iterator::vert::VertGraphPlot	vert_end_plot();
+	gr::iterator::vert::VertGraphPlot		vert_begin_plot();
+	gr::iterator::vert::VertGraphPlot		vert_end_plot();
 
-	void					edge_erase();
+	void						edge_erase();
 
-	void					edge_erase_util(VERT_S &, VERT_S &);
-	void					edge_erase(VERT_S &, VERT_S &);
+	void						edge_erase_util(VERT_S &, VERT_S &);
+	void						edge_erase(VERT_S &, VERT_S &);
 
-	gr::iterator::edge::EdgeGraph		edge_erase(gr::iterator::edge::EdgeGraph);
+	gr::iterator::edge::EdgeGraph			edge_erase(gr::iterator::edge::EdgeGraph);
 
-	bool					identify_connected_by_one_once(gr::LAYER_S const &,
+	bool						identify_connected_by_one_once(gr::LAYER_S const &,
 			bool allow_common_neighbors);
-	void					identify_connected_by_one(gr::LAYER_S const &,
+	void						identify_connected_by_one(gr::LAYER_S const &,
 			bool allow_common_neighbors);
 
 	/** algorithms */
 
-	void				distance_util(gr::VERT_S);
-	void				distance(gr::VERT_S const &);
+	void				shortest_path(gr::VERT_S const &);
 
 	void				bridges_sub(VERT_S const & n, int & t, std::vector<gr::EDGE_S> & ret);
 	std::vector<gr::EDGE_S>		bridges();

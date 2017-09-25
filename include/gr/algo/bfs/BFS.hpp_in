@@ -9,10 +9,8 @@ class BFS
 		BFS(
 				gr::GRAPH_S const & g,
 				gr::S_Vert const & root);
-		
-		void			run();
-		void			run(gr::VERT_S const &);
-		virtual void		run_pre(gr::VERT_S const &);
+		virtual void		run();
+		virtual void		run(gr::VERT_S const &);
 		virtual void		initialize();
 		virtual void		finalize();
 		/**

@@ -5,7 +5,7 @@
 
 #include <gr/decl.hpp> // gr/decl.hpp_in
 #include <gr/container/edge.hpp> // gr/container/edge.hpp.in
-#include <gr/iterator/edge_vert.hpp> // gr/iterator/edge_vert.hpp_in
+#include <gr/iterator/edge/EdgeVert.hpp> // gr/iterator/edge/EdgeVert.hpp_in
 #include <gr/pair.hpp> // gr/pair.hpp.in
 #include <gr/edge.hpp> // gr/edge.hpp.in
 #include <gr/graph.hpp> // gr/vert.hpp.in
@@ -16,10 +16,10 @@
 typedef gr::vert::Vert THIS;
 
 THIS::Vert(gr::GRAPH_S g):
-	dist{0},
 	_M_graph(g),
 	_M_edges(new gr::container::edge)
 {
+	_M_shortest_path.d = 0;
 }
 THIS::~Vert()
 {
@@ -49,23 +49,23 @@ gr::GRAPH_S			THIS::get_graph() const
 	assert(ret);
 	return ret;
 }
-gr::iterator::edge_vert		THIS::edge_begin()
+gr::iterator::edge::EdgeVert	THIS::edge_begin()
 {
-	return gr::iterator::edge_vert(*_M_edges, _M_edges->begin());
+	return gr::iterator::edge::EdgeVert(*_M_edges, _M_edges->begin());
 }
-gr::iterator::edge_vert		THIS::edge_end()
+gr::iterator::edge::EdgeVert		THIS::edge_end()
 {
-	return gr::iterator::edge_vert(*_M_edges, _M_edges->end());
+	return gr::iterator::edge::EdgeVert(*_M_edges, _M_edges->end());
 }
-gr::iterator::edge_vert		THIS::edge_erase(gr::iterator::edge_vert & i)
+gr::iterator::edge::EdgeVert		THIS::edge_erase(gr::iterator::edge::EdgeVert & i)
 {
 	auto j = _M_edges->erase(i._M_i);
 
-	return gr::iterator::edge_vert(*_M_edges, j);
+	return gr::iterator::edge::EdgeVert(*_M_edges, j);
 }
-gr::Range<gr::iterator::edge_vert>	THIS::edge_range()
+gr::Range<gr::iterator::edge::EdgeVert>	THIS::edge_range()
 {
-	return gr::Range<gr::iterator::edge_vert>(edge_begin(), edge_end());
+	return gr::Range<gr::iterator::edge::EdgeVert>(edge_begin(), edge_end());
 }
 void				THIS::edge_erase_disconnected()
 {

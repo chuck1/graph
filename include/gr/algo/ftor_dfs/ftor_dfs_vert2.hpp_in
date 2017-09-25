@@ -1,7 +1,6 @@
 {{ include_block_open }}
 
-//#include <gr/algo/ftor_dfs/ftor_dfs.hpp>
-#include <gr/decl.hpp>
+#include <gr/decl.hpp> // gr/decl.hpp_in
 
 {{ namespace_open }}
 

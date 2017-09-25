@@ -14,7 +14,7 @@ typedef std::iterator<std::input_iterator_tag, gr::edge> ITERATOR_EDGE;
 /**
  * iterates on each edge in a vert's edge container
  */
-class edge_vert:
+class EdgeVert:
 	public ITERATOR_EDGE
 {
 public:
@@ -23,20 +23,21 @@ public:
 	typedef gr::EDGE_S const &	reference;
 	typedef gr::EDGE_S		value_type;
 
-	edge_vert(gr::container::edge &, iterator);
-	edge_vert &			operator=(edge_vert const &);
+	EdgeVert(gr::container::edge &, iterator);
+	EdgeVert &			operator=(EdgeVert const &);
 
 	void				next();
+	virtual bool			check(gr::S_Edge const &);
 
-	gr::iterator::edge_vert		operator++();
+	EdgeVert			operator++();
 	/** postfix */
-	gr::iterator::edge_vert		operator++(int);
+	EdgeVert			operator++(int);
 	
 	reference			operator*();
 	value_type const *		operator->();
 
-	bool				operator==(gr::iterator::edge_vert const &);
-	bool				operator!=(gr::iterator::edge_vert const &);
+	bool				operator==(EdgeVert const &);
+	bool				operator!=(EdgeVert const &);
 
 //private:
 	gr::container::edge &		_M_container;
