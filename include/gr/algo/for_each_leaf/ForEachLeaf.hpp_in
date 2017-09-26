@@ -17,6 +17,7 @@ class ForEachLeaf:
 				gr::VERT_S const &,
 				gr::S_Edge const &
 				) = 0;
+		virtual bool		check_recursive();
 
 		gr::GRAPH_S		_M_g;
 		unsigned int		_M_count;

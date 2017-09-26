@@ -5,8 +5,7 @@
 typedef gr::algo::for_each_leaf::ForEachLeaf THIS;
 
 THIS::ForEachLeaf(gr::GRAPH_S const & g):
-	_M_g(g),
-	_M_count(0)
+	_M_g(g)
 {
 }
 void			THIS::run()
@@ -20,14 +19,13 @@ void			THIS::run()
 		}
 	}
 }
+bool			THIS::check_recursive()
+{
+	return false;
+}
 void			THIS::run_recursive()
 {
-	unsigned int c = _M_count;
 	run();
-	while(_M_count > c)
-	{
-		c = _M_count;
-		run();
-	}
+	while(check_recursive()) run();
 }
 

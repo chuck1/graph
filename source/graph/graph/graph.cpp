@@ -14,6 +14,7 @@
 #include <gr/algo/ftor_dfs/ftor_dfs_vert2_spanning_tree.hpp> // gr/algo/ftor_dfs/ftor_dfs_vert2_spanning_tree.hpp_in
 #include <gr/algo/ftor_dfs/ftor_dfs_vert2_spanning_tree_arrange.hpp> // gr/algo/ftor_dfs/ftor_dfs_vert2_spanning_tree_arrange.hpp_in
 #include <gr/algo/bfs/SpanningTree.hpp>
+#include <gr/algo/dfs/Bridges.hpp>
 #include <gr/algo/dfs/ShortestPath.hpp>
 #include <gr/container/edge.hpp> // gr/container/edge.hpp.in
 #include <gr/container/vert.hpp> // gr/container/vert.hpp.in
@@ -351,7 +352,7 @@ void				THIS::identify_vertices(
 		gr::S_Vert const & v1,
 		gr::LAYER_S const & layer)
 {
-	std::cout << "identify " << v0->name() << " " << v1->name() << std::endl;
+	log<0>() << "identify " << v0->name() << " " << v1->name() << std::endl;
 
 	assert(vert_find(v0) != vert_end());
 	assert(vert_find(v1) != vert_end());
