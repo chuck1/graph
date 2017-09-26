@@ -4,7 +4,13 @@
 
 typedef gr::algo::dfs::DFS THIS;
 
-THIS::DFS(gr::GRAPH_S const & g,
+THIS::DFS(
+		gr::GRAPH_S const & g):
+	_M_g(g)
+{
+}
+THIS::DFS(
+		gr::GRAPH_S const & g,
 		gr::S_Vert const & root):
 	_M_g(g),
 	_M_root(root)
@@ -12,7 +18,8 @@ THIS::DFS(gr::GRAPH_S const & g,
 }
 void			THIS::initialize()
 {
-	assert(_M_g->vert_find(_M_root) != _M_g->vert_end());
+	if(_M_root)
+		assert(_M_g->vert_find(_M_root) != _M_g->vert_end());
 
 	for(auto it = _M_g->vert_begin(); it != _M_g->vert_end(); ++it)
 	{

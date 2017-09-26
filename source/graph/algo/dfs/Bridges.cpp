@@ -1,3 +1,4 @@
+#include <iostream>
 #include <gr/vert/Vert.hpp>
 
 #include <gr/algo/dfs/Bridges.hpp> // gr/algo/dfs/Bridges.hpp_in
@@ -12,6 +13,7 @@ THIS::Bridges(gr::GRAPH_S const & g):
 void			THIS::visit(
 		gr::S_Vert const & v0)
 {
+	//std::cout << "visit " << v0->name() << std::endl;
 	v0->bridge._M_disc = v0->bridge._M_low = ++_M_t;
 }
 void			THIS::visit(
@@ -19,15 +21,18 @@ void			THIS::visit(
 		gr::S_Edge const &,
 		gr::S_Vert const & v1)
 {
+	//std::cout << "visit " << v0->name() << " " << v1->name() << std::endl;
+
 	v1->bridge._M_parent = v0;
 
-	visit(v0);
+	visit(v1);
 }
 void			THIS::visit_post(
 		gr::S_Vert const & v0,
 		gr::S_Edge const & e,
 		gr::S_Vert const & v1)
 {
+	//std::cout << "visit_post " << v0->name() << " " << v1->name() << std::endl;
 	v0->bridge._M_low = std::min(v0->bridge._M_low, v1->bridge._M_low);
 
 	if(v1->bridge._M_low > v0->bridge._M_disc)
@@ -40,6 +45,7 @@ void			THIS::revisit(
 		gr::S_Edge const &,
 		gr::S_Vert const & v1)
 {
+	//std::cout << "revisit " << v0->name() << " " << v1->name() << std::endl;
 	if(v1 != v0->bridge._M_parent.lock())
 	{
 		v0->bridge._M_low = std::min(v0->bridge._M_low, v1->bridge._M_disc);

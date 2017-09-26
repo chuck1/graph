@@ -9,24 +9,52 @@
 #include <gr/algo/less_cycle.hpp>
 #include <gr/construct.hpp>
 
-gr::GRAPH_S	btree(int n)
+void			btree(
+		gr::GRAPH_S const & g,
+		gr::S_Vert const & v0,
+		int n,
+		int & i)
+{
+	if(n == 0) return;
+	
+	for(int j = 0; j < 2; ++j)
+	{
+		auto v1 = std::make_shared<gr::plot::vert>(g, std::to_string(i++));
+
+		g->add_edge(v0, v1);
+
+		btree(g, v1, n-1, i);
+	}
+}
+gr::GRAPH_S		btree(int n)
 {
 	auto g = std::make_shared<gr::graph>();
+	
+	int i = 0;
+
+        auto v = std::make_shared<gr::plot::vert>(g, std::to_string(i++));
+
+	btree(g, v, n, i);
+	
+	return g;
 }
 void		test(int n)
 {
 	printf("test %2i\n", n);
 
-	auto g = gr::complete(n);	
-
-	g->dot();
-
-	g->simplify_self();
+	auto g = btree(n);	
 
 	g->dot();
 
 	auto l = std::make_shared<gr::layer>();
-	g->longest_cycle_1(l);
+	
+	g->bridges();
+
+	std::cout << (pow(2, n+1) - 2) << std::endl;
+	
+	gr::algo::dfs::Bridges a(g);
+	a.run();
+	std::cout << "algo " << a._M_edges.size() << std::endl;
 
 	g->dot();
 }

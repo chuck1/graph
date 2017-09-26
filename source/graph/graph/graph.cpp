@@ -582,61 +582,6 @@ gr::algo::ftor_dfs::SET_QUEUE_EDGE	THIS::paths1()
 
 	return ftor._M_paths;
 }
-/*
-   void				THIS::vert_erase_layer(unsigned int l)
-   {
-   if(l > _M_layers.size()) throw std::exception();
-
-   auto const & layer = _M_layers[l];
-
-   for(auto i = vert_begin(); i != vert_end();)
-   {
-   auto v = *i;
-   if(!v->_M_layer.expired())
-   {
-   if(v->_M_layer.lock() == layer)
-   {
-   i = vert_erase(i);
-   continue;
-   }
-   }
-
-   ++i;
-   }
-   }
-   */
-void				THIS::bridges_sub(gr::VERT_S const & n, int & t, std::vector<gr::EDGE_S> & ret)
-{
-	n->bridge._M_visited = true;
-
-	n->bridge._M_disc = n->bridge._M_low = ++t;
-
-	for(auto i = n->edge_begin(); i != n->edge_end(); ++i)
-	{
-		auto e = *i;
-		gr::VERT_S const & v = e->other(n);
-
-		assert(v);
-
-		if(!v->bridge._M_visited)
-		{
-			v->bridge._M_parent = n;
-
-			bridges_sub(v, t, ret);
-
-			n->bridge._M_low = std::min(n->bridge._M_low, v->bridge._M_low);
-
-			if(v->bridge._M_low > n->bridge._M_disc)
-			{
-				ret.push_back(e);
-			}
-		}
-		else if(v != n->bridge._M_parent.lock())
-		{
-			n->bridge._M_low = std::min(n->bridge._M_low, v->bridge._M_disc);
-		}
-	}
-}
 void				THIS::mark_bridges(gr::LAYER_S layer)
 {
 	auto l = bridges();
@@ -647,26 +592,9 @@ void				THIS::mark_bridges(gr::LAYER_S layer)
 }
 std::vector<gr::EDGE_S>		THIS::bridges()
 {
-	std::vector<gr::EDGE_S> ret;
-
-	int t = 0;
-
-	// initialize
-	for(auto i = _M_verts.begin(); i != _M_verts.end(); ++i)
-	{
-		(*i)->bridge._M_visited = false;
-	}
-
-	for(auto i = _M_verts.begin(); i != _M_verts.end(); ++i)
-	{
-		if((*i)->bridge._M_visited == false) {
-			bridges_sub(*i, t, ret);
-		}
-	}
-
-	std::cout << "bridges: " << ret.size() << std::endl;
-
-	return ret;
+	gr::algo::dfs::Bridges a(shared_from_this());
+	a.run();
+	return a._M_edges;
 }
 std::string	next_graph_filename()
 {

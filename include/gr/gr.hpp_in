@@ -1,6 +1,7 @@
 {{ include_block_open }}
 
 #include <gr/algo/less_cycle.hpp>
+#include <gr/algo/dfs/Bridges.hpp>
 #include <gr/container/edge.hpp> // gr/container/edge.hpp_in
 #include <gr/container/vert.hpp> // gr/container/vert.hpp_in
 #include <gr/iterator/edge/EdgeGraph.hpp> // gr/iterator/iterator.hpp_in

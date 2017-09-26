@@ -118,7 +118,6 @@ public:
 
 	void				shortest_path(gr::VERT_S const &);
 
-	void				bridges_sub(VERT_S const & n, int & t, std::vector<gr::EDGE_S> & ret);
 	std::vector<gr::EDGE_S>		bridges();
 	void				mark_bridges(gr::LAYER_S layer);
 
