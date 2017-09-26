@@ -837,7 +837,7 @@ void		THIS::simplify_self()
 	layer->_M_enabled.set(false);
 	layer->_M_plot.set(false);
 
-	if(0)
+	if(1)
 	{
 		// remove leaves	
 		mark_leaves_recursive(layer);

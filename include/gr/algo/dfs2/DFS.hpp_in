@@ -1,0 +1,29 @@
+{% extends "CHeader.hpp" %}
+{% block header %}
+#include <gr/decl.hpp>
+{% endblock %}
+{% block body %}
+class DFS
+{
+	public:
+		DFS(
+				gr::GRAPH_S const & g);
+		
+		virtual void		run();
+		virtual void		run1(gr::S_Edge const &) = 0;
+		virtual void		run2(gr::S_Edge const &);
+		virtual void		post2(gr::S_Edge const &);
+
+		virtual void		initialize();
+		virtual void		finalize();
+
+		virtual bool		check2(
+				gr::S_Edge const & e0,
+				gr::S_Edge const & e1);
+		/**
+		 * do not decend form here
+		 */
+
+		gr::GRAPH_S		_M_g;
+};
+{% endblock %}

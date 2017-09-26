@@ -1,0 +1,30 @@
+{% extends "CHeader.hpp" %}
+{% block header %}
+#include <gr/algo/less_cycle.hpp> // gr/algo/stack.hpp_in
+#include <gr/algo/stack.hpp> // gr/algo/stack.hpp_in
+
+#include <gr/algo/dfs2/DFS.hpp> // gr/algo/dfs2/DFS.hpp_in
+{% endblock %}
+{% block body %}
+class Cycle0:
+	virtual public gr::algo::dfs2::DFS
+{
+	public:
+		Cycle0(
+				gr::GRAPH_S const &
+				);
+		virtual void		run1(
+				gr::S_Edge const &
+				);
+		virtual bool		check2(
+				gr::S_Edge const & e0,
+				gr::S_Edge const & e1
+				);
+		virtual void		post2(
+				gr::S_Edge const &);
+
+		gr::algo::stack		_M_stack;
+		gr::S_Edge		_M_e0;
+		gr::algo::SET_CYCLE	_M_cycles;
+};
+{% endblock %}
