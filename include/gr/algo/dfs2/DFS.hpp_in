@@ -7,23 +7,23 @@ class DFS
 {
 	public:
 		DFS(
-				gr::GRAPH_S const & g);
+				gr::graph::S_Graph const & g);
 		
 		virtual void		run();
 		virtual void		run1(gr::S_Edge const &) = 0;
 		virtual void		run2(gr::S_Edge const &);
-		virtual void		post2(gr::S_Edge const &);
+		virtual void		post2(gr::S_Edge const &) = 0;
 
 		virtual void		initialize();
 		virtual void		finalize();
 
 		virtual bool		check2(
 				gr::S_Edge const & e0,
-				gr::S_Edge const & e1);
+				gr::S_Edge const & e1) = 0;
 		/**
 		 * do not decend form here
 		 */
 
-		gr::GRAPH_S		_M_g;
+		gr::graph::S_Graph		_M_g;
 };
 {% endblock %}

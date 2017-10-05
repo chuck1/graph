@@ -11,7 +11,7 @@ class Cycle0:
 {
 	public:
 		Cycle0(
-				gr::GRAPH_S const &
+				gr::graph::S_Graph const &
 				);
 		virtual void		run1(
 				gr::S_Edge const &

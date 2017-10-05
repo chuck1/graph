@@ -9,11 +9,11 @@ class ftor_dfs_vert2_spanning_tree: public ftor_dfs_vert2
 {
 public:
 	virtual void		initialize(
-			gr::GRAPH_S,
+			gr::graph::S_Graph,
 			gr::VERT_S const & v0
 			);
 	virtual void		finalize(
-			gr::GRAPH_S,
+			gr::graph::S_Graph,
 			gr::VERT_S const & v0
 			);
 	virtual void		yield(
@@ -32,7 +32,7 @@ public:
 	gr::LAYER_S		_M_layer1;
 	gr::LAYER_S		_M_layer2;
 
-	gr::GRAPH_S		_M_g;
+	gr::graph::S_Graph		_M_g;
 };
 
 {{ namespace_close }}

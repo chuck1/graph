@@ -7,7 +7,7 @@ class BFS
 {
 	public:
 		BFS(
-				gr::GRAPH_S const & g,
+				gr::graph::S_Graph const & g,
 				gr::S_Vert const & root);
 		virtual void		run();
 		virtual void		run(gr::VERT_S const &);
@@ -22,7 +22,7 @@ class BFS
 				gr::S_Vert const &
 				) = 0;
 
-		gr::GRAPH_S		_M_g;
+		gr::graph::S_Graph		_M_g;
 		gr::S_Vert		_M_root;
 };
 {% endblock %}

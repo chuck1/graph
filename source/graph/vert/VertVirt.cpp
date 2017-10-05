@@ -3,7 +3,7 @@
 typedef gr::vert::VertVirt THIS;
 
 THIS::VertVirt(
-		gr::GRAPH_S g, 
+		gr::graph::S_Graph g, 
 		gr::VERT_S const & v0, 
 		gr::VERT_S const & v1):
 	gr::vert::Vert(g),

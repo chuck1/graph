@@ -1,16 +1,16 @@
-#include <gr/graph.hpp>
+#include <gr/graph/Graph.hpp>
 
 #include <gr/algo/dfs/DFS.hpp> // gr/algo/dfs/DFS.hpp_in
 
 typedef gr::algo::dfs::DFS THIS;
 
 THIS::DFS(
-		gr::GRAPH_S const & g):
+		gr::graph::S_Graph const & g):
 	_M_g(g)
 {
 }
 THIS::DFS(
-		gr::GRAPH_S const & g,
+		gr::graph::S_Graph const & g,
 		gr::S_Vert const & root):
 	_M_g(g),
 	_M_root(root)

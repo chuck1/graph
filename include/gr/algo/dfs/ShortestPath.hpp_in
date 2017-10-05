@@ -7,7 +7,7 @@ class ShortestPath: virtual public gr::algo::dfs::DFS
 {
 	public:
 		ShortestPath(
-				gr::GRAPH_S const & g,
+				gr::graph::S_Graph const & g,
 				gr::S_Vert const &);
 		virtual void		initialize();
 		virtual void		visit(

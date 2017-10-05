@@ -1,4 +1,4 @@
-#include <gr/graph.hpp>
+#include <gr/graph/Graph.hpp>
 #include <gr/layer.hpp>
 
 #include <gr/algo/dfs/Components.hpp> // gr/algo/dfs/Components.hpp_in
@@ -6,7 +6,7 @@
 typedef gr::algo::dfs::Components THIS;
 
 THIS::Components(
-		gr::GRAPH_S const & g):
+		gr::graph::S_Graph const & g):
 	gr::algo::dfs::DFS(g)
 {
 }

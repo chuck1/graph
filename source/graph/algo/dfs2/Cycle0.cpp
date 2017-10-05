@@ -6,7 +6,7 @@
 typedef gr::algo::dfs2::Cycle0 THIS;
 
 THIS::Cycle0(
-		gr::GRAPH_S const & g):
+		gr::graph::S_Graph const & g):
 	gr::algo::dfs2::DFS(g)
 {
 }

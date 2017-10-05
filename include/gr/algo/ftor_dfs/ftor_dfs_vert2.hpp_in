@@ -8,7 +8,7 @@ class ftor_dfs_vert2
 {
 public:
 	virtual void		initialize(
-			gr::GRAPH_S,
+			gr::graph::S_Graph,
 			gr::VERT_S const &
 			) = 0;
 	virtual void		yield(

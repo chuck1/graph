@@ -5,7 +5,7 @@
 
 #include <gr/algo/less_cycle.hpp>
 #include <gr/edge.hpp> // gr/edge.hpp_in
-#include <gr/graph.hpp> // gr/graph.hpp_in
+#include <gr/graph/Graph.hpp> // gr/graph.hpp_in
 #include <gr/io.hpp> // gr/io.hpp_in
 #include <gr/vert/Vert.hpp> // gr/vert.hpp_in
 #include <gr/iterator/edge/EdgeGraph.hpp>
@@ -96,7 +96,7 @@ void		gr::arrange_dot(gr::algo::SET_CYCLE & cycles)
 	// repel
 	gr::repel(g);
 }
-void		gr::zero_force(gr::GRAPH_S & g)
+void		gr::zero_force(gr::graph::S_Graph & g)
 {
 	for(auto it = g->vert_begin(); it != g->vert_end(); ++it)
 	{
@@ -128,12 +128,12 @@ void		apply_force(gr::VERT_S & v0, gr::VERT_S & v1, float d0, float k, float(*fo
 	v0->_M_dot.f -= F;
 	v1->_M_dot.f += F;
 }
-void		record_pos(gr::GRAPH_S & g)
+void		record_pos(gr::graph::S_Graph & g)
 {
 	for(auto it = g->vert_begin(); it != g->vert_end(); ++it)
 		(*it)->set_pos();
 }
-void		do_repel(gr::GRAPH_S & g)
+void		do_repel(gr::graph::S_Graph & g)
 {
 	unsigned int i1 = 0;
 	for(auto it1 = g->vert_begin(); it1 != g->vert_end(); ++it1, ++i1)
@@ -151,7 +151,7 @@ void		do_repel(gr::GRAPH_S & g)
 	}
 }
 void			do_spring(
-		gr::GRAPH_S & g,
+		gr::graph::S_Graph & g,
 		float d0)
 {
 		for(auto it = g->edge_begin(); it != g->edge_end(); ++it)
@@ -163,7 +163,7 @@ void			do_spring(
 		}
 }
 void			do_move(
-		gr::GRAPH_S & g,
+		gr::graph::S_Graph & g,
 		float alpha,
 		float & m,
 		float & m_max)
@@ -186,7 +186,7 @@ void			do_move(
 		m_max = fmax(m_max, d);
 	}
 }
-void		gr::repel(gr::GRAPH_S & g)
+void		gr::repel(gr::graph::S_Graph & g)
 {
 	//auto v = g->vert_size();
 

@@ -10,7 +10,7 @@
 #include <gr/construct.hpp>
 
 void			btree(
-		gr::GRAPH_S const & g,
+		gr::graph::S_Graph const & g,
 		gr::S_Vert const & v0,
 		int n,
 		int & i)
@@ -26,9 +26,9 @@ void			btree(
 		btree(g, v1, n-1, i);
 	}
 }
-gr::GRAPH_S		btree(int n)
+gr::graph::S_Graph		btree(int n)
 {
-	auto g = std::make_shared<gr::graph>();
+	auto g = std::make_shared<gr::graph::Graph>();
 	
 	int i = 0;
 

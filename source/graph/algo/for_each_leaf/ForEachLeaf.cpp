@@ -1,10 +1,10 @@
-#include <gr/graph.hpp>
+#include <gr/graph/Graph.hpp>
 
 #include <gr/algo/for_each_leaf/ForEachLeaf.hpp> // gr/algo/for_each_leaf/ForEachLeaf.hpp_in
 
 typedef gr::algo::for_each_leaf::ForEachLeaf THIS;
 
-THIS::ForEachLeaf(gr::GRAPH_S const & g):
+THIS::ForEachLeaf(gr::graph::S_Graph const & g):
 	_M_g(g)
 {
 }

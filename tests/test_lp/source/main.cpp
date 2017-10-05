@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <glpk.h>
 #include <eigen3/Eigen/Core>
-#include <gr/lp.hpp>
+#include <gr/lp/LP.hpp>
 
 int			main()
 {
@@ -27,7 +27,7 @@ int			main()
 	A(2,1) = 2;
 	A(2,2) = 6;
 	
-	gr::LP p;
+	gr::lp::LP p;
 	p.reset(A, B, C);
 	glp_prob * lp = p._M_lp;
 

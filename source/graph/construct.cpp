@@ -1,12 +1,12 @@
 #include <sstream>
-#include <gr/graph.hpp>
+#include <gr/graph/Graph.hpp>
 #include <gr/plot/vert.hpp>
 
 #include <gr/construct.hpp> // gr/construct.hpp_in
 
-gr::GRAPH_S	gr::complete(int n)
+gr::graph::S_Graph	gr::complete(int n)
 {
-	auto g = std::make_shared<gr::graph>();
+	auto g = std::make_shared<gr::graph::Graph>();
 	// construct a complete graph with n vertices
 	
 	std::vector<gr::S_Vert> verts;
@@ -27,9 +27,9 @@ gr::GRAPH_S	gr::complete(int n)
 
 	return g;
 }
-gr::GRAPH_S	gr::flower(int n)
+gr::graph::S_Graph	gr::flower(int n)
 {
-	auto g = std::make_shared<gr::graph>();
+	auto g = std::make_shared<gr::graph::Graph>();
 	
 	std::vector<VERT_S> verts;
 
@@ -63,9 +63,9 @@ std::vector<std::pair<int, int>>	possible_edges(int n)
 
 	return ret;
 }
-gr::GRAPH_S		gr::random(int nverts, int n)
+gr::graph::S_Graph		gr::random(int nverts, int n)
 {
-	auto g = std::make_shared<gr::graph>();
+	auto g = std::make_shared<gr::graph::Graph>();
 	
 	auto possible = possible_edges(nverts);
 

@@ -1,14 +1,14 @@
 #include <iostream>
 #include <gr/edge.hpp>
 #include <gr/layer.hpp>
-#include <gr/graph.hpp>
+#include <gr/graph/Graph.hpp>
 
 #include <gr/algo/bfs/SpanningTree.hpp> // gr/algo/bfs/SpanningTree.hpp_in
 
 typedef gr::algo::bfs::SpanningTree THIS;
 
 THIS::SpanningTree(
-		gr::GRAPH_S const & g,
+		gr::graph::S_Graph const & g,
 		gr::S_Vert const & root):
 	gr::algo::bfs::BFS(g, root)
 {

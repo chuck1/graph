@@ -3,7 +3,7 @@
 #include <gr/edge.hpp>
 #include <gr/vert/Vert.hpp> // gr/vert/Vert.hpp_in
 #include <gr/layer.hpp>
-#include <gr/graph.hpp>
+#include <gr/graph/Graph.hpp>
 #include <gr/util.hpp>
 
 #include <gr/algo/dfs/ShortestPath.hpp> // gr/algo/dfs/ShortestPath.hpp_in
@@ -11,7 +11,7 @@
 typedef gr::algo::dfs::ShortestPath THIS;
 
 THIS::ShortestPath(
-		gr::GRAPH_S const & g,
+		gr::graph::S_Graph const & g,
 		gr::S_Vert const & root):
 	gr::algo::dfs::DFS(g, root)
 {

@@ -5,7 +5,7 @@
 
 typedef gr::algo::dfs::Bridges THIS;
 
-THIS::Bridges(gr::GRAPH_S const & g):
+THIS::Bridges(gr::graph::S_Graph const & g):
 	gr::algo::dfs::DFS(g),
 	_M_t(0)
 {

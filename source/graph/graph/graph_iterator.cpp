@@ -31,9 +31,9 @@
 #include <gr/layer.hpp>
 #include <gr/util.hpp> // gr/util.hpp_in
 
-#include <gr/graph.hpp> // gr/graph.hpp_in
+#include <gr/graph/Graph.hpp> // gr/graph.hpp_in
 
-typedef gr::graph THIS;
+typedef gr::graph::Graph THIS;
 
 gr::iterator::vert::VertGraphConst		THIS::vert_begin() const
 {

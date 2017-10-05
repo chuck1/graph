@@ -31,14 +31,14 @@ public:
 class Vert: public std::enable_shared_from_this<Vert>
 {
 public:
-	friend class gr::graph;
+	friend class gr::graph::Graph;
 	friend class gr::iterator::edge::EdgeGraph;
 
-	Vert(GRAPH_S);
+	Vert(graph::S_Graph);
 	virtual ~Vert();
-	virtual gr::VERT_S	copy(GRAPH_S) const;
+	virtual gr::VERT_S	copy(graph::S_Graph) const;
 	bool			enabled() const;
-	GRAPH_S			get_graph() const;
+	graph::S_Graph			get_graph() const;
 	/*
 	std::vector<S_Edge>	get_edges();
 	S_Node			get_other(graph::S_Edge e);
@@ -121,7 +121,7 @@ private:
 public:
 // private
 
-	GRAPH_W			_M_graph;
+	graph::W_Graph		_M_graph;
 //private:	
 	gr::container::EDGE_S	_M_edges;
 public:

@@ -110,7 +110,7 @@ void		test1(int n)
 }
 void test2(int n)
 {
-	auto g = std::make_shared<gr::graph>();
+	auto g = std::make_shared<gr::graph::Graph>();
 
 	int i = 0;
 

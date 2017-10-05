@@ -89,5 +89,11 @@ int			THIS::counter(gr::VERT_S const & v) const
 	assert(it != _M_counter.end());
 	return it->second;
 }
+bool			THIS::contains(T const & t)
+{
+	for(auto e : _M_edges)
+		if(e == t) return true;
+	return false;
+}
 
 

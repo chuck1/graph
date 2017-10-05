@@ -15,7 +15,13 @@ class edge_data;
 
 class edge_algo_data;
 
-class graph;
+namespace graph
+{
+	class Graph;
+
+	typedef std::shared_ptr<Graph>		S_Graph;
+	typedef std::weak_ptr<Graph>		W_Graph;
+}
 
 template<typename T>
 class Property;
@@ -33,15 +39,18 @@ namespace container {
 	typedef std::shared_ptr<edge> EDGE_S;
 }
 
-namespace iterator {
+namespace iterator
+{
 	class vert_comp;
-	namespace vert {
+	namespace vert
+	{
 		class VertComp;
 		class VertGraph;
 		class VertGraphConst;
 		class VertGraphAll;
 	}
-	namespace edge {
+	namespace edge
+	{
 		class EdgeGraph;
 		class EdgeGraphConst;
 		class EdgeVert;
@@ -49,10 +58,9 @@ namespace iterator {
 	}
 }
 
-typedef std::shared_ptr<graph>			GRAPH_S;
-typedef std::weak_ptr<graph>			GRAPH_W;
 
-namespace vert {
+namespace vert
+{
 	class Vert;
 	class VertVirt;
 }

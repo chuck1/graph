@@ -7,7 +7,7 @@ class SpanningTree: virtual public gr::algo::bfs::BFS
 {
 	public:
 		SpanningTree(
-				gr::GRAPH_S const & g,
+				gr::graph::S_Graph const & g,
 				gr::S_Vert const &);
 
 		virtual void		initialize();

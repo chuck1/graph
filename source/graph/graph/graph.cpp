@@ -34,11 +34,11 @@
 #include <gr/util.hpp> // gr/util.hpp_in
 #include <gr/lp/LP.hpp> // gr/lp/LP.hpp_in
 
-#include <gr/graph.hpp> // gr/graph.hpp_in
+#include <gr/graph/Graph.hpp> // gr/graph.hpp_in
 
-typedef gr::graph THIS;
+typedef gr::graph::Graph THIS;
 
-THIS::graph()
+THIS::Graph()
 {
 }
 void				THIS::clear()
@@ -328,7 +328,7 @@ void				THIS::depth_first_search(
 	gr::algo::stack stack;
 
 	if(1) { // debugging graph
-		_M_algo.graph.reset(new gr::digraph());
+		_M_algo.graph.reset(new gr::graph::Directed());
 		_M_algo.graph_stack.clear();
 		_M_algo.graph_head = *_M_algo.graph->iter(std::make_shared<gr::plot::vert>(_M_algo.graph, v->name()));
 	}
@@ -782,9 +782,9 @@ bool check_path(std::deque<gr::EDGE_S> & stack)
 
 	return true;
 }
-gr::GRAPH_S		THIS::copy() const
+gr::graph::S_Graph		THIS::copy() const
 {
-	auto g = std::make_shared<gr::graph>();
+	auto g = std::make_shared<gr::graph::Graph>();
 
 	std::map<gr::VERT_S, gr::VERT_S> m;
 
@@ -859,7 +859,7 @@ void		THIS::simplify_self()
 		identify_connected_by_one(layer, true);
 	}
 }
-gr::GRAPH_S			THIS::simplify() const
+gr::graph::S_Graph			THIS::simplify() const
 {
 	auto g = copy();
 	g->simplify_self();
@@ -867,8 +867,8 @@ gr::GRAPH_S			THIS::simplify() const
 }
 std::string			THIS::dot_edge_symbol() { return " -- "; }
 
-
-void				gr::digraph::dot_sub0(std::ostream & of)
+typedef gr::graph::Directed THIS2;
+void				THIS2::dot_sub0(std::ostream & of)
 {
 	of << "#dot" << std::endl;
 	of << "digraph {" << std::endl;
@@ -879,7 +879,7 @@ void				gr::digraph::dot_sub0(std::ostream & of)
 
 	of << "}" << std::endl;
 }
-std::string			gr::digraph::dot_edge_symbol() { return " -> "; }
+std::string			THIS2::dot_edge_symbol() { return " -> "; }
 
 bool	cycle_exists_(gr::VERT_S const & v0, gr::VERT_S const & v)
 {

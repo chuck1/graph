@@ -17,23 +17,25 @@
 #include <gr/iterator/vert/VertGraphLayer.hpp> // gr/iterator/vert/VertGraphLayer.hpp_in
 #include <gr/iterator/vert/VertGraphAll.hpp> // gr/iterator/vert_graph_all.hpp.in
 #include <gr/container/vert.hpp> // gr/container/vert.hpp_in
+#include <gr/graph/GraphAnim.hpp>
 
 {{ namespace_open }}
 
-class graph: 
-	public std::enable_shared_from_this<graph>,
-	public logs::logger<graph, {{ logs_mode }}, {{ logs_level }}>
+class Graph: 
+	virtual public std::enable_shared_from_this<Graph>,
+	virtual public logs::logger<Graph, {{ logs_mode }}, {{ logs_level }}>,
+	virtual public GraphAnim
 {
 public:
-	typedef logs::logger<graph, {{ logs_mode }}, {{ logs_level }}> LOGGER;
+	typedef logs::logger<Graph, {{ logs_mode }}, {{ logs_level }}> LOGGER;
 	//Graph(Graph const & g);
 
 	typedef std::deque<gr::VERT_S> STACK_VERT;
-
-	graph();
-	virtual ~graph() {}
+	
+	Graph();
+	virtual ~Graph() {}
 	void						clear();
-	GRAPH_S						copy() const;
+	S_Graph						copy() const;
 	void						spanning_tree(VERT_S v);
 
 	EDGE_S						add_edge(VERT_S v0, VERT_S v1);
@@ -222,7 +224,7 @@ public:
 	 *
 	 *  - remove verticies that are adjacent to exactly one edge
 	 */
-	gr::GRAPH_S			simplify() const;
+	S_Graph				simplify() const;
 	void				simplify_self();
 
 	//void				layer_move(unsigned int, unsigned int);
@@ -234,14 +236,14 @@ public:
 	gr::container::vert		_M_verts;
 
 	struct {
-		GRAPH_S			graph;
+		S_Graph			graph;
 		std::deque<gr::EDGE_S>	graph_stack;
 		VERT_S			graph_head;
 	} _M_algo;
 	struct {
 	} _M_dot;
 };
-class digraph: public graph
+class Directed: public Graph
 {
 public:
 	virtual void			dot_sub0(std::ostream & of);

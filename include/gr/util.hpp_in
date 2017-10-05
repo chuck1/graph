@@ -8,8 +8,8 @@
 
 void	filter_cycles(gr::algo::SET_CYCLE & cycles);
 void	arrange_dot(gr::algo::SET_CYCLE & cycles);
-void	zero_force(gr::GRAPH_S & g);
-void	repel(gr::GRAPH_S & g);
+void	zero_force(gr::graph::S_Graph & g);
+void	repel(gr::graph::S_Graph & g);
 
 {{ namespace_close }}
 

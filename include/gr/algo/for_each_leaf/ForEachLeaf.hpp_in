@@ -9,7 +9,7 @@ class ForEachLeaf:
 
 {
 	public:
-		ForEachLeaf(gr::GRAPH_S const & g);
+		ForEachLeaf(gr::graph::S_Graph const & g);
 		
 		void			run();
 		void			run_recursive();
@@ -19,7 +19,7 @@ class ForEachLeaf:
 				) = 0;
 		virtual bool		check_recursive();
 
-		gr::GRAPH_S		_M_g;
+		gr::graph::S_Graph		_M_g;
 		unsigned int		_M_count;
 };
 {% endblock %}

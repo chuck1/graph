@@ -1,5 +1,5 @@
 #include <gr/vert/Vert.hpp> // gr/vert.hpp_in
-#include <gr/graph.hpp>
+#include <gr/graph/Graph.hpp>
 #include <gr/layer.hpp> // gr/layer.hpp_in
 #include <gr/edge_algo_data.hpp> // gr/edge.hpp_in
 #include <gr/edge.hpp> // gr/edge.hpp_in
@@ -10,7 +10,7 @@
 typedef gr::algo::ftor_dfs::ftor_dfs_vert2_spanning_tree_arrange THIS;
 
 void			THIS::initialize(
-		gr::GRAPH_S g,
+		gr::graph::S_Graph g,
 		gr::VERT_S const & v0
 		)
 {
@@ -20,7 +20,7 @@ void			THIS::initialize(
 	v0->dfs._M_visited = true;
 }
 void			THIS::finalize(
-		gr::GRAPH_S g,
+		gr::graph::S_Graph g,
 		gr::VERT_S const & v0
 		)
 {

@@ -8,14 +8,14 @@
 #include <gr/iterator/edge/EdgeVert.hpp> // gr/iterator/edge/EdgeVert.hpp_in
 #include <gr/pair.hpp> // gr/pair.hpp.in
 #include <gr/edge.hpp> // gr/edge.hpp.in
-#include <gr/graph.hpp> // gr/vert.hpp.in
+#include <gr/graph/Graph.hpp> // gr/vert.hpp.in
 #include <gr/layer.hpp>
 
 #include <gr/vert/Vert.hpp> // gr/vert/Vert.hpp_in
 
 typedef gr::vert::Vert THIS;
 
-THIS::Vert(gr::GRAPH_S g):
+THIS::Vert(gr::graph::S_Graph g):
 	_M_graph(g),
 	_M_edges(new gr::container::edge)
 {
@@ -43,7 +43,7 @@ bool				THIS::enabled() const
 
 	return true;
 }
-gr::GRAPH_S			THIS::get_graph() const
+gr::graph::S_Graph			THIS::get_graph() const
 {
 	auto ret = _M_graph.lock();
 	assert(ret);
@@ -130,7 +130,7 @@ std::string			THIS::name()
 	sprintf(buffer, "%p", this);
 	return buffer;
 }
-gr::VERT_S			THIS::copy(GRAPH_S g) const
+gr::VERT_S			THIS::copy(graph::S_Graph g) const
 {
 	return std::make_shared<THIS>(g);
 }

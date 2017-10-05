@@ -12,8 +12,8 @@ l = pbs2.Library(self, 'graph', __file__)
 
 #self.include("tests")
 
-l.l_defines.append('GR_GRAPH_HPP_IN_LOGGER_MODE=logs::mode::RUN_TIME')
-l.l_defines.append('GR_GRAPH_HPP_IN_LOGGER_LEVEL=1')
+l.l_defines.append('GR_GRAPH_GRAPH_HPP_IN_LOGGER_MODE=logs::mode::RUN_TIME')
+l.l_defines.append('GR_GRAPH_GRAPH_HPP_IN_LOGGER_LEVEL=1')
 
 l.l_defines.append('GR_ALGO_FOR_EACH_LEAF_FOREACHLEAF_HPP_IN_LOGGER_MODE=logs::mode::RUN_TIME')
 l.l_defines.append('GR_ALGO_FOR_EACH_LEAF_FOREACHLEAF_HPP_IN_LOGGER_LEVEL=1')
@@ -22,8 +22,7 @@ l.doc_out_dir = "/media/sf_P_DRIVE/html/graph"
 
 l.add_dep('logs')
 
-#l.args.append('--no-pie')
-#l.args.append('-fPIC')
+l.args.libraries.append('glpk')
 
 self.parts.append(l)
 

@@ -7,7 +7,7 @@
 class Vert: public gr::plot::vert
 {
 public:
-	Vert(gr::GRAPH_S g, std::string nid): 
+	Vert(gr::graph::S_Graph g, std::string nid): 
 		gr::vert::Vert(g),
 		gr::plot::vert(g, nid)
 	{
@@ -16,7 +16,7 @@ public:
 	{
 		return _M_name;
 	}
-	virtual gr::VERT_S	copy(gr::GRAPH_S g) const
+	virtual gr::VERT_S	copy(gr::graph::S_Graph g) const
 	{
 		return std::make_shared<Vert>(g, _M_name);
 	}

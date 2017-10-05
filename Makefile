@@ -33,4 +33,5 @@ testclean:
 	rm -rf tests/test_cycles/build/*
 	rm -rf tests/test_simplify/build/*
 	rm -rf tests/test_spanning_tree/build/*
+	rm -rf tests/test_bridges/build/*
 

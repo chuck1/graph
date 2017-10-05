@@ -1,10 +1,10 @@
-#include <gr/graph.hpp>
+#include <gr/graph/Graph.hpp>
 
 #include <gr/algo/bfs/BFS.hpp> // gr/algo/bfs/BFS.hpp_in
 
 typedef gr::algo::bfs::BFS THIS;
 
-THIS::BFS(gr::GRAPH_S const & g,
+THIS::BFS(gr::graph::S_Graph const & g,
 		gr::S_Vert const & root):
 	_M_g(g),
 	_M_root(root)

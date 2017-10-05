@@ -3,8 +3,10 @@
 #include <gr/decl.hpp>
 {% endblock %}
 {% block body %}
-gr::GRAPH_S		complete(int);
-gr::GRAPH_S		flower(int);
-gr::GRAPH_S		random(int nverts, int nedges);
+
+graph::S_Graph		complete(int);
+graph::S_Graph		flower(int);
+graph::S_Graph		random(int nverts, int nedges);
+
 {% endblock %}
 

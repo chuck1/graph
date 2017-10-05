@@ -6,7 +6,7 @@ e.add_dep("graph")
 
 #e.args.append('--no-pie')
 #e.args.append('-fPIC')
-e.args.append('-lglpk')
+e.args.args.append('-lglpk')
 
 self.parts.append(e)
 

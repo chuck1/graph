@@ -2,9 +2,9 @@
 
 #include <gr/algo/ftor_dfs/ftor_dfs_vert2.hpp> // gr/algo/ftor_dfs/ftor_dfs_vert2.hpp_in
 
-#include <gr/graph.hpp> // gr/graph.hpp_in
+#include <gr/graph/Graph.hpp> // gr/graph.hpp_in
 
-typedef gr::graph THIS;
+typedef gr::graph::Graph THIS;
 
 void				THIS::depth_first_search3(
 		gr::VERT_S const & v0,
