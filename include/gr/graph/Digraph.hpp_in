@@ -1,0 +1,17 @@
+{{ include_block_open }}
+
+#include <gr/graph/Graph.hpp>
+
+{{ namespace_open }}
+
+class Digraph: virtual public Graph
+{
+public:
+	virtual void			dot_sub0(std::ostream & of);
+	virtual std::string		dot_edge_symbol();
+};
+
+{{ namespace_close }}
+
+{{ include_block_close }}
+
