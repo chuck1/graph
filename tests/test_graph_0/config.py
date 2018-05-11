@@ -1,6 +1,6 @@
-import pbs2
+import pbs
 
-e = pbs2.Executable(self, "test_graph_0", __file__)
+e = pbs.Executable(self, "test_graph_0", __file__)
 
 e.add_dep("graph")
 

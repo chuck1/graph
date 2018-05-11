@@ -1,6 +1,6 @@
-import pbs2
+import pbs
 
-e = pbs2.Executable(self, "test_spanning_tree", __file__)
+e = pbs.Executable(self, "test_spanning_tree", __file__)
 
 e.add_dep("graph")
 

@@ -4,10 +4,10 @@ pdf_files = $(patsubst build/dot/%.dot,build/dot/pdf/%.pdf,$(dot_files))
 png_files = $(patsubst build/dot/%.dot,build/dot/png/%.png,$(dot_files))
 
 all:
-	pbs2 make config.py
+	pbs make config.py
 
 doc:
-	pbs2 make config.py doc
+	pbs make config.py doc
 
 build/dot/pdf/%.pdf: build/dot/%.dot
 	@mkdir -p $(dir $@)

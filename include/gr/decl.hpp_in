@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include <deque>
+#include <functional>
 
 {{ namespace_open }}
 

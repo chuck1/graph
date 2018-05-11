@@ -1088,7 +1088,7 @@ std::string			blue(float x)
 	int g = 0;
 	int b = std::min(255, (int)(255 * x));
 	
-	char c[7];
+	char c[16];
 	sprintf(c, "#%02x%02x%02x", r, g, b);
 	
 	return std::string(c);

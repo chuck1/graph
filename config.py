@@ -1,10 +1,10 @@
 #import pbs.classes.Dynamic
 import os
-import pbs2
+import pbs
 
 self.execfile(os.path.join(__dir__, '../logs/config.py'))
 
-l = pbs2.Library(self, 'graph', __file__)
+l = pbs.Library(self, 'graph', __file__)
 
 #l = pbs.classes.Static.Static("graph", self)
 
