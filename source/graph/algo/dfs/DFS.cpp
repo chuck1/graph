@@ -18,8 +18,10 @@ THIS::DFS(
 }
 void			THIS::initialize()
 {
-	if(_M_root)
-		assert(_M_g->vert_find(_M_root) != _M_g->vert_end());
+	if(_M_root) {
+		if(_M_g->vert_find(_M_root) == _M_g->vert_end())
+			throw std::exception();
+	}
 
 	for(auto it = _M_g->vert_begin(); it != _M_g->vert_end(); ++it)
 	{

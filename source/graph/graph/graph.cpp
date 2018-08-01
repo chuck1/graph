@@ -1096,6 +1096,8 @@ std::string			blue(float x)
 void				THIS::shortest_path(
 		gr::S_Vert const & v)
 {
+	log<0>() << "Graph::shortest_path" << std::endl;
+
 	gr::algo::dfs::ShortestPath a(shared_from_this(), v);
 	a.run();
 }
