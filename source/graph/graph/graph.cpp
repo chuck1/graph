@@ -831,7 +831,7 @@ bool			THIS::add_virtual_edges(gr::LAYER_S layer)
 }
 void		THIS::simplify_self()
 {
-	std::cout << "graph::simplify" << std::endl;
+	log<0>() << "graph::simplify" << std::endl;
 
 	auto layer = std::make_shared<gr::layer>();
 	layer->_M_enabled.set(false);
