@@ -23,6 +23,7 @@ l.doc_out_dir = "/media/sf_P_DRIVE/html/graph"
 l.add_dep('logs')
 
 l.args.libraries.append('glpk')
+l.args.libraries.append('ltdl')
 
 self.parts.append(l)
 
