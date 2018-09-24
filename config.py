@@ -18,7 +18,7 @@ l.l_defines.append('GR_GRAPH_GRAPH_HPP_IN_LOGGER_LEVEL=1')
 l.l_defines.append('GR_ALGO_FOR_EACH_LEAF_FOREACHLEAF_HPP_IN_LOGGER_MODE=logs::mode::RUN_TIME')
 l.l_defines.append('GR_ALGO_FOR_EACH_LEAF_FOREACHLEAF_HPP_IN_LOGGER_LEVEL=1')
 
-l.doc_out_dir = "/media/sf_P_DRIVE/html/graph"
+l.doc_out_dir = "/home/charles/WindowsShare/html/graph"
 
 l.add_dep('logs')
 
