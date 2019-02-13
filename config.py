@@ -27,5 +27,5 @@ l.args.libraries.append('ltdl')
 
 self.parts.append(l)
 
-self.execfile(os.path.join(__dir__, "tests/config.py"))
+#self.execfile(os.path.join(__dir__, "tests/config.py"))
 
